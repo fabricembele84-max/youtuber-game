@@ -1,841 +1,1250 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTuber Simulator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTuber Simulator</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 20px;
-    }
-
-    .box {
-      background: white;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px #ccc;
-    }
-
-    button, select {
-      padding: 10px;
-      margin: 5px 0;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #aaa;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .charakter {
-      font-size: 70px;
-      text-align: center;
-      padding: 15px;
-    }
-
-    .ereignis {
-      background: #eee;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-  </style>
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  margin:0;
+  padding:15px;
+}
+.box{
+  background:white;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:14px;
+  box-shadow:0 2px 8px #ccc;
+}
+button,select,input{
+  padding:10px;
+  margin:5px 0;
+  font-size:16px;
+  border-radius:8px;
+  border:1px solid #aaa;
+  box-sizing:border-box;
+}
+button{cursor:pointer}
+button:hover{background:#eee}
+.charakter{
+  font-size:70px;
+  text-align:center;
+  padding:15px;
+}
+.immobilie{
+  border:1px solid #ddd;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+}
+.aktiv{
+  border:2px solid #4caf50;
+  background:#e8f5e9;
+}
+.ereignis{
+  background:#eee;
+  padding:12px;
+  border-radius:8px;
+  margin-top:10px;
+}
+.karte{
+  border:1px solid #ddd;
+  padding:10px;
+  margin:8px 0;
+  border-radius:10px;
+}
+.owner{
+  background:#fff3cd;
+  border:2px solid #d4a000;
+}
+input{
+  width:100%;
+}
+</style>
 </head>
 
 <body>
 
-  <h1>🎥 YouTuber Simulator</h1>
-
-  <div class="box">
-    <h2>📊 Deine Statistik</h2>
-    <p>💰 Geld: <span id="geld">0.00</span> €</p>
-    <p>👥 Abonnenten: <span id="abos">0.0</span></p>
-    <p>❤️ Likes: <span id="likes">0.0</span></p>
-    <p>🏋️ Training: <span id="training">0</span></p>
-  </div>
-
-  <div class="box">
-    <h2>👤 Deinen Charakter</h2>
-
-    <label>Hautfarbe:</label><br>
-    <select id="haut">
-      <option value="🏻">Hell</option>
-      <option value="🏿">Dunkel</option>
-    </select>
-
-    <br>
+<h1>🎥 YouTuber Simulator</h1>
+
+<div class="box">
+<h2>📊 Deine Statistik</h2>
+<p>💰 Geld: <span id="geld">0.00</span> €</p>
+<p>👥 Abonnenten: <span id="abos">0.0</span></p>
+<p>❤️ Likes: <span id="likes">0.0</span></p>
+<p>🏋️ Training: <span id="training">0</span></p>
+<p>🏠 Immobilien: <span id="immobilienAnzahl">0</span>/40</p>
+<p>🏢 Studio-Level: <span id="studioLevel">1</span></p>
+<p>👨‍👩‍👧 Generation: <span id="generation">1</span></p>
+</div>
+
+<div class="box">
+<h2>👤 Charakter</h2>
+
+<label>Hautfarbe:</label><br>
+<select id="haut">
+<option value="🏻">Hell</option>
+<option value="🏿">Dunkel</option>
+</select><br>
+
+<label>Haare:</label><br>
+<select id="haare">
+<option value="🧑‍🦱">Lockig</option>
+<option value="🧑‍🦰">Rot</option>
+<option value="🧑‍🦳">Weiß</option>
+<option value="👨‍🦱">Braun</option>
+</select><br>
+
+<label>Gesicht:</label><br>
+<select id="gesicht">
+<option value="🙂">Normal</option>
+<option value="😎">Cool</option>
+<option value="😄">Fröhlich</option>
+<option value="😐">Ernst</option>
+</select><br>
+
+<label>Nase:</label><br>
+<select id="nase">
+<option>Normal</option>
+<option>Klein</option>
+<option>Groß</option>
+</select><br>
+
+<label>Mund:</label><br>
+<select id="mund">
+<option>Normal</option>
+<option>Lächeln</option>
+<option>Ernst</option>
+</select><br>
+
+<label>Body:</label><br>
+<select id="body">
+<option>Normal</option>
+<option>Sportlich</option>
+<option>Stark</option>
+</select>
+
+<div class="charakter" id="charakter">🙂</div>
+
+<button onclick="charakterSpeichern()">
+✨ Charakter speichern
+</button>
+</div>
+
+<div class="box">
+<h2>🏋️ Training</h2>
+<button onclick="trainieren()">🏋️ Trainieren</button>
+</div>
+
+<div class="box">
+<h2>🎬 Videos</h2>
+<button onclick="videoErstellen()">🎬 Video erstellen</button>
+</div>
+
+<div class="box">
+<h2>🛒 Ausrüstung</h2>
+
+<button onclick="kaufen('📷 Kamera',50)">
+📷 Kamera – 50 €
+</button><br>
+
+<button onclick="kaufen('🎤 Mikrofon',30)">
+🎤 Mikrofon – 30 €
+</button><br>
+
+<button onclick="kaufen('💻 PC',100)">
+💻 PC – 100 €
+</button>
+
+<h3>🛠️ Eigene Ausrüstung</h3>
+
+<p>Preis: <b>200 Billionen €</b></p>
+
+<button onclick="eigeneAusrüstung()">
+🔧 Eigene Ausrüstung bauen
+</button>
+
+<ul id="ausruestung"></ul>
+</div>
 
-    <label>Haare:</label><br>
-    <select id="haare">
-      <option value="🧑‍🦱">Lockig</option>
-      <option value="🧑‍🦰">Rot</option>
-      <option value="🧑‍🦳">Weiß</option>
-      <option value="👨‍🦱">Braun</option>
-    </select>
+<div class="box">
+<h2>🏠 Immobilien</h2>
 
-    <br>
+<p>
+Du kannst mehrere Immobilien besitzen und jederzeit
+zwischen deinen Häusern wechseln.
+</p>
 
-    <label>Gesicht:</label><br>
-    <select id="gesicht">
-      <option value="🙂">Normal</option>
-      <option value="😎">Cool</option>
-      <option value="😄">Fröhlich</option>
-      <option value="😐">Ernst</option>
-    </select>
+<div id="immobilien"></div>
+</div>
 
-    <br>
+<div class="box">
+<h2>🎥 Studio</h2>
 
-    <label>Nase:</label><br>
-    <select id="nase">
-      <option>Normal</option>
-      <option>Klein</option>
-      <option>Groß</option>
-    </select>
+<p>
+Studio-Level:
+<b><span id="studioText">1</span></b>
+</p>
 
-    <br>
+<p id="studioBeschreibung">
+Kleines Studio für deine ersten Videos.
+</p>
 
-    <label>Mund:</label><br>
-    <select id="mund">
-      <option>Normal</option>
-      <option>Lächeln</option>
-      <option>Ernst</option>
-    </select>
+<button onclick="studioVerbessern()">
+⬆️ Studio verbessern
+</button>
+</div>
 
-    <br>
+<div class="box">
+<h2>👨‍💼 Mitarbeiter</h2>
 
-    <label>Body:</label><br>
-    <select id="body">
-      <option>Normal</option>
-      <option>Sportlich</option>
-      <option>Stark</option>
-    </select>
+<button onclick="mitarbeiterEinstellen('🧹 Haushaltshilfe',1000)">
+🧹 Haushaltshilfe – 1.000 €
+</button><br>
 
-    <div class="charakter" id="charakter">🙂</div>
+<button onclick="mitarbeiterEinstellen('🎬 Kameramann',3000)">
+🎬 Kameramann – 3.000 €
+</button><br>
 
-    <button onclick="charakterSpeichern()">
-      ✨ Charakter speichern
-    </button>
-  </div>
+<button onclick="mitarbeiterEinstellen('✂️ Cutter',5000)">
+✂️ Cutter – 5.000 €
+</button><br>
 
-  <div class="box">
-    <h2>🏋️ Training</h2>
+<button onclick="mitarbeiterEinstellen('📋 Manager',10000)">
+📋 Manager – 10.000 €
+</button>
 
-    <button onclick="trainieren()">
-      🏋️ Trainieren
-    </button>
-  </div>
-
-  <div class="box">
-    <h2>🎬 Videos</h2>
-
-    <button onclick="videoErstellen()">
-      🎬 Video erstellen
-    </button>
-  </div>
-
-  <div class="box">
-    <h2>🛒 Ausrüstung</h2>
-
-    <button onclick="kaufen('📷 Kamera', 50)">
-      📷 Kamera – 50 €
-    </button>
-
-    <button onclick="kaufen('🎤 Mikrofon', 30)">
-      🎤 Mikrofon – 30 €
-    </button>
-
-    <button onclick="kaufen('💻 PC', 100)">
-      💻 PC – 100 €
-    </button>
-
-    <h3>🛠️ Eigene Ausrüstung</h3>
-
-    <p>Preis: <b>200 Billionen €</b></p>
-
-    <button onclick="eigeneAusrüstung()">
-      🔧 Eigene Ausrüstung bauen
-    </button>
-
-    <ul id="ausruestung"></ul>
-  </div>
-
-  <div class="box">
-    <h2>🤝 Freunde & Jobs</h2>
-
-    <p>👤 Leon – 🔧 Mechaniker</p>
-
-    <button onclick="freundWerden()">
-      🤝 Freund werden
-    </button>
-
-    <ul id="freunde"></ul>
-  </div>
-
-  <div class="box">
-    <h2>🧠 Persönlichkeiten</h2>
-
-    <p>Jeder Charakter ist anders.</p>
-
-    <div id="persoenlichkeiten"></div>
-
-    <button onclick="neuesEreignis()">
-      🎲 Zufälliges Ereignis
-    </button>
-
-    <div class="ereignis" id="ereignis">
-      Noch kein Ereignis.
-    </div>
-  </div>
+<ul id="mitarbeiter"></ul>
+</div>
 
-  <div class="box">
-    <h2>📺 Deine Kanäle</h2>
+<div class="box">
+<h2>🤝 Freunde</h2>
 
-    <p>
-      Neuer Kanal ab:
-      <br>👥 20.000 Abonnenten
-      <br>❤️ 300.000 Likes
-    </p>
+<p>👤 Leon – 🔧 Mechaniker</p>
 
-    <button onclick="neuerKanal()">
-      ➕ Neuen Kanal erstellen
-    </button>
+<button onclick="freundWerden()">
+🤝 Leon kennenlernen
+</button>
 
-    <ul id="kanaele">
-      <li>📺 Hauptkanal</li>
-    </ul>
-  </div>
+<ul id="freunde"></ul>
+</div>
 
-  <script>
+<div class="box">
+<h2>❤️ Beziehungen</h2>
 
-    let geld = 0;
-    let abos = 0;
-    let likes = 0;
-    let training = 0;
+<p id="beziehung">
+Du bist momentan Single.
+</p>
 
-    let freunde = [];
-    let kanalAnzahl = 1;
+<button onclick="beziehungStarten()">
+❤️ Person kennenlernen
+</button>
 
-    const andereYouTuber = [
-      {
-        name: "Leon",
-        abo: 350,
-        persoenlichkeit: "😄 Freundlich",
-        job: "Mechaniker"
-      },
-      {
-        name: "Mika",
-        abo: 8200,
-        persoenlichkeit: "😎 Selbstbewusst",
-        job: "Schüler"
-      },
-      {
-        name: "Jay",
-        abo: 1500,
-        persoenlichkeit: "😂 Lustig",
-        job: "Kellner"
-      },
-      {
-        name: "Noah",
-        abo: 42000,
-        persoenlichkeit: "😐 Ruhig",
-        job: "Programmierer"
-      }
-    ];
+<button onclick="beziehungBeenden()">
+💔 Beziehung beenden
+</button>
 
-    function videoErstellen() {
-      geld += 0.1;
-      abos += 0.1;
-      likes += 1;
+<h3>👥 Bekannte</h3>
+<div id="beziehungsListe"></div>
+</div>
 
-      aktualisieren();
-    }
+<div class="box">
+<h2>👨‍👩‍👧 Generationen</h2>
 
-    function trainieren() {
-      training++;
+<p>
+Aktuelle Generation:
+<b><span id="generationText">1</span></b>
+</p>
 
-      alert(
-        "🏋️ Training abgeschlossen!\n" +
-        "Trainingspunkte: " + training
-      );
+<button onclick="naechsteGeneration()">
+👶 Nächste Generation starten
+</button>
+</div>
 
-      aktualisieren();
-    }
+<div class="box">
+<h2>🧠 Persönlichkeiten & Ereignisse</h2>
 
-    function charakterSpeichern() {
+<div id="persoenlichkeiten"></div>
 
-      const haut = document.getElementById("haut").value;
-      const haare = document.getElementById("haare").value;
-      const gesicht = document.getElementById("gesicht").value;
+<button onclick="neuesEreignis()">
+🎲 Zufälliges Ereignis
+</button>
 
-      document.getElementById("charakter").textContent =
-        haut + " " + haare + " " + gesicht;
+<div class="ereignis" id="ereignis">
+Noch kein Ereignis.
+</div>
+</div>
 
-      alert("✅ Dein Charakter wurde gespeichert!");
-    }
+<div class="box">
+<h2>📺 Deine Kanäle</h2>
 
-    function kaufen(name, preis) {
+<p>
+Neuer Kanal ab:
+<br>👥 20.000 Abonnenten
+<br>❤️ 300.000 Likes
+</p>
 
-      if (geld >= preis) {
+<button onclick="neuerKanal()">
+➕ Neuen Kanal erstellen
+</button>
 
-        geld -= preis;
+<ul id="kanaele">
+<li>📺 Hauptkanal</li>
+</ul>
+</div>
 
-        let eintrag = document.createElement("li");
-        eintrag.textContent = name;
+<!-- OWNER LOGIN -->
 
-        document.getElementById("ausruestung")
-          .appendChild(eintrag);
+<div class="box owner">
+<h2>👑 Owner-Bereich</h2>
 
-        aktualisieren();
+<p>
+🔒 Nur für den Besitzer des Spiels.
+</p>
 
-      } else {
-        alert("❌ Du hast nicht genug Geld!");
-      }
-    }
+<button onclick="ownerLogin()">
+🔐 Owner-Menü öffnen
+</button>
 
-    function eigeneAusrüstung() {
+<div id="ownerPanel" style="display:none;">
 
-      const preis = 200000000000000;
+<hr>
 
-      if (geld >= preis) {
+<h2>👑 OWNER PANEL</h2>
 
-        geld -= preis;
+<p>⚠️ Spiel-Administrationsbereich</p>
 
-        let eintrag = document.createElement("li");
-        eintrag.textContent =
-          "⭐ Eigene Spezial-Ausrüstung";
+<h3>💰 Geld</h3>
 
-        document.getElementById("ausruestung")
-          .appendChild(eintrag);
+<input id="ownerGeld"
+type="number"
+placeholder="Betrag eingeben">
 
-        aktualisieren();
+<button onclick="ownerGeldHinzufuegen()">
+💰 Geld hinzufügen
+</button>
 
-      } else {
-        alert("❌ Du brauchst 200 Billionen €!");
-      }
-    }
+<h3>👥 Abonnenten</h3>
 
-    function freundWerden() {
+<input id="ownerAbos"
+type="number"
+placeholder="Abos eingeben">
 
-      if (!freunde.includes("Leon")) {
+<button onclick="ownerAbosHinzufuegen()">
+👥 Abos hinzufügen
+</button>
 
-        freunde.push("Leon");
+<h3>❤️ Likes</h3>
 
-        let eintrag = document.createElement("li");
+<input id="ownerLikes"
+type="number"
+placeholder="Likes eingeben">
 
-        eintrag.textContent =
-          "🤝 Leon – 🔧 Mechaniker – dein Freund";
+<button onclick="ownerLikesHinzufuegen()">
+❤️ Likes hinzufügen
+</button>
 
-        document.getElementById("freunde")
-          .appendChild(eintrag);
+<h3>🏋️ Training</h3>
 
-      } else {
+<input id="ownerTraining"
+type="number"
+placeholder="Trainingspunkte">
 
-        alert("Leon ist bereits dein Freund!");
-      }
-    }
+<button onclick="ownerTrainingHinzufuegen()">
+🏋️ Training hinzufügen
+</button>
 
-    function neuesEreignis() {
+<h3>🏢 Studio</h3>
 
-      const zufall =
-        andereYouTuber[
-          Math.floor(Math.random() * andereYouTuber.length)
-        ];
+<button onclick="ownerStudio()">
+⬆️ Studio +1
+</button>
 
-      let nachricht = "";
+<button onclick="ownerStudioMax()">
+👑 Studio auf Level 5
+</button>
 
-      if (zufall.persoenlichkeit.includes("Freundlich")) {
+<h3>🏠 Immobilien</h3>
 
-        nachricht =
-          "😊 " + zufall.name +
-          " fragt dich, ob ihr zusammen ein Video machen wollt!";
+<button onclick="ownerAlleHaeuser()">
+🏠 Alle Immobilien freischalten
+</button>
 
-      } else if (zufall.persoenlichkeit.includes("Lustig")) {
+<h3>🎁 Bonus</h3>
 
-        nachricht =
-          "😂 " + zufall.name +
-          " schickt dir einen lustigen Video-Vorschlag!";
+<button onclick="ownerMegaBonus()">
+💎 Mega-Bonus
+</button>
 
-      } else if (zufall.persoenlichkeit.includes("Selbstbewusst")) {
+<h3>🚪 Owner-Menü</h3>
 
-        nachricht =
-          "😎 " + zufall.name +
-          " möchte eine große Kollaboration planen!";
+<button onclick="ownerLogout()">
+🔒 Owner-Menü schließen
+</button>
 
-      } else {
+</div>
+</div>
 
-        nachricht =
-          "😐 " + zufall.name +
-          " schaut sich deinen Kanal an, sagt aber noch nichts.";
-      }
+<script>
 
-      document.getElementById("ereignis").textContent =
-        nachricht;
-    }
+let geld = 0;
+let abos = 0;
+let likes = 0;
+let training = 0;
 
-    function zeigePersoenlichkeiten() {
-
-      const liste =
-        document.getElementById("persoenlichkeiten");
-
-      liste.innerHTML = "";
-
-      andereYouTuber.forEach(function(youtuber) {
-
-        const p = document.createElement("p");
-
-        p.textContent =
-          "👤 " + youtuber.name +
-          " – " +
-          youtuber.persoenlichkeit +
-          " – Beruf: " +
-          youtuber.job +
-          " – " +
-          youtuber.abo.toLocaleString("de-DE") +
-          " Abos";
-
-        liste.appendChild(p);
-      });
-    }
-
-    function neuerKanal() {
-
-      if (abos >= 20000 && likes >= 300000) {
-
-        kanalAnzahl++;
-
-        const eintrag =
-          document.createElement("li");
-
-        eintrag.textContent =
-          "📺 Kanal " + kanalAnzahl;
-
-        document.getElementById("kanaele")
-          .appendChild(eintrag);
-
-        alert("🎉 Neuer Kanal erstellt!");
-
-      } else {
-
-        alert(
-          "❌ Noch nicht möglich!\n\n" +
-          "Du brauchst:\n" +
-          "👥 20.000 Abonnenten\n" +
-          "❤️ 300.000 Likes"
-        );
-      }
-    }
-
-    function aktualisieren() {
-
-      document.getElementById("geld")
-        .textContent = geld.toFixed(2);
-
-      document.getElementById("abos")
-        .textContent = abos.toFixed(1);
-
-      document.getElementById("likes")
-        .textContent = likes.toFixed(1);
-
-      document.getElementById("training")
-        .textContent = training;
-    }
-
-    zeigePersoenlichkeiten();
-    aktualisieren();
-
-  </script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTuber Simulator</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 20px;
-    }
-
-    .box {
-      background: white;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px #ccc;
-    }
-
-    button, select {
-      padding: 10px;
-      margin: 5px 0;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #aaa;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .charakter {
-      font-size: 70px;
-      text-align: center;
-      padding: 15px;
-    }
-  </style>
-</head>
-
-<body>
-
-  <h1>🎥 YouTuber Simulator</h1>
-
-  <div class="box">
-    <h2>📊 Deine Statistik</h2>
-    <p>💰 Geld: <span id="geld">0.00</span> €</p>
-    <p>👥 Abonnenten: <span id="abos">0.0</span></p>
-    <p>❤️ Likes: <span id="likes">0.0</span></p>
-    <p>🏋️ Training: <span id="training">0</span></p>
-  </div>
-
-  <div class="box">
-    <h2>👤 Deinen Charakter erstellen</h2>
-
-    <label>Hautfarbe:</label><br>
-    <select id="haut">
-      <option value="🏻">Hell</option>
-      <option value="🏿">Dunkel</option>
-    </select>
-
-    <br><br>
-
-    <label>Haare:</label><br>
-    <select id="haare">
-      <option value="🧑‍🦱">Lockige Haare</option>
-      <option value="🧑‍🦰">Rote Haare</option>
-      <option value="🧑‍🦱">Braune Haare</option>
-      <option value="🧑‍🦳">Weiße Haare</option>
-    </select>
-
-    <br><br>
-
-    <label>Gesicht:</label><br>
-    <select id="gesicht">
-      <option value="🙂">Normal</option>
-      <option value="😎">Cool</option>
-      <option value="😄">Fröhlich</option>
-      <option value="😐">Ernst</option>
-    </select>
-
-    <br><br>
-
-    <label>Nase:</label><br>
-    <select id="nase">
-      <option>Normal</option>
-      <option>Klein</option>
-      <option>Groß</option>
-    </select>
-
-    <br><br>
-
-    <label>Mund:</label><br>
-    <select id="mund">
-      <option>Normal</option>
-      <option>Lächeln</option>
-      <option>Ernst</option>
-    </select>
-
-    <br><br>
-
-    <label>Body:</label><br>
-    <select id="body">
-      <option>Normal</option>
-      <option>Sportlich</option>
-      <option>Stark</option>
-    </select>
-
-    <div class="charakter" id="charakter">🙂</div>
-
-    <button onclick="charakterAktualisieren()">
-      ✨ Charakter speichern
-    </button>
-  </div>
-
-  <div class="box">
-    <h2>🏋️ Training</h2>
-    <p>Trainiere deinen Charakter und verbessere deine Fähigkeiten.</p>
-
-    <button onclick="trainieren()">
-      🏋️ Trainieren
-    </button>
-  </div>
-
-  <div class="box">
-    <h2>🎬 Videos</h2>
-
-    <button onclick="videoErstellen()">
-      🎬 Video erstellen
-    </button>
-  </div>
-
-  <div class="box">
-    <h2>🛒 Ausrüstung kaufen</h2>
-
-    <button onclick="kaufen('📷 Kamera', 50)">
-      📷 Kamera – 50 €
-    </button>
-
-    <button onclick="kaufen('🎤 Mikrofon', 30)">
-      🎤 Mikrofon – 30 €
-    </button>
-
-    <button onclick="kaufen('💻 PC', 100)">
-      💻 PC – 100 €
-    </button>
-
-    <h3>🛠️ Eigene Ausrüstung</h3>
-
-    <p>Preis: <b>200 Billionen €</b></p>
-
-    <button onclick="eigeneAusrüstung()">
-      🔧 Eigene Ausrüstung bauen
-    </button>
-
-    <h3>Deine Ausrüstung:</h3>
-    <ul id="ausruestung"></ul>
-  </div>
-
-  <div class="box">
-    <h2>🤝 Freunde & Jobs</h2>
-
-    <p>👤 Leon – Beruf: 🔧 Mechaniker</p>
-
-    <button onclick="freundWerden()">
-      🤝 Leon zum Freund machen
-    </button>
-
-    <ul id="freunde"></ul>
-  </div>
-
-  <div class="box">
-    <h2>📺 Mehrere Kanäle</h2>
-
-    <p>
-      Für einen neuen Kanal brauchst du:
-      <br>👥 20.000 Abonnenten
-      <br>❤️ 300.000 Likes
-    </p>
-
-    <button onclick="neuerKanal()">
-      ➕ Neuen Kanal erstellen
-    </button>
-
-    <ul id="kanaele">
-      <li>📺 Hauptkanal</li>
-    </ul>
-  </div>
-
-  <script>
-
-    let geld = 0;
-    let abos = 0;
-    let likes = 0;
-    let training = 0;
-
-    let charakter = {
-      haut: "🏻",
-      haare: "🧑‍🦱",
-      gesicht: "🙂",
-      nase: "Normal",
-      mund: "Normal",
-      body: "Normal"
-    };
-
-    let freunde = [];
-    let kanalAnzahl = 1;
-
-    function videoErstellen() {
-      geld += 0.1;
-      abos += 0.1;
-      likes += 1;
-
-      aktualisieren();
-    }
-
-    function trainieren() {
-      training += 1;
-
-      alert("🏋️ Training abgeschlossen! Deine Trainingspunkte sind jetzt " + training);
-
-      aktualisieren();
-    }
-
-    function charakterAktualisieren() {
-
-      charakter.haut = document.getElementById("haut").value;
-      charakter.haare = document.getElementById("haare").value;
-      charakter.gesicht = document.getElementById("gesicht").value;
-      charakter.nase = document.getElementById("nase").value;
-      charakter.mund = document.getElementById("mund").value;
-      charakter.body = document.getElementById("body").value;
-
-      document.getElementById("charakter").textContent =
-        charakter.haut + " " + charakter.gesicht;
-
-      alert(
-        "✅ Charakter gespeichert!\n\n" +
-        "Haut: " + charakter.haut + "\n" +
-        "Haare: " + charakter.haare + "\n" +
-        "Gesicht: " + charakter.gesicht + "\n" +
-        "Nase: " + charakter.nase + "\n" +
-        "Mund: " + charakter.mund + "\n" +
-        "Body: " + charakter.body
-      );
-    }
-
-    function kaufen(name, preis) {
-
-      if (geld >= preis) {
-
-        geld -= preis;
-
-        let eintrag = document.createElement("li");
-        eintrag.textContent = name;
-
-        document.getElementById("ausruestung").appendChild(eintrag);
-
-        aktualisieren();
-
-      } else {
-
-        alert("❌ Du hast nicht genug Geld!");
-
-      }
-    }
-
-    function eigeneAusrüstung() {
-
-      const preis = 200000000000000;
-
-      if (geld >= preis) {
-
-        geld -= preis;
-
-        let eintrag = document.createElement("li");
-        eintrag.textContent = "⭐ Eigene Spezial-Ausrüstung";
-
-        document.getElementById("ausruestung").appendChild(eintrag);
-
-        aktualisieren();
-
-      } else {
-
-        alert("❌ Du brauchst 200 Billionen €!");
-
-      }
-    }
-
-    function freundWerden() {
-
-      if (!freunde.includes("Leon")) {
-
-        freunde.push("Leon");
-
-        let eintrag = document.createElement("li");
-        eintrag.textContent = "🤝 Leon – 🔧 Mechaniker – dein Freund";
-
-        document.getElementById("freunde").appendChild(eintrag);
-
-      } else {
-
-        alert("Leon ist bereits dein Freund!");
-
-      }
-    }
-
-    function neuerKanal() {
-
-      if (abos >= 20000 && likes >= 300000) {
-
-        kanalAnzahl++;
-
-        let eintrag = document.createElement("li");
-        eintrag.textContent = "📺 Kanal " + kanalAnzahl;
-
-        document.getElementById("kanaele").appendChild(eintrag);
-
-        alert("🎉 Neuer Kanal erstellt!");
-
-      } else {
-
-        alert(
-          "❌ Voraussetzungen noch nicht erfüllt!\n\n" +
-          "Du brauchst 20.000 Abonnenten UND 300.000 Likes."
-        );
-
-      }
-    }
-
-    function aktualisieren() {
-
-      document.getElementById("geld").textContent =
-        geld.toFixed(2);
-
-      document.getElementById("abos").textContent =
-        abos.toFixed(1);
-
-      document.getElementById("likes").textContent =
-        likes.toFixed(1);
-
-      document.getElementById("training").textContent =
-        training;
-    }
-
-  </script>
-
-</body>
-</html><div class="box">
-    <h2>🤝 Freunde & Jobs</h2><div class="box">
-  <h2>🏠 Immobilien</h2>
-
-  <p>🏡 Du kannst bis zu 40 Immobilien besitzen.</p>
-
-  <div id="immobilien"></div>
-</div>let geld = 0;let immobilien = [];
+let immobilien = [];
 let aktuellesHaus = null;
 
+let studioLevel = 1;
+
+let freunde = [];
+let mitarbeiter = [];
+
+let kanalAnzahl = 1;
+
+let generation = 1;
+
+let beziehung = null;
+
+const OWNER_PASSWORT = "YT-Owner-7X9!K4#P";
+
 const haeuser = [
-  { name: "🏠 Kleines Stadthaus", preis: 400000 },
-  { name: "🏡 Modernes Haus", preis: 450000 },
-  { name: "🏠 Großes Familienhaus", preis: 500000 },
-  { name: "🏡 Landhaus", preis: 550000 },
-  { name: "🏠 Luxuswohnung", preis: 600000 }
-];const haeuser = [{ name: "🏠 Luxuswohnung", preis: 600000 }  { name: "🏡 Villa am See", preis: 650000 },
-  { name: "🏠 Modernes Reihenhaus", preis: 700000 },
-  { name: "🏡 Große Villa", preis: 750000 },
-  { name: "🏰 Luxusvilla", preis: 800000 },
-  { name: "🏙️ Penthouse", preis: 20000000 },
-  { name: "🏙️ Großes Penthouse", preis: 30000000 },
-  { name: "🏡 Luxus-Anwesen", preis: 40000000 },
-  { name: "🏰 Mega-Villa", preis: 50000000 },
-  { name: "🌴 Villa am Meer", preis: 60000000 },
-  { name: "🏙️ Wolkenkratzer-Wohnung", preis: 70000000 },
-  { name: "🏰 Privatresidenz", preis: 80000000 },
-  { name: "🏝️ Insel-Anwesen", preis: 100000000 },
-  { name: "🏰 Königliche Villa", preis: 150000000 },
-  { name: "🏙️ Luxus-Tower", preis: 200000000 },
-  { name: "🏝️ Luxusinsel", preis: 300000000 },
-  { name: "🏰 Mega-Anwesen", preis: 400000000 },
-  { name: "🏙️ Stadt-Tower", preis: 500000000 },
-  { name: "🏝️ Privatinsel Deluxe", preis: 600000000 },
-  { name: "🏰 Weltklasse-Anwesen", preis: 800000000 },
-  { name: "🌎 Milliardärs-Residenz", preis: 1000000000 }
+
+{name:"🏠 Kleines Stadthaus",preis:400000},
+{name:"🏡 Modernes Haus",preis:420000},
+{name:"🏠 Familienhaus",preis:440000},
+{name:"🏡 Landhaus",preis:460000},
+{name:"🏠 Reihenhaus",preis:480000},
+{name:"🏡 Großes Familienhaus",preis:500000},
+{name:"🏠 Luxuswohnung",preis:520000},
+{name:"🏡 Villa",preis:540000},
+{name:"🏠 Große Wohnung",preis:560000},
+{name:"🏡 Moderne Villa",preis:580000},
+{name:"🏠 Stadtvilla",preis:600000},
+{name:"🏡 Villa mit Garten",preis:620000},
+{name:"🏠 Premium-Haus",preis:640000},
+{name:"🏡 Villa am See",preis:660000},
+{name:"🏠 Luxus-Stadthaus",preis:680000},
+{name:"🏡 Große Villa",preis:700000},
+{name:"🏠 Designer-Haus",preis:730000},
+{name:"🏡 Luxusvilla",preis:750000},
+{name:"🏠 Mega-Haus",preis:780000},
+{name:"🏡 Traumvilla",preis:800000},
+
+{name:"🏙️ Penthouse",preis:20000000},
+{name:"🏙️ Großes Penthouse",preis:30000000},
+{name:"🏡 Luxus-Anwesen",preis:40000000},
+{name:"🏰 Mega-Villa",preis:50000000},
+{name:"🌴 Villa am Meer",preis:60000000},
+{name:"🏙️ Wolkenkratzer-Wohnung",preis:70000000},
+{name:"🏰 Privatresidenz",preis:80000000},
+{name:"🏝️ Insel-Anwesen",preis:100000000},
+{name:"🏰 Königliche Villa",preis:150000000},
+{name:"🏙️ Luxus-Tower",preis:200000000},
+{name:"🏝️ Luxusinsel",preis:300000000},
+{name:"🏰 Mega-Anwesen",preis:400000000},
+{name:"🏙️ Stadt-Tower",preis:500000000},
+{name:"🏝️ Privatinsel Deluxe",preis:600000000},
+{name:"🏰 Weltklasse-Anwesen",preis:700000000},
+{name:"🌎 Milliardärs-Residenz",preis:800000000},
+{name:"🏰 Super-Luxusresidenz",preis:850000000},
+{name:"🏝️ Privatinsel Elite",preis:900000000},
+{name:"🏙️ Billionärs-Tower",preis:950000000},
+{name:"👑 Ultimatives Anwesen",preis:1000000000}
+
+];
+
+const bekannte = [
+
+{
+name:"Mia",
+persoenlichkeit:"😊 Freundlich"
+},
+
+{
+name:"Sophie",
+persoenlichkeit:"😎 Selbstbewusst"
+},
+
+{
+name:"Emma",
+persoenlichkeit:"😂 Lustig"
+},
+
+{
+name:"Lina",
+persoenlichkeit:"😐 Ruhig"
+}
+
+];
+
+function aktualisieren(){
+
+document.getElementById("geld").textContent =
+geld.toLocaleString("de-DE",{
+minimumFractionDigits:2
+});
+
+document.getElementById("abos").textContent =
+abos.toFixed(1);
+
+document.getElementById("likes").textContent =
+likes.toFixed(1);
+
+document.getElementById("training").textContent =
+training;
+
+document.getElementById("immobilienAnzahl").textContent =
+immobilien.length;
+
+document.getElementById("studioLevel").textContent =
+studioLevel;
+
+document.getElementById("generation").textContent =
+generation;
+
+document.getElementById("generationText").textContent =
+generation;
+
+}
+
+function videoErstellen(){
+
+geld += 0.1;
+abos += 0.1;
+likes += 1;
+
+aktualisieren();
+
+}
+
+function trainieren(){
+
+training++;
+
+alert(
+"🏋️ Training abgeschlossen!\n\n"+
+"Trainingspunkte: "+training
+);
+
+aktualisieren();
+
+}
+
+function charakterSpeichern(){
+
+let haut =
+document.getElementById("haut").value;
+
+let haare =
+document.getElementById("haare").value;
+
+let gesicht =
+document.getElementById("gesicht").value;
+
+document.getElementById("charakter").textContent =
+haut+" "+haare+" "+gesicht;
+
+alert("✅ Charakter gespeichert!");
+
+}
+
+function kaufen(name,preis){
+
+if(geld >= preis){
+
+geld -= preis;
+
+let li =
+document.createElement("li");
+
+li.textContent = name;
+
+document.getElementById("ausruestung")
+.appendChild(li);
+
+aktualisieren();
+
+}else{
+
+alert("❌ Nicht genug Geld!");
+
+}
+
+}
+
+function eigeneAusrüstung(){
+
+let preis = 200000000000000;
+
+if(geld >= preis){
+
+geld -= preis;
+
+let li =
+document.createElement("li");
+
+li.textContent =
+"⭐ Eigene Spezial-Ausrüstung";
+
+document.getElementById("ausruestung")
+.appendChild(li);
+
+aktualisieren();
+
+}else{
+
+alert("❌ Du brauchst 200 Billionen €!");
+
+}
+
+}
+
+function immobilienAnzeigen(){
+
+let liste =
+document.getElementById("immobilien");
+
+liste.innerHTML = "";
+
+haeuser.forEach(function(haus,index){
+
+let div =
+document.createElement("div");
+
+div.className = "immobilie";
+
+if(aktuellesHaus === index){
+div.classList.add("aktiv");
+}
+
+let besitzt =
+immobilien.includes(index);
+
+let text =
+"<b>"+(index+1)+". "+haus.name+"</b><br>";
+
+text +=
+"💰 Preis: "+
+haus.preis.toLocaleString("de-DE")+
+" €<br>";
+
+if(besitzt){
+
+text += "✅ Du besitzt dieses Haus.<br>";
+
+if(aktuellesHaus === index){
+
+text += "🏠 <b>Du wohnst hier.</b>";
+
+}else{
+
+text +=
+"<button onclick='hausWechseln("+
+index+
+")'>🏠 Hier wohnen</button>";
+
+}
+
+}else{
+
+text +=
+"<button onclick='hausKaufen("+
+index+
+")'>💰 Kaufen</button>";
+
+}
+
+div.innerHTML = text;
+
+liste.appendChild(div);
+
+});
+
+}
+
+function hausKaufen(index){
+
+let haus = haeuser[index];
+
+if(geld >= haus.preis){
+
+geld -= haus.preis;
+
+immobilien.push(index);
+
+if(aktuellesHaus === null){
+aktuellesHaus = index;
+}
+
+alert(
+"🎉 Du hast "+haus.name+" gekauft!"
+);
+
+immobilienAnzeigen();
+aktualisieren();
+
+}else{
+
+alert(
+"❌ Nicht genug Geld!\n\n"+
+"Preis: "+
+haus.preis.toLocaleString("de-DE")+" €"
+);
+
+}
+
+}
+
+function hausWechseln(index){
+
+if(immobilien.includes(index)){
+
+aktuellesHaus = index;
+
+alert(
+"🏠 Du wohnst jetzt in:\n"+
+haeuser[index].name
+);
+
+immobilienAnzeigen();
+
+}
+
+}
+
+function studioVerbessern(){
+
+let kosten = [
+0,
+10000,
+50000,
+250000,
+1000000
+];
+
+if(studioLevel >= 5){
+
+alert(
+"🏆 Dein Studio ist bereits maximal!"
+);
+
+return;
+
+}
+
+let preis = kosten[studioLevel];
+
+if(geld >= preis){
+
+geld -= preis;
+
+studioLevel++;
+
+let texte = [
+"",
+"🎥 Kleines Studio",
+"🎮 Gaming-Raum freigeschaltet!",
+"🎬 Professionelles Studio!",
+"🏢 Großes Creator-Studio!",
+"👑 Mega-YouTube-Studio!"
+];
+
+document.getElementById("studioText")
+.textContent = studioLevel;
+
+document.getElementById("studioBeschreibung")
+.textContent = texte[studioLevel];
+
+alert("🎉 Studio verbessert!");
+
+aktualisieren();
+
+}else{
+
+alert(
+"❌ Nicht genug Geld!\n\n"+
+"Kosten: "+
+preis.toLocaleString("de-DE")+" €"
+);
+
+}
+
+}
+
+function mitarbeiterEinstellen(name,gehalt){
+
+if(geld >= gehalt){
+
+geld -= gehalt;
+
+mitarbeiter.push(name);
+
+let li =
+document.createElement("li");
+
+li.textContent =
+name+" – eingestellt";
+
+document.getElementById("mitarbeiter")
+.appendChild(li);
+
+aktualisieren();
+
+}else{
+
+alert("❌ Nicht genug Geld!");
+
+}
+
+}
+
+function freundWerden(){
+
+if(!freunde.includes("Leon")){
+
+freunde.push("Leon");
+
+let li =
+document.createElement("li");
+
+li.textContent =
+"🤝 Leon – 🔧 Mechaniker – Freund";
+
+document.getElementById("freunde")
+.appendChild(li);
+
+}else{
+
+alert(
+"Leon ist bereits dein Freund!"
+);
+
+}
+
+}
+
+function beziehungenAnzeigen(){
+
+let liste =
+document.getElementById("beziehungsListe");
+
+liste.innerHTML = "";
+
+bekannte.forEach(function(person){
+
+let div =
+document.createElement("div");
+
+div.className = "karte";
+
+div.innerHTML =
+"<b>👤 "+person.name+"</b><br>"+
+person.persoenlichkeit;
+
+liste.appendChild(div);
+
+});
+
+}
+
+function beziehungStarten(){
+
+if(beziehung !== null){
+
+alert(
+"❤️ Du bist bereits in einer Beziehung mit "+
+beziehung+"."
+);
+
+return;
+
+}
+
+let person =
+bekannte[
+Math.floor(Math.random()*bekannte.length)
+];
+
+beziehung = person.name;
+
+document.getElementById("beziehung")
+.textContent =
+"❤️ Du bist mit "+beziehung+" zusammen.";
+
+alert(
+"❤️ Du hast "+beziehung+
+" kennengelernt!"
+);
+
+}
+
+function beziehungBeenden(){
+
+if(beziehung === null){
+
+alert("Du bist momentan Single.");
+
+return;
+
+}
+
+let alterName = beziehung;
+
+beziehung = null;
+
+document.getElementById("beziehung")
+.textContent =
+"Du bist momentan Single.";
+
+alert(
+"💔 Die Beziehung mit "+
+alterName+
+" ist beendet."
+);
+
+}
+
+function naechsteGeneration(){
+
+let ok =
+confirm(
+"👨‍👩‍👧 Neue Generation starten?"
+);
+
+if(!ok)return;
+
+generation++;
+
+alert(
+"🎉 Generation "+
+generation+
+" führt deine Karriere weiter!"
+);
+
+aktualisieren();
+
+}
+
+function neuesEreignis(){
+
+let ereignisse = [
+
+"🎬 Ein kleiner Creator fragt dich nach einer Zusammenarbeit!",
+
+"📈 Dein Video bekommt plötzlich viele neue Zuschauer!",
+
+"🤝 Ein anderer Creator möchte dein Freund werden.",
+
+"💻 Dein Computer braucht Wartung.",
+
+"🎮 Deine Gaming-Videos werden beliebter!",
+
+"🏠 Jemand zeigt dir eine neue Immobilie.",
+
+"⭐ Ein Zuschauer empfiehlt deinen Kanal weiter.",
+
+"🎥 Du bekommst eine Idee für ein neues Video."
+
+];
+
+let ereignis =
+ereignisse[
+Math.floor(Math.random()*ereignisse.length)
+];
+
+document.getElementById("ereignis")
+.textContent = ereignis;
+
+}
+
+function zeigePersoenlichkeiten(){
+
+let liste =
+document.getElementById("persoenlichkeiten");
+
+liste.innerHTML = "";
+
+bekannte.forEach(function(person){
+
+let p =
+document.createElement("p");
+
+p.textContent =
+"👤 "+person.name+
+" – "+
+person.persoenlichkeit;
+
+liste.appendChild(p);
+
+});
+
+}
+
+function neuerKanal(){
+
+if(
+abos >= 20000 &&
+likes >= 300000
+){
+
+kanalAnzahl++;
+
+let li =
+document.createElement("li");
+
+li.textContent =
+"📺 Kanal "+kanalAnzahl;
+
+document.getElementById("kanaele")
+.appendChild(li);
+
+alert(
+"🎉 Neuer Kanal erstellt!"
+);
+
+}else{
+
+alert(
+"❌ Noch nicht möglich!\n\n"+
+"Du brauchst:\n"+
+"👥 20.000 Abonnenten\n"+
+"❤️ 300.000 Likes"
+);
+
+}
+
+}
+
+
+/* =========================
+   👑 OWNER SYSTEM
+========================= */
+
+function ownerLogin(){
+
+let passwort =
+prompt(
+"🔐 OWNER-PASSWORT:"
+);
+
+if(passwort === OWNER_PASSWORT){
+
+document.getElementById("ownerPanel")
+.style.display = "block";
+
+alert(
+"👑 Willkommen im Owner-Menü!"
+);
+
+}else{
+
+alert(
+"❌ Falsches Passwort!"
+);
+
+}
+
+}
+
+function ownerLogout(){
+
+document.getElementById("ownerPanel")
+.style.display = "none";
+
+alert(
+"🔒 Owner-Menü geschlossen."
+);
+
+}
+
+function ownerGeldHinzufuegen(){
+
+let wert =
+Number(
+document.getElementById("ownerGeld").value
+);
+
+if(wert > 0){
+
+geld += wert;
+
+aktualisieren();
+
+alert(
+"💰 "+wert.toLocaleString("de-DE")+
+" € hinzugefügt!"
+);
+
+}
+
+}
+
+function ownerAbosHinzufuegen(){
+
+let wert =
+Number(
+document.getElementById("ownerAbos").value
+);
+
+if(wert > 0){
+
+abos += wert;
+
+aktualisieren();
+
+alert(
+"👥 "+wert.toLocaleString("de-DE")+
+" Abos hinzugefügt!"
+);
+
+}
+
+}
+
+function ownerLikesHinzufuegen(){
+
+let wert =
+Number(
+document.getElementById("ownerLikes").value
+);
+
+if(wert > 0){
+
+likes += wert;
+
+aktualisieren();
+
+alert(
+"❤️ "+wert.toLocaleString("de-DE")+
+" Likes hinzugefügt!"
+);
+
+}
+
+}
+
+function ownerTrainingHinzufuegen(){
+
+let wert =
+Number(
+document.getElementById("ownerTraining").value
+);
+
+if(wert > 0){
+
+training += wert;
+
+aktualisieren();
+
+alert(
+"🏋️ Training hinzugefügt!"
+);
+
+}
+
+}
+
+function ownerStudio(){
+
+if(studioLevel < 5){
+
+studioLevel++;
+
+aktualisieren();
+
+alert(
+"🏢 Studio ist jetzt Level "+
+studioLevel+"!"
+);
+
+}else{
+
+alert(
+"👑 Studio ist bereits Level 5!"
+);
+
+}
+
+}
+
+function ownerStudioMax(){
+
+studioLevel = 5;
+
+document.getElementById("studioText")
+.textContent = 5;
+
+document.getElementById("studioBeschreibung")
+.textContent =
+"👑 Mega-YouTube-Studio!";
+
+aktualisieren();
+
+alert(
+"👑 Studio auf Level 5 gesetzt!"
+);
+
+}
+
+function ownerAlleHaeuser(){
+
+immobilien = [];
+
+for(let i=0;i<haeuser.length;i++){
+
+immobilien.push(i);
+
+}
+
+if(aktuellesHaus === null){
+
+aktuellesHaus = 0;
+
+}
+
+immobilienAnzeigen();
+
+aktualisieren();
+
+alert(
+"🏠 Alle 40 Immobilien freigeschaltet!"
+);
+
+}
+
+function ownerMegaBonus(){
+
+geld += 1000000000000;
+abos += 1000000;
+likes += 10000000;
+
+aktualisieren();
+
+alert(
+"💎 MEGA-BONUS!\n\n"+
+"+1 Billion €\n"+
+"+1 Million Abos\n"+
+"+10 Millionen Likes"
+);
+
+}
+
+
+/* START */
+
+zeigePersoenlichkeiten();
+
+beziehungenAnzeigen();
+
+immobilienAnzeigen();
+
+aktualisieren();
+
+</script>
+
+</body>
+</html> 
