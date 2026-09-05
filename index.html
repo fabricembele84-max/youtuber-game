@@ -9,6 +9,62 @@
 
   <h1>🎥 YouTuber Simulator</h1>
 
+  <p>💰 Geld: <span id="geld">0.00</span> €</p>
+  <p>👥 Abonnenten: <span id="abos">0.0</span></p>
+
+  <button onclick="videoErstellen()">🎬 Video erstellen</button>
+
+  <h2>🛒 Ausrüstung</h2>
+
+  <button onclick="kaufen('Kamera', 50)">📷 Kamera – 50 €</button>
+  <button onclick="kaufen('Mikrofon', 30)">🎤 Mikrofon – 30 €</button>
+  <button onclick="kaufen('PC', 100)">💻 PC – 100 €</button>
+
+  <h3>Deine Ausrüstung:</h3>
+  <ul id="ausruestung"></ul>
+
+  <script>
+    let geld = 0;
+    let abos = 0;
+
+    function videoErstellen() {
+      geld += 0.1;
+      abos += 0.1;
+      aktualisieren();
+    }
+
+    function kaufen(name, preis) {
+      if (geld >= preis) {
+        geld -= preis;
+
+        let eintrag = document.createElement("li");
+        eintrag.textContent = name;
+        document.getElementById("ausruestung").appendChild(eintrag);
+
+        aktualisieren();
+      } else {
+        alert("Du hast nicht genug Geld!");
+      }
+    }
+
+    function aktualisieren() {
+      document.getElementById("geld").textContent = geld.toFixed(2);
+      document.getElementById("abos").textContent = abos.toFixed(1);
+    }
+  </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTuber Simulator</title>
+</head>
+<body>
+
+  <h1>🎥 YouTuber Simulator</h1>
+
   <p>💰 Geld: 0 €</p>
   <p>👥 Abonnenten: 0</p>
 
