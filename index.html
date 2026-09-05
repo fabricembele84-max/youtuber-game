@@ -4,177 +4,348 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YouTuber Simulator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #ccc;
+    }
+
+    button, select {
+      padding: 10px;
+      margin: 5px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .charakter {
+      font-size: 70px;
+      text-align: center;
+      padding: 15px;
+    }
+  </style>
 </head>
+
 <body>
 
   <h1>🎥 YouTuber Simulator</h1>
 
-  <p>💰 Geld: <span id="geld">0.00</span> €</p>
-  <p>👥 Abonnenten: <span id="abos">0.0</span></p>
+  <div class="box">
+    <h2>📊 Deine Statistik</h2>
+    <p>💰 Geld: <span id="geld">0.00</span> €</p>
+    <p>👥 Abonnenten: <span id="abos">0.0</span></p>
+    <p>❤️ Likes: <span id="likes">0.0</span></p>
+    <p>🏋️ Training: <span id="training">0</span></p>
+  </div>
 
-  <button onclick="videoErstellen()">🎬 Video erstellen</button>
+  <div class="box">
+    <h2>👤 Deinen Charakter erstellen</h2>
 
-  <h2>🛒 Ausrüstung kaufen</h2>
+    <label>Hautfarbe:</label><br>
+    <select id="haut">
+      <option value="🏻">Hell</option>
+      <option value="🏿">Dunkel</option>
+    </select>
 
-  <button onclick="kaufen('Kamera', 50)">📷 Kamera – 50 €</button>
-  <button onclick="kaufen('Mikrofon', 30)">🎤 Mikrofon – 30 €</button>
-  <button onclick="kaufen('PC', 100)">💻 PC – 100 €</button>
+    <br><br>
 
-  <h2>🛠️ Eigene Ausrüstung</h2>
+    <label>Haare:</label><br>
+    <select id="haare">
+      <option value="🧑‍🦱">Lockige Haare</option>
+      <option value="🧑‍🦰">Rote Haare</option>
+      <option value="🧑‍🦱">Braune Haare</option>
+      <option value="🧑‍🦳">Weiße Haare</option>
+    </select>
 
-  <p>Preis: <b>200 Billionen €</b></p>
-  <button onclick="eigeneAusrüstung()">🔧 Eigene Ausrüstung bauen</button>
+    <br><br>
 
-  <h3>Deine Ausrüstung:</h3>
-  <ul id="ausruestung"></ul>
+    <label>Gesicht:</label><br>
+    <select id="gesicht">
+      <option value="🙂">Normal</option>
+      <option value="😎">Cool</option>
+      <option value="😄">Fröhlich</option>
+      <option value="😐">Ernst</option>
+    </select>
+
+    <br><br>
+
+    <label>Nase:</label><br>
+    <select id="nase">
+      <option>Normal</option>
+      <option>Klein</option>
+      <option>Groß</option>
+    </select>
+
+    <br><br>
+
+    <label>Mund:</label><br>
+    <select id="mund">
+      <option>Normal</option>
+      <option>Lächeln</option>
+      <option>Ernst</option>
+    </select>
+
+    <br><br>
+
+    <label>Body:</label><br>
+    <select id="body">
+      <option>Normal</option>
+      <option>Sportlich</option>
+      <option>Stark</option>
+    </select>
+
+    <div class="charakter" id="charakter">🙂</div>
+
+    <button onclick="charakterAktualisieren()">
+      ✨ Charakter speichern
+    </button>
+  </div>
+
+  <div class="box">
+    <h2>🏋️ Training</h2>
+    <p>Trainiere deinen Charakter und verbessere deine Fähigkeiten.</p>
+
+    <button onclick="trainieren()">
+      🏋️ Trainieren
+    </button>
+  </div>
+
+  <div class="box">
+    <h2>🎬 Videos</h2>
+
+    <button onclick="videoErstellen()">
+      🎬 Video erstellen
+    </button>
+  </div>
+
+  <div class="box">
+    <h2>🛒 Ausrüstung kaufen</h2>
+
+    <button onclick="kaufen('📷 Kamera', 50)">
+      📷 Kamera – 50 €
+    </button>
+
+    <button onclick="kaufen('🎤 Mikrofon', 30)">
+      🎤 Mikrofon – 30 €
+    </button>
+
+    <button onclick="kaufen('💻 PC', 100)">
+      💻 PC – 100 €
+    </button>
+
+    <h3>🛠️ Eigene Ausrüstung</h3>
+
+    <p>Preis: <b>200 Billionen €</b></p>
+
+    <button onclick="eigeneAusrüstung()">
+      🔧 Eigene Ausrüstung bauen
+    </button>
+
+    <h3>Deine Ausrüstung:</h3>
+    <ul id="ausruestung"></ul>
+  </div>
+
+  <div class="box">
+    <h2>🤝 Freunde & Jobs</h2>
+
+    <p>👤 Leon – Beruf: 🔧 Mechaniker</p>
+
+    <button onclick="freundWerden()">
+      🤝 Leon zum Freund machen
+    </button>
+
+    <ul id="freunde"></ul>
+  </div>
+
+  <div class="box">
+    <h2>📺 Mehrere Kanäle</h2>
+
+    <p>
+      Für einen neuen Kanal brauchst du:
+      <br>👥 20.000 Abonnenten
+      <br>❤️ 300.000 Likes
+    </p>
+
+    <button onclick="neuerKanal()">
+      ➕ Neuen Kanal erstellen
+    </button>
+
+    <ul id="kanaele">
+      <li>📺 Hauptkanal</li>
+    </ul>
+  </div>
 
   <script>
+
     let geld = 0;
     let abos = 0;
+    let likes = 0;
+    let training = 0;
+
+    let charakter = {
+      haut: "🏻",
+      haare: "🧑‍🦱",
+      gesicht: "🙂",
+      nase: "Normal",
+      mund: "Normal",
+      body: "Normal"
+    };
+
+    let freunde = [];
+    let kanalAnzahl = 1;
 
     function videoErstellen() {
       geld += 0.1;
       abos += 0.1;
+      likes += 1;
+
       aktualisieren();
     }
 
+    function trainieren() {
+      training += 1;
+
+      alert("🏋️ Training abgeschlossen! Deine Trainingspunkte sind jetzt " + training);
+
+      aktualisieren();
+    }
+
+    function charakterAktualisieren() {
+
+      charakter.haut = document.getElementById("haut").value;
+      charakter.haare = document.getElementById("haare").value;
+      charakter.gesicht = document.getElementById("gesicht").value;
+      charakter.nase = document.getElementById("nase").value;
+      charakter.mund = document.getElementById("mund").value;
+      charakter.body = document.getElementById("body").value;
+
+      document.getElementById("charakter").textContent =
+        charakter.haut + " " + charakter.gesicht;
+
+      alert(
+        "✅ Charakter gespeichert!\n\n" +
+        "Haut: " + charakter.haut + "\n" +
+        "Haare: " + charakter.haare + "\n" +
+        "Gesicht: " + charakter.gesicht + "\n" +
+        "Nase: " + charakter.nase + "\n" +
+        "Mund: " + charakter.mund + "\n" +
+        "Body: " + charakter.body
+      );
+    }
+
     function kaufen(name, preis) {
+
       if (geld >= preis) {
+
         geld -= preis;
 
         let eintrag = document.createElement("li");
         eintrag.textContent = name;
+
         document.getElementById("ausruestung").appendChild(eintrag);
 
         aktualisieren();
+
       } else {
-        alert("Du hast nicht genug Geld!");
+
+        alert("❌ Du hast nicht genug Geld!");
+
       }
     }
 
     function eigeneAusrüstung() {
+
       const preis = 200000000000000;
 
       if (geld >= preis) {
+
         geld -= preis;
 
         let eintrag = document.createElement("li");
         eintrag.textContent = "⭐ Eigene Spezial-Ausrüstung";
+
         document.getElementById("ausruestung").appendChild(eintrag);
 
         aktualisieren();
+
       } else {
-        alert("Du brauchst 200 Billionen €!");
+
+        alert("❌ Du brauchst 200 Billionen €!");
+
       }
     }
 
-    function aktualisieren() {
-      document.getElementById("geld").textContent = geld.toFixed(2);
-      document.getElementById("abos").textContent = abos.toFixed(1);
-    }
-  </script>
+    function freundWerden() {
 
-</body>
-</html><!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTuber Simulator</title>
-</head>
-<body>
+      if (!freunde.includes("Leon")) {
 
-  <h1>🎥 YouTuber Simulator</h1>
-
-  <p>💰 Geld: <span id="geld">0.00</span> €</p>
-  <p>👥 Abonnenten: <span id="abos">0.0</span></p>
-
-  <button onclick="videoErstellen()">🎬 Video erstellen</button>
-
-  <h2>🛒 Ausrüstung</h2>
-
-  <button onclick="kaufen('Kamera', 50)">📷 Kamera – 50 €</button>
-  <button onclick="kaufen('Mikrofon', 30)">🎤 Mikrofon – 30 €</button>
-  <button onclick="kaufen('PC', 100)">💻 PC – 100 €</button>
-
-  <h3>Deine Ausrüstung:</h3>
-  <ul id="ausruestung"></ul>
-
-  <script>
-    let geld = 0;
-    let abos = 0;
-
-    function videoErstellen() {
-      geld += 0.1;
-      abos += 0.1;
-      aktualisieren();
-    }
-
-    function kaufen(name, preis) {
-      if (geld >= preis) {
-        geld -= preis;
+        freunde.push("Leon");
 
         let eintrag = document.createElement("li");
-        eintrag.textContent = name;
-        document.getElementById("ausruestung").appendChild(eintrag);
+        eintrag.textContent = "🤝 Leon – 🔧 Mechaniker – dein Freund";
 
-        aktualisieren();
+        document.getElementById("freunde").appendChild(eintrag);
+
       } else {
-        alert("Du hast nicht genug Geld!");
+
+        alert("Leon ist bereits dein Freund!");
+
+      }
+    }
+
+    function neuerKanal() {
+
+      if (abos >= 20000 && likes >= 300000) {
+
+        kanalAnzahl++;
+
+        let eintrag = document.createElement("li");
+        eintrag.textContent = "📺 Kanal " + kanalAnzahl;
+
+        document.getElementById("kanaele").appendChild(eintrag);
+
+        alert("🎉 Neuer Kanal erstellt!");
+
+      } else {
+
+        alert(
+          "❌ Voraussetzungen noch nicht erfüllt!\n\n" +
+          "Du brauchst 20.000 Abonnenten UND 300.000 Likes."
+        );
+
       }
     }
 
     function aktualisieren() {
-      document.getElementById("geld").textContent = geld.toFixed(2);
-      document.getElementById("abos").textContent = abos.toFixed(1);
+
+      document.getElementById("geld").textContent =
+        geld.toFixed(2);
+
+      document.getElementById("abos").textContent =
+        abos.toFixed(1);
+
+      document.getElementById("likes").textContent =
+        likes.toFixed(1);
+
+      document.getElementById("training").textContent =
+        training;
     }
-  </script>
 
-</body>
-</html><!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTuber Simulator</title>
-</head>
-<body>
-
-  <h1>🎥 YouTuber Simulator</h1>
-
-  <p>💰 Geld: 0 €</p>
-  <p>👥 Abonnenten: 0</p>
-
-  <button>🎬 Video erstellen</button>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTuber Simulator</title>
-</head>
-<body>
-
-  <h1>🎥 YouTuber Simulator</h1>
-
-  <p>💰 Geld: <span id="geld">0.00</span> €</p>
-  <p>👥 Abonnenten: <span id="abos">0.0</span></p>
-
-  <button onclick="videoErstellen()">🎬 Video erstellen</button>
-
-  <script>
-    let geld = 0;
-    let abos = 0;
-
-    function videoErstellen() {
-      geld += 0.1;
-      abos += 0.1;
-
-      document.getElementById("geld").textContent = geld.toFixed(2);
-      document.getElementById("abos").textContent = abos.toFixed(1);
-    }
   </script>
 
 </body>
