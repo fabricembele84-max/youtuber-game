@@ -38,6 +38,460 @@
       text-align: center;
       padding: 15px;
     }
+
+    .ereignis {
+      background: #eee;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🎥 YouTuber Simulator</h1>
+
+  <div class="box">
+    <h2>📊 Deine Statistik</h2>
+    <p>💰 Geld: <span id="geld">0.00</span> €</p>
+    <p>👥 Abonnenten: <span id="abos">0.0</span></p>
+    <p>❤️ Likes: <span id="likes">0.0</span></p>
+    <p>🏋️ Training: <span id="training">0</span></p>
+  </div>
+
+  <div class="box">
+    <h2>👤 Deinen Charakter</h2>
+
+    <label>Hautfarbe:</label><br>
+    <select id="haut">
+      <option value="🏻">Hell</option>
+      <option value="🏿">Dunkel</option>
+    </select>
+
+    <br>
+
+    <label>Haare:</label><br>
+    <select id="haare">
+      <option value="🧑‍🦱">Lockig</option>
+      <option value="🧑‍🦰">Rot</option>
+      <option value="🧑‍🦳">Weiß</option>
+      <option value="👨‍🦱">Braun</option>
+    </select>
+
+    <br>
+
+    <label>Gesicht:</label><br>
+    <select id="gesicht">
+      <option value="🙂">Normal</option>
+      <option value="😎">Cool</option>
+      <option value="😄">Fröhlich</option>
+      <option value="😐">Ernst</option>
+    </select>
+
+    <br>
+
+    <label>Nase:</label><br>
+    <select id="nase">
+      <option>Normal</option>
+      <option>Klein</option>
+      <option>Groß</option>
+    </select>
+
+    <br>
+
+    <label>Mund:</label><br>
+    <select id="mund">
+      <option>Normal</option>
+      <option>Lächeln</option>
+      <option>Ernst</option>
+    </select>
+
+    <br>
+
+    <label>Body:</label><br>
+    <select id="body">
+      <option>Normal</option>
+      <option>Sportlich</option>
+      <option>Stark</option>
+    </select>
+
+    <div class="charakter" id="charakter">🙂</div>
+
+    <button onclick="charakterSpeichern()">
+      ✨ Charakter speichern
+    </button>
+  </div>
+
+  <div class="box">
+    <h2>🏋️ Training</h2>
+
+    <button onclick="trainieren()">
+      🏋️ Trainieren
+    </button>
+  </div>
+
+  <div class="box">
+    <h2>🎬 Videos</h2>
+
+    <button onclick="videoErstellen()">
+      🎬 Video erstellen
+    </button>
+  </div>
+
+  <div class="box">
+    <h2>🛒 Ausrüstung</h2>
+
+    <button onclick="kaufen('📷 Kamera', 50)">
+      📷 Kamera – 50 €
+    </button>
+
+    <button onclick="kaufen('🎤 Mikrofon', 30)">
+      🎤 Mikrofon – 30 €
+    </button>
+
+    <button onclick="kaufen('💻 PC', 100)">
+      💻 PC – 100 €
+    </button>
+
+    <h3>🛠️ Eigene Ausrüstung</h3>
+
+    <p>Preis: <b>200 Billionen €</b></p>
+
+    <button onclick="eigeneAusrüstung()">
+      🔧 Eigene Ausrüstung bauen
+    </button>
+
+    <ul id="ausruestung"></ul>
+  </div>
+
+  <div class="box">
+    <h2>🤝 Freunde & Jobs</h2>
+
+    <p>👤 Leon – 🔧 Mechaniker</p>
+
+    <button onclick="freundWerden()">
+      🤝 Freund werden
+    </button>
+
+    <ul id="freunde"></ul>
+  </div>
+
+  <div class="box">
+    <h2>🧠 Persönlichkeiten</h2>
+
+    <p>Jeder Charakter ist anders.</p>
+
+    <div id="persoenlichkeiten"></div>
+
+    <button onclick="neuesEreignis()">
+      🎲 Zufälliges Ereignis
+    </button>
+
+    <div class="ereignis" id="ereignis">
+      Noch kein Ereignis.
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>📺 Deine Kanäle</h2>
+
+    <p>
+      Neuer Kanal ab:
+      <br>👥 20.000 Abonnenten
+      <br>❤️ 300.000 Likes
+    </p>
+
+    <button onclick="neuerKanal()">
+      ➕ Neuen Kanal erstellen
+    </button>
+
+    <ul id="kanaele">
+      <li>📺 Hauptkanal</li>
+    </ul>
+  </div>
+
+  <script>
+
+    let geld = 0;
+    let abos = 0;
+    let likes = 0;
+    let training = 0;
+
+    let freunde = [];
+    let kanalAnzahl = 1;
+
+    const andereYouTuber = [
+      {
+        name: "Leon",
+        abo: 350,
+        persoenlichkeit: "😄 Freundlich",
+        job: "Mechaniker"
+      },
+      {
+        name: "Mika",
+        abo: 8200,
+        persoenlichkeit: "😎 Selbstbewusst",
+        job: "Schüler"
+      },
+      {
+        name: "Jay",
+        abo: 1500,
+        persoenlichkeit: "😂 Lustig",
+        job: "Kellner"
+      },
+      {
+        name: "Noah",
+        abo: 42000,
+        persoenlichkeit: "😐 Ruhig",
+        job: "Programmierer"
+      }
+    ];
+
+    function videoErstellen() {
+      geld += 0.1;
+      abos += 0.1;
+      likes += 1;
+
+      aktualisieren();
+    }
+
+    function trainieren() {
+      training++;
+
+      alert(
+        "🏋️ Training abgeschlossen!\n" +
+        "Trainingspunkte: " + training
+      );
+
+      aktualisieren();
+    }
+
+    function charakterSpeichern() {
+
+      const haut = document.getElementById("haut").value;
+      const haare = document.getElementById("haare").value;
+      const gesicht = document.getElementById("gesicht").value;
+
+      document.getElementById("charakter").textContent =
+        haut + " " + haare + " " + gesicht;
+
+      alert("✅ Dein Charakter wurde gespeichert!");
+    }
+
+    function kaufen(name, preis) {
+
+      if (geld >= preis) {
+
+        geld -= preis;
+
+        let eintrag = document.createElement("li");
+        eintrag.textContent = name;
+
+        document.getElementById("ausruestung")
+          .appendChild(eintrag);
+
+        aktualisieren();
+
+      } else {
+        alert("❌ Du hast nicht genug Geld!");
+      }
+    }
+
+    function eigeneAusrüstung() {
+
+      const preis = 200000000000000;
+
+      if (geld >= preis) {
+
+        geld -= preis;
+
+        let eintrag = document.createElement("li");
+        eintrag.textContent =
+          "⭐ Eigene Spezial-Ausrüstung";
+
+        document.getElementById("ausruestung")
+          .appendChild(eintrag);
+
+        aktualisieren();
+
+      } else {
+        alert("❌ Du brauchst 200 Billionen €!");
+      }
+    }
+
+    function freundWerden() {
+
+      if (!freunde.includes("Leon")) {
+
+        freunde.push("Leon");
+
+        let eintrag = document.createElement("li");
+
+        eintrag.textContent =
+          "🤝 Leon – 🔧 Mechaniker – dein Freund";
+
+        document.getElementById("freunde")
+          .appendChild(eintrag);
+
+      } else {
+
+        alert("Leon ist bereits dein Freund!");
+      }
+    }
+
+    function neuesEreignis() {
+
+      const zufall =
+        andereYouTuber[
+          Math.floor(Math.random() * andereYouTuber.length)
+        ];
+
+      let nachricht = "";
+
+      if (zufall.persoenlichkeit.includes("Freundlich")) {
+
+        nachricht =
+          "😊 " + zufall.name +
+          " fragt dich, ob ihr zusammen ein Video machen wollt!";
+
+      } else if (zufall.persoenlichkeit.includes("Lustig")) {
+
+        nachricht =
+          "😂 " + zufall.name +
+          " schickt dir einen lustigen Video-Vorschlag!";
+
+      } else if (zufall.persoenlichkeit.includes("Selbstbewusst")) {
+
+        nachricht =
+          "😎 " + zufall.name +
+          " möchte eine große Kollaboration planen!";
+
+      } else {
+
+        nachricht =
+          "😐 " + zufall.name +
+          " schaut sich deinen Kanal an, sagt aber noch nichts.";
+      }
+
+      document.getElementById("ereignis").textContent =
+        nachricht;
+    }
+
+    function zeigePersoenlichkeiten() {
+
+      const liste =
+        document.getElementById("persoenlichkeiten");
+
+      liste.innerHTML = "";
+
+      andereYouTuber.forEach(function(youtuber) {
+
+        const p = document.createElement("p");
+
+        p.textContent =
+          "👤 " + youtuber.name +
+          " – " +
+          youtuber.persoenlichkeit +
+          " – Beruf: " +
+          youtuber.job +
+          " – " +
+          youtuber.abo.toLocaleString("de-DE") +
+          " Abos";
+
+        liste.appendChild(p);
+      });
+    }
+
+    function neuerKanal() {
+
+      if (abos >= 20000 && likes >= 300000) {
+
+        kanalAnzahl++;
+
+        const eintrag =
+          document.createElement("li");
+
+        eintrag.textContent =
+          "📺 Kanal " + kanalAnzahl;
+
+        document.getElementById("kanaele")
+          .appendChild(eintrag);
+
+        alert("🎉 Neuer Kanal erstellt!");
+
+      } else {
+
+        alert(
+          "❌ Noch nicht möglich!\n\n" +
+          "Du brauchst:\n" +
+          "👥 20.000 Abonnenten\n" +
+          "❤️ 300.000 Likes"
+        );
+      }
+    }
+
+    function aktualisieren() {
+
+      document.getElementById("geld")
+        .textContent = geld.toFixed(2);
+
+      document.getElementById("abos")
+        .textContent = abos.toFixed(1);
+
+      document.getElementById("likes")
+        .textContent = likes.toFixed(1);
+
+      document.getElementById("training")
+        .textContent = training;
+    }
+
+    zeigePersoenlichkeiten();
+    aktualisieren();
+
+  </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTuber Simulator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #ccc;
+    }
+
+    button, select {
+      padding: 10px;
+      margin: 5px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .charakter {
+      font-size: 70px;
+      text-align: center;
+      padding: 15px;
+    }
   </style>
 </head>
 
