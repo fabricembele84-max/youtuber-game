@@ -15,4 +15,34 @@
   <button>🎬 Video erstellen</button>
 
 </body>
+</html><!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTuber Simulator</title>
+</head>
+<body>
+
+  <h1>🎥 YouTuber Simulator</h1>
+
+  <p>💰 Geld: <span id="geld">0.00</span> €</p>
+  <p>👥 Abonnenten: <span id="abos">0.0</span></p>
+
+  <button onclick="videoErstellen()">🎬 Video erstellen</button>
+
+  <script>
+    let geld = 0;
+    let abos = 0;
+
+    function videoErstellen() {
+      geld += 0.1;
+      abos += 0.1;
+
+      document.getElementById("geld").textContent = geld.toFixed(2);
+      document.getElementById("abos").textContent = abos.toFixed(1);
+    }
+  </script>
+
+</body>
 </html>
