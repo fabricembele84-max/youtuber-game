@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Creator Life Simulator 2.0</title>
+<title>YouTuber Life 3D</title>
 
 <style>
 *{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
+  -webkit-tap-highlight-color:transparent;
 }
 
 body{
-  background:#111;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#111827;
   color:white;
   overflow-x:hidden;
 }
@@ -24,207 +24,445 @@ button{
   border-radius:12px;
   padding:10px 14px;
   margin:4px;
-  cursor:pointer;
+  background:#2563eb;
+  color:white;
   font-weight:bold;
-  background:#ffffff;
-  color:#111;
+  cursor:pointer;
 }
 
 button:hover{
-  transform:scale(1.04);
+  transform:translateY(-1px);
+  filter:brightness(1.12);
+}
+
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
 }
 
 .topbar{
-  background:#171717;
-  padding:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
   position:sticky;
   top:0;
-  z-index:100;
-  border-bottom:2px solid #333;
+  z-index:1000;
+  background:rgba(10,15,25,.95);
+  backdrop-filter:blur(10px);
+  padding:10px;
+  border-bottom:1px solid #334155;
 }
 
 .stats{
   display:flex;
-  gap:8px;
   flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
 }
 
 .stat{
-  background:#252525;
+  background:#1e293b;
   padding:8px 12px;
   border-radius:10px;
+  font-size:14px;
 }
 
 .nav{
   display:flex;
-  gap:5px;
   flex-wrap:wrap;
+  justify-content:center;
+  padding:8px;
+  background:#0f172a;
 }
 
 .nav button{
-  background:#292929;
-  color:white;
+  background:#334155;
 }
 
 #game{
   position:relative;
-  height:620px;
+  min-height:590px;
   overflow:hidden;
-  transition:background .5s;
+  background:
+    linear-gradient(#78c7ff 0 48%,#b9e8ff 48% 55%,#72b95b 55% 100%);
 }
 
 /* =========================
-   WELTEN / HINTERGRÜNDE
+   3D WORLD
 ========================= */
 
-.world-home{
-  background:linear-gradient(#72c9ff 0 60%,#5da84d 60%);
-}
-
-.world-shop{
-  background:linear-gradient(#292929,#111);
-}
-
-.world-social{
-  background:linear-gradient(135deg,#341b55,#111);
-}
-
-.world-studio{
-  background:linear-gradient(#222,#090909);
-}
-
-.world-city{
-  background:linear-gradient(#87ceeb 0 55%,#555 55%);
-}
-
-.world-training{
-  background:linear-gradient(#242424,#111);
-}
-
-.world-sponsor{
-  background:linear-gradient(135deg,#182b48,#101010);
-}
-
-.world-channel{
-  background:linear-gradient(135deg,#401d1d,#111);
-}
-
-/* =========================
-   SZENE
-========================= */
-
-.scene-title{
+.world3d{
   position:absolute;
-  top:15px;
-  left:20px;
-  background:rgba(0,0,0,.65);
-  padding:10px 15px;
-  border-radius:12px;
-  font-size:20px;
-  z-index:20;
+  inset:0;
+  perspective:1100px;
+  perspective-origin:50% 55%;
+  overflow:hidden;
 }
 
-.sun{
+.worldPlane{
   position:absolute;
-  width:70px;
-  height:70px;
-  background:#ffe45c;
-  border-radius:50%;
-  right:60px;
-  top:35px;
+  width:1200px;
+  height:700px;
+  left:50%;
+  top:50%;
+  transform:
+    translate(-50%,-50%)
+    rotateX(58deg)
+    rotateZ(0deg);
+  transform-style:preserve-3d;
 }
 
-.cloud{
+.ground3d{
   position:absolute;
-  width:130px;
-  height:45px;
-  background:white;
-  border-radius:50px;
-  opacity:.8;
+  width:1200px;
+  height:700px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.03) 0 80px,
+      rgba(0,0,0,.03) 80px 160px
+    ),
+    linear-gradient(#65aa50,#3d7d38);
+  transform:translateZ(0);
+  box-shadow:inset 0 0 100px rgba(0,0,0,.25);
 }
 
-.cloud:before,
-.cloud:after{
+.road3d{
+  position:absolute;
+  width:1200px;
+  height:120px;
+  left:0;
+  top:440px;
+  background:#333842;
+  transform:translateZ(3px);
+  box-shadow:0 0 25px rgba(0,0,0,.3);
+}
+
+.road3d:after{
   content:"";
   position:absolute;
-  background:white;
+  left:0;
+  right:0;
+  top:55px;
+  border-top:6px dashed #facc15;
+}
+
+.shadow{
+  position:absolute;
+  background:rgba(0,0,0,.25);
   border-radius:50%;
-}
-
-.cloud:before{
-  width:55px;
-  height:55px;
-  left:20px;
-  top:-25px;
-}
-
-.cloud:after{
-  width:70px;
-  height:70px;
-  right:15px;
-  top:-35px;
-}
-
-.cloud1{
-  left:10%;
-  top:80px;
-}
-
-.cloud2{
-  left:45%;
-  top:130px;
-  transform:scale(.7);
+  filter:blur(4px);
 }
 
 /* =========================
-   HAUS
+   3D HOUSE
 ========================= */
 
-.house{
+.house3d{
   position:absolute;
-  left:80px;
-  bottom:90px;
-  width:300px;
-  height:230px;
-  background:#d99b68;
-  border:5px solid #6b351e;
-  border-radius:5px;
+  width:310px;
+  height:240px;
+  left:420px;
+  top:115px;
+  transform-style:preserve-3d;
+  transform:translateZ(35px);
 }
 
-.roof{
+.houseFront{
+  position:absolute;
+  width:300px;
+  height:210px;
+  bottom:0;
+  left:0;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.1),transparent),
+    #d8b08a;
+  border:5px solid #70472d;
+  transform:translateZ(50px);
+  box-shadow:0 15px 25px rgba(0,0,0,.3);
+}
+
+.houseSide{
+  position:absolute;
+  width:110px;
+  height:210px;
+  right:-105px;
+  bottom:0;
+  background:#ae805e;
+  border:5px solid #70472d;
+  transform:rotateY(90deg) translateZ(55px);
+  transform-origin:left;
+}
+
+.houseRoof{
   position:absolute;
   width:330px;
-  height:100px;
-  background:#702d2d;
-  left:-20px;
-  top:-75px;
+  height:110px;
+  left:-15px;
+  top:-60px;
+  background:#7f1d1d;
   clip-path:polygon(50% 0,100% 100%,0 100%);
+  transform:translateZ(75px);
+  filter:drop-shadow(0 12px 7px rgba(0,0,0,.3));
 }
 
-.window{
+.houseRoof2{
+  position:absolute;
+  width:330px;
+  height:110px;
+  left:-15px;
+  top:-60px;
+  background:#5f1717;
+  clip-path:polygon(50% 0,100% 100%,0 100%);
+  transform:rotateY(90deg) translateZ(55px);
+}
+
+.window3d{
   position:absolute;
   width:65px;
   height:65px;
-  background:#8bd8ff;
-  border:5px solid #513321;
-  top:50px;
+  top:45px;
+  background:#72c9f5;
+  border:7px solid #4b3527;
+  box-shadow:inset 0 0 15px rgba(255,255,255,.5);
 }
 
-.window1{left:35px}
-.window2{right:35px}
-
-.door{
+.window3d:before{
+  content:"";
   position:absolute;
+  left:50%;
+  top:0;
   bottom:0;
-  left:115px;
-  width:70px;
-  height:115px;
-  background:#5b321f;
+  border-left:3px solid #4b3527;
+}
+
+.window3d:after{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:0;
+  right:0;
+  border-top:3px solid #4b3527;
+}
+
+.w1{left:35px}
+.w2{right:35px}
+
+.door3d{
+  position:absolute;
+  width:55px;
+  height:105px;
+  left:122px;
+  bottom:0;
+  background:#633c26;
+  border:6px solid #3f281b;
+  transform:translateZ(55px);
+}
+
+.door3d:after{
+  content:"";
+  position:absolute;
+  right:8px;
+  top:52px;
+  width:8px;
+  height:8px;
+  background:#facc15;
+  border-radius:50%;
+}
+
+.steps3d{
+  position:absolute;
+  width:100px;
+  height:30px;
+  left:100px;
+  bottom:-25px;
+  background:#9ca3af;
+  transform:translateZ(58px);
+  box-shadow:0 10px 0 #6b7280;
+}
+
+/* =========================
+   3D PLAYER
+========================= */
+
+.player3d{
+  position:absolute;
+  width:90px;
+  height:180px;
+  left:330px;
+  top:250px;
+  transform-style:preserve-3d;
+  transform:translateZ(90px);
+  transition:left .18s,top .18s;
+  z-index:50;
+}
+
+.playerShadow{
+  position:absolute;
+  width:75px;
+  height:22px;
+  left:8px;
+  bottom:-8px;
+  background:rgba(0,0,0,.35);
+  border-radius:50%;
+  filter:blur(3px);
+  transform:rotateX(65deg);
+}
+
+.body3d{
+  position:absolute;
+  width:54px;
+  height:70px;
+  left:18px;
+  top:60px;
+  border-radius:15px 15px 10px 10px;
+  background:linear-gradient(90deg,#2563eb,#1d4ed8);
+  transform:translateZ(20px);
+  box-shadow:inset -8px 0 12px rgba(0,0,0,.2);
+}
+
+.bodySide{
+  position:absolute;
+  width:40px;
+  height:70px;
+  left:70px;
+  top:60px;
+  background:#173b99;
+  transform:rotateY(90deg);
+  transform-origin:left;
+}
+
+.head3d{
+  position:absolute;
+  width:58px;
+  height:62px;
+  left:16px;
+  top:4px;
+  border-radius:48% 48% 44% 44%;
+  background:
+    radial-gradient(circle at 35% 35%,rgba(255,255,255,.3),transparent 18%),
+    #c98f67;
+  transform:translateZ(30px);
+  box-shadow:
+    inset -8px -5px 12px rgba(0,0,0,.18),
+    0 4px 8px rgba(0,0,0,.25);
+}
+
+.hair3d{
+  position:absolute;
+  width:62px;
+  height:25px;
+  left:14px;
+  top:0;
+  background:#24170f;
+  border-radius:50% 50% 20% 20%;
+  transform:translateZ(34px);
+}
+
+.eye{
+  position:absolute;
+  width:8px;
+  height:10px;
+  background:#111;
+  border-radius:50%;
+  top:27px;
+}
+
+.eye.left{left:15px}
+.eye.right{right:15px}
+
+.mouth{
+  position:absolute;
+  width:22px;
+  height:7px;
+  left:18px;
+  top:45px;
+  border-bottom:3px solid #632b28;
+  border-radius:50%;
+}
+
+.arm{
+  position:absolute;
+  width:18px;
+  height:65px;
+  top:66px;
+  border-radius:12px;
+  background:#2563eb;
+  transform-origin:top center;
+}
+
+.arm.left{
+  left:2px;
+  transform:rotateZ(12deg) translateZ(20px);
+}
+
+.arm.right{
+  right:2px;
+  transform:rotateZ(-12deg) translateZ(20px);
+}
+
+.leg{
+  position:absolute;
+  width:21px;
+  height:55px;
+  top:126px;
+  border-radius:10px;
+  background:#172554;
+}
+
+.leg.left{
+  left:20px;
+  transform:translateZ(18px);
+}
+
+.leg.right{
+  right:20px;
+  transform:translateZ(18px);
+}
+
+.shoe{
+  position:absolute;
+  width:28px;
+  height:15px;
+  background:#111827;
+  border-radius:10px;
+  top:170px;
+}
+
+.shoe.left{left:13px}
+.shoe.right{right:13px}
+
+.player3d.walk .leg.left{
+  animation:walk1 .25s infinite alternate;
+}
+
+.player3d.walk .leg.right{
+  animation:walk2 .25s infinite alternate;
+}
+
+.player3d.walk .arm.left{
+  animation:arm1 .25s infinite alternate;
+}
+
+.player3d.walk .arm.right{
+  animation:arm2 .25s infinite alternate;
+}
+
+@keyframes walk1{
+  from{transform:translateZ(18px) rotateX(20deg)}
+  to{transform:translateZ(18px) rotateX(-20deg)}
+}
+
+@keyframes walk2{
+  from{transform:translateZ(18px) rotateX(-20deg)}
+  to{transform:translateZ(18px) rotateX(20deg)}
+}
+
+@keyframes arm1{
+  from{transform:rotateZ(12deg) translateZ(20px) rotateX(-15deg)}
+  to{transform:rotateZ(12deg) translateZ(20px) rotateX(15deg)}
+}
+
+@keyframes arm2{
+  from{transform:rotateZ(-12deg) translateZ(20px) rotateX(15deg)}
+  to{transform:rotateZ(-12deg) translateZ(20px) rotateX(-15deg)}
 }
 
 /* =========================
@@ -233,214 +471,132 @@ button:hover{
 
 .studio{
   position:absolute;
-  right:70px;
-  bottom:75px;
-  width:420px;
-  height:300px;
-  background:#262626;
-  border:5px solid #444;
-  border-radius:20px;
-}
-
-.studio-title{
-  padding:12px;
-  text-align:center;
-  font-weight:bold;
-}
-
-.desk{
-  position:absolute;
-  width:230px;
-  height:20px;
-  background:#6b4226;
-  left:100px;
-  bottom:70px;
-}
-
-.desk:after{
-  content:"";
-  position:absolute;
-  width:20px;
-  height:80px;
-  background:#4a2b1a;
-  left:20px;
-  top:15px;
-  box-shadow:170px 0 #4a2b1a;
+  width:270px;
+  height:180px;
+  left:760px;
+  top:185px;
+  transform:translateZ(45px);
 }
 
 .pc{
   position:absolute;
-  left:150px;
-  bottom:92px;
-  width:130px;
-  height:85px;
-  background:#111;
-  border:5px solid #777;
-  border-radius:8px;
+  width:75px;
+  height:50px;
+  background:#111827;
+  border:5px solid #475569;
+  left:20px;
+  top:40px;
+  border-radius:6px;
 }
 
 .pc:after{
   content:"";
   position:absolute;
-  width:20px;
-  height:20px;
-  background:#777;
-  bottom:-28px;
-  left:50px;
-}
-
-.camera{
-  position:absolute;
-  left:45px;
-  bottom:110px;
-  width:65px;
+  width:8px;
   height:55px;
-  background:#151515;
-  border-radius:10px;
-}
-
-.camera:before{
-  content:"";
-  position:absolute;
-  width:35px;
-  height:35px;
-  border-radius:50%;
-  background:#4d9fff;
-  border:6px solid #111;
-  left:15px;
-  top:8px;
-}
-
-.camera:after{
-  content:"";
-  position:absolute;
-  width:18px;
-  height:55px;
-  background:#111;
-  left:23px;
-  top:50px;
-}
-
-.mic{
-  position:absolute;
-  right:50px;
-  bottom:100px;
-  width:25px;
-  height:75px;
-  background:#aaa;
-  border-radius:20px;
-}
-
-.mic:after{
-  content:"";
-  position:absolute;
-  width:70px;
-  height:8px;
-  background:#aaa;
-  top:70px;
-  left:-22px;
-}
-
-.sofa{
-  position:absolute;
-  width:140px;
-  height:60px;
-  background:#6b4d85;
+  background:#475569;
   left:30px;
-  bottom:30px;
-  border-radius:15px;
+  top:45px;
+}
+
+.pc:before{
+  content:"";
+  position:absolute;
+  width:55px;
+  height:8px;
+  background:#475569;
+  left:5px;
+  top:92px;
+}
+
+.desk{
+  position:absolute;
+  width:150px;
+  height:15px;
+  background:#7c4a2d;
+  left:0;
+  top:105px;
+}
+
+.camera3d{
+  position:absolute;
+  width:65px;
+  height:42px;
+  right:30px;
+  top:60px;
+  background:#111;
+  border-radius:10px;
+  transform:translateZ(35px);
+}
+
+.camera3d:before{
+  content:"";
+  position:absolute;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:#60a5fa;
+  border:5px solid #334155;
+  left:18px;
+  top:7px;
+}
+
+.tripod{
+  position:absolute;
+  width:5px;
+  height:70px;
+  background:#222;
+  right:60px;
+  top:98px;
+  transform:rotate(10deg);
 }
 
 /* =========================
-   FIGUR
+   SPEECH
 ========================= */
-
-.player{
-  position:absolute;
-  width:55px;
-  height:105px;
-  z-index:50;
-  transition:left .12s,top .12s;
-}
-
-.head{
-  position:absolute;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  left:7px;
-  top:0;
-  background:#b87952;
-}
-
-.hair{
-  position:absolute;
-  width:45px;
-  height:20px;
-  left:5px;
-  top:-3px;
-  background:#171717;
-  border-radius:50% 50% 20% 20%;
-  z-index:2;
-}
-
-.body{
-  position:absolute;
-  width:45px;
-  height:50px;
-  left:5px;
-  top:42px;
-  background:#2878e5;
-  border-radius:10px;
-}
-
-.leg{
-  position:absolute;
-  width:14px;
-  height:35px;
-  background:#222;
-  top:87px;
-}
-
-.leg1{left:10px}
-.leg2{right:10px}
 
 .speech{
   position:absolute;
+  left:420px;
+  top:210px;
   background:white;
-  color:#111;
-  padding:8px 12px;
-  border-radius:12px;
-  width:190px;
-  left:50px;
-  top:-55px;
+  color:#111827;
+  padding:10px 14px;
+  border-radius:16px;
+  z-index:200;
   display:none;
-  z-index:80;
+  max-width:220px;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
 }
+
+.speech:after{
+  content:"";
+  position:absolute;
+  bottom:-10px;
+  left:30px;
+  border-width:10px 10px 0;
+  border-style:solid;
+  border-color:white transparent transparent;
+}
+
+/* =========================
+   RECORDING
+========================= */
 
 .recording{
-  animation:recordMove .6s infinite alternate;
-}
-
-@keyframes recordMove{
-  from{transform:translateX(-4px)}
-  to{transform:translateX(4px)}
-}
-
-.record-light{
   position:absolute;
-  width:14px;
-  height:14px;
-  background:red;
-  border-radius:50%;
-  top:10px;
-  right:10px;
+  left:850px;
+  top:145px;
+  padding:7px 12px;
+  background:#dc2626;
+  border-radius:20px;
   display:none;
-  animation:blink .7s infinite;
+  z-index:500;
+  animation:blink 1s infinite;
 }
 
 @keyframes blink{
-  50%{opacity:.2}
+  50%{opacity:.35}
 }
 
 /* =========================
@@ -448,209 +604,117 @@ button:hover{
 ========================= */
 
 .panel{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:min(900px,94%);
-  max-height:90%;
-  overflow:auto;
-  background:rgba(15,15,15,.97);
-  border:2px solid #555;
-  border-radius:20px;
-  padding:20px;
-  z-index:200;
-  display:none;
+  position:relative;
+  z-index:900;
+  margin:12px auto;
+  max-width:1100px;
+  background:rgba(15,23,42,.96);
+  border:1px solid #334155;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 15px 40px rgba(0,0,0,.25);
 }
 
 .panel h2{
-  margin-bottom:15px;
+  margin-top:0;
 }
 
-.close{
-  float:right;
-  background:#b52a2a;
-  color:white;
-}
-
-.card-grid{
+.grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
   gap:10px;
 }
 
 .card{
-  background:#242424;
-  padding:14px;
-  border-radius:15px;
-  border:1px solid #444;
+  background:#1e293b;
+  border:1px solid #475569;
+  border-radius:14px;
+  padding:12px;
 }
 
 .card h3{
-  margin-bottom:7px;
+  margin:5px 0;
 }
 
-.price{
-  color:#65ff8a;
-  font-weight:bold;
+.small{
+  font-size:13px;
+  color:#cbd5e1;
+}
+
+.hidden{
+  display:none!important;
 }
 
 /* =========================
    SHOP
 ========================= */
 
-.shop-tabs{
-  display:flex;
-  flex-wrap:wrap;
-  margin-bottom:15px;
-}
-
-.shop-tabs button{
-  background:#333;
-  color:white;
-}
-
-.item{
-  background:#202020;
-  border-radius:15px;
-  padding:12px;
-  border:1px solid #444;
-}
-
-.item-icon{
-  font-size:35px;
-}
-
-.item button{
-  width:100%;
-}
-
-/* =========================
-   SOCIAL
-========================= */
-
-.social-box{
+.shopGrid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:12px;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:10px;
 }
 
-.platform{
-  padding:20px;
-  border-radius:18px;
-  background:#242424;
+.shopItem{
+  background:#1e293b;
+  border:1px solid #475569;
+  padding:12px;
+  border-radius:14px;
+}
+
+.price{
+  color:#86efac;
+  font-weight:bold;
 }
 
 /* =========================
-   MOBILE CONTROLS
+   CONTROLS
 ========================= */
 
 .controls{
-  position:absolute;
-  bottom:15px;
-  left:15px;
-  z-index:90;
-  width:170px;
-  text-align:center;
+  position:relative;
+  z-index:1000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+  flex-wrap:wrap;
+  padding:10px;
 }
 
 .controls button{
-  width:48px;
-  height:42px;
-  background:rgba(255,255,255,.85);
+  min-width:55px;
+  min-height:45px;
+  font-size:20px;
 }
 
 /* =========================
-   LOG
+   RESPONSIVE
 ========================= */
 
-#log{
-  max-height:150px;
-  overflow:auto;
-  background:#090909;
-  padding:10px;
-  border-radius:12px;
-  margin-top:10px;
-}
+@media(max-width:700px){
+  #game{
+    min-height:530px;
+  }
 
-.logline{
-  padding:4px;
-  border-bottom:1px solid #222;
-}
+  .worldPlane{
+    transform:
+      translate(-50%,-50%)
+      rotateX(58deg)
+      scale(.72);
+  }
 
-/* =========================
-   AGE
-========================= */
+  .house3d{
+    left:400px;
+  }
 
-.agebar{
-  background:#333;
-  height:12px;
-  border-radius:20px;
-  overflow:hidden;
-  margin:8px 0;
-}
+  .studio{
+    left:750px;
+  }
 
-.agefill{
-  height:100%;
-  width:0%;
-  background:#59a8ff;
-}
-
-/* =========================
-   VIDEO
-========================= */
-
-.video-status{
-  position:absolute;
-  top:65px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.85);
-  padding:15px 25px;
-  border-radius:15px;
-  display:none;
-  z-index:100;
-}
-
-.video-status strong{
-  color:#ff4b4b;
-}
-
-/* =========================
-   SHOP SCROLL
-========================= */
-
-.big-shop{
-  max-height:600px;
-  overflow:auto;
-}
-
-.small{
-  font-size:13px;
-  opacity:.75;
-}
-
-input,select{
-  padding:10px;
-  border-radius:10px;
-  border:0;
-  margin:5px;
-}
-
-/* =========================
-   NOTIFICATION
-========================= */
-
-.notification{
-  position:fixed;
-  right:15px;
-  bottom:15px;
-  background:#222;
-  padding:15px;
-  border-radius:15px;
-  border:1px solid #555;
-  z-index:999;
-  display:none;
+  .player3d{
+    left:300px;
+  }
 }
 </style>
 </head>
@@ -658,1409 +722,1501 @@ input,select{
 <body>
 
 <div class="topbar">
-
-  <div>
-    🎬 <strong>Creator Life 2.0</strong>
-  </div>
-
   <div class="stats">
     <div class="stat">💰 <span id="money">1000</span> €</div>
-    <div class="stat">👥 <span id="subs">0</span></div>
-    <div class="stat">❤️ <span id="likes">0</span></div>
-    <div class="stat">📱 <span id="followers">0</span></div>
-    <div class="stat">🎂 <span id="age">0</span> Jahre</div>
+    <div class="stat">👥 <span id="subs">0</span> Abos</div>
+    <div class="stat">❤️ <span id="likes">0</span> Likes</div>
+    <div class="stat">👀 <span id="views">0</span> Views</div>
+    <div class="stat">🎂 Alter: <span id="age">16</span></div>
+    <div class="stat">🏠 <span id="homeName">Startwohnung</span></div>
   </div>
+</div>
 
-  <div class="nav">
-    <button onclick="openPanel('homePanel')">🏠 Zuhause</button>
-    <button onclick="openShop()">🛒 Shop</button>
-    <button onclick="openPanel('socialPanel')">📱 Social Media</button>
-    <button onclick="openPanel('channelPanel')">📺 Kanäle</button>
-    <button onclick="openPanel('sponsorPanel')">🤝 Sponsoren</button>
-    <button onclick="openPanel('employeePanel')">👥 Mitarbeiter</button>
-    <button onclick="openPanel('relationshipPanel')">❤️ Beziehung</button>
-    <button onclick="openPanel('ownerPanel')">👑 Owner</button>
+<div class="nav">
+  <button onclick="showPanel('home')">🏠 Zuhause</button>
+  <button onclick="showPanel('video')">🎥 Video</button>
+  <button onclick="showPanel('shop')">🛒 Shop</button>
+  <button onclick="showPanel('social')">📱 Social Media</button>
+  <button onclick="showPanel('fans')">❤️ Fans</button>
+  <button onclick="showPanel('channel')">📺 Kanäle</button>
+  <button onclick="showPanel('sponsor')">🤝 Sponsoren</button>
+  <button onclick="showPanel('employees')">👔 Mitarbeiter</button>
+  <button onclick="showPanel('relationship')">💙 Beziehung</button>
+  <button onclick="showPanel('agePanel')">🎂 Alter</button>
+  <button onclick="showPanel('owner')">👑 Owner</button>
+  <button onclick="saveGame()">💾 Speichern</button>
+</div>
+
+<div id="game">
+
+  <div class="world3d">
+    <div class="worldPlane">
+
+      <div class="ground3d"></div>
+
+      <div class="road3d"></div>
+
+      <div class="shadow"
+           style="width:360px;height:70px;left:390px;top:315px;">
+      </div>
+
+      <div class="house3d">
+
+        <div class="houseFront">
+          <div class="window3d w1"></div>
+          <div class="window3d w2"></div>
+          <div class="door3d"></div>
+          <div class="steps3d"></div>
+        </div>
+
+        <div class="houseSide"></div>
+
+        <div class="houseRoof"></div>
+        <div class="houseRoof2"></div>
+
+      </div>
+
+      <div class="studio">
+        <div class="desk"></div>
+        <div class="pc"></div>
+        <div class="camera3d"></div>
+        <div class="tripod"></div>
+      </div>
+
+      <div id="player" class="player3d">
+
+        <div class="playerShadow"></div>
+
+        <div class="head3d">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+
+        <div class="hair3d"></div>
+
+        <div class="body3d"></div>
+        <div class="bodySide"></div>
+
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+
+        <div class="leg left"></div>
+        <div class="leg right"></div>
+
+        <div class="shoe left"></div>
+        <div class="shoe right"></div>
+
+      </div>
+
+      <div id="recording" class="recording">
+        🔴 AUFNAHME
+      </div>
+
+      <div id="speech" class="speech">
+        Hallo! 👋
+      </div>
+
+    </div>
   </div>
 
 </div>
 
-<div id="game" class="world-home">
-
-  <div class="scene-title" id="sceneTitle">🏠 Zuhause</div>
-
-  <div class="sun"></div>
-  <div class="cloud cloud1"></div>
-  <div class="cloud cloud2"></div>
-
-  <div class="house">
-    <div class="roof"></div>
-    <div class="window window1"></div>
-    <div class="window window2"></div>
-    <div class="door"></div>
-  </div>
-
-  <div class="studio">
-    <div class="studio-title">🎬 DEIN CREATOR-STUDIO</div>
-    <div class="desk"></div>
-    <div class="pc"></div>
-    <div class="camera"></div>
-    <div class="mic"></div>
-    <div class="sofa"></div>
-    <div class="record-light" id="recordLight"></div>
-  </div>
-
-  <div id="player" class="player" style="left:500px;top:430px">
-    <div class="speech" id="speech"></div>
-    <div class="hair"></div>
-    <div class="head"></div>
-    <div class="body"></div>
-    <div class="leg leg1"></div>
-    <div class="leg leg2"></div>
-  </div>
-
-  <div id="videoStatus" class="video-status">
-    🔴 <strong>AUFNAHME LÄUFT</strong><br>
-    🎥 Dein Charakter produziert gerade ein Video...
-    <div id="videoTimer">10</div>
-  </div>
-
-  <div class="controls">
-    <button onclick="movePlayer(0,-30)">⬆️</button><br>
-    <button onclick="movePlayer(-30,0)">⬅️</button>
-    <button onclick="movePlayer(0,30)">⬇️</button>
-    <button onclick="movePlayer(30,0)">➡️</button>
-  </div>
-
+<div class="controls">
+  <button onclick="movePlayer(0,-20)">⬆️</button>
+  <button onclick="movePlayer(-20,0)">⬅️</button>
+  <button onclick="movePlayer(20,0)">➡️</button>
+  <button onclick="movePlayer(0,20)">⬇️</button>
+  <button onclick="speak()">💬</button>
 </div>
 
-<!-- =========================
-     HOME PANEL
-========================= -->
+<!-- HOME -->
+<div id="home" class="panel">
+  <h2>🏠 Dein Zuhause</h2>
 
-<div class="panel" id="homePanel">
-  <button class="close" onclick="closePanels()">X</button>
-  <h2>🏠 Zuhause</h2>
+  <div class="grid">
 
-  <p>Du kannst jederzeit dein aktuelles Zuhause wechseln.</p>
-  <br>
+    <div class="card">
+      <h3>🏡 Aktuelles Haus</h3>
+      <p id="homeInfo">Startwohnung</p>
+      <button onclick="changeHome()">Haus wechseln</button>
+    </div>
 
-  <div class="card-grid" id="homes"></div>
+    <div class="card">
+      <h3>🛋️ Möbel</h3>
+      <p>Deine Möbel:</p>
+      <div id="furnitureList"></div>
+    </div>
 
-  <hr style="margin:20px 0;border-color:#333">
+    <div class="card">
+      <h3>👨‍👩‍👧 Haushalt</h3>
+      <p>Du kannst Mitarbeiter deinem Haushalt zuweisen.</p>
+      <button onclick="hireEmployee('Haushaltshilfe')">
+        Haushaltshilfe einstellen
+      </button>
+    </div>
 
-  <h3>🪑 Deine Möbel</h3>
-  <div id="ownedFurniture"></div>
+  </div>
 </div>
 
-<!-- =========================
-     SHOP PANEL
-========================= -->
-
-<div class="panel" id="shopPanel">
-  <button class="close" onclick="closePanels()">X</button>
-  <h2>🛒 MEGA-SHOP</h2>
+<!-- VIDEO -->
+<div id="video" class="panel hidden">
+  <h2>🎥 Videos produzieren</h2>
 
   <p>
-    Hier kannst du Equipment, Möbel und Technik kaufen.
-    Es gibt automatisch erzeugte Varianten.
+    Der Charakter geht zum PC und startet sichtbar die Aufnahme.
   </p>
 
-  <div class="shop-tabs">
-    <button onclick="showShopCategory('all')">🌟 Alles</button>
-    <button onclick="showShopCategory('camera')">📷 Kameras</button>
-    <button onclick="showShopCategory('audio')">🎤 Mikrofone</button>
-    <button onclick="showShopCategory('pc')">💻 PCs</button>
-    <button onclick="showShopCategory('light')">💡 Licht</button>
-    <button onclick="showShopCategory('furniture')">🪑 Möbel</button>
-    <button onclick="showShopCategory('gaming')">🎮 Gaming</button>
-    <button onclick="showShopCategory('studio')">🎬 Studio</button>
-  </div>
+  <button onclick="recordVideo()">🔴 Video aufnehmen</button>
+  <button onclick="train()">🏋️ Trainieren</button>
 
-  <div class="big-shop">
-    <div class="card-grid" id="shopItems"></div>
+  <div id="videoStatus" class="card">
+    Bereit für die nächste Aufnahme.
   </div>
 </div>
 
-<!-- =========================
-     SOCIAL PANEL
-========================= -->
+<!-- SHOP -->
+<div id="shop" class="panel hidden">
+  <h2>🛒 Mega-Shop</h2>
 
-<div class="panel" id="socialPanel">
-  <button class="close" onclick="closePanels()">X</button>
+  <p>
+    Kameras, Mikrofone, PCs, Licht, Möbel, Gaming und Studio-Zubehör.
+  </p>
 
-  <h2>📱 Deine Social Media</h2>
+  <div id="shopGrid" class="shopGrid"></div>
+</div>
 
-  <div class="social-box">
+<!-- SOCIAL -->
+<div id="social" class="panel hidden">
+  <h2>📱 Social Media</h2>
 
-    <div class="platform">
+  <div class="grid">
+
+    <div class="card">
       <h3>▶️ YouTube</h3>
-      <p>Abonnenten: <strong id="ytFollowers">0</strong></p>
-      <p>Likes: <strong id="ytLikes">0</strong></p>
-      <button onclick="postSocial('youtube')">📹 Video posten</button>
+      <p>Follower: <span id="ytFollowers">0</span></p>
+      <button onclick="socialPost('YouTube')">Posten</button>
     </div>
 
-    <div class="platform">
+    <div class="card">
       <h3>🎵 TikTok</h3>
-      <p>Follower: <strong id="tiktokFollowers">0</strong></p>
-      <p>Likes: <strong id="tiktokLikes">0</strong></p>
-      <button onclick="postSocial('tiktok')">🎵 TikTok posten</button>
+      <p>Follower: <span id="ttFollowers">0</span></p>
+      <button onclick="socialPost('TikTok')">Posten</button>
     </div>
 
-    <div class="platform">
+    <div class="card">
       <h3>📸 Instagram</h3>
-      <p>Follower: <strong id="instagramFollowers">0</strong></p>
-      <p>Likes: <strong id="instagramLikes">0</strong></p>
-      <button onclick="postSocial('instagram')">📸 Post erstellen</button>
+      <p>Follower: <span id="igFollowers">0</span></p>
+      <button onclick="socialPost('Instagram')">Posten</button>
     </div>
 
-    <div class="platform">
+    <div class="card">
       <h3>🎮 Twitch</h3>
-      <p>Follower: <strong id="twitchFollowers">0</strong></p>
-      <p>Streams: <strong id="twitchStreams">0</strong></p>
-      <button onclick="postSocial('twitch')">🔴 Stream starten</button>
+      <p>Follower: <span id="twFollowers">0</span></p>
+      <button onclick="socialPost('Twitch')">Streamen</button>
     </div>
 
-    <div class="platform">
-      <h3>𝕏 X</h3>
-      <p>Follower: <strong id="xFollowers">0</strong></p>
-      <p>Likes: <strong id="xLikes">0</strong></p>
-      <button onclick="postSocial('x')">📝 Beitrag schreiben</button>
+    <div class="card">
+      <h3>🐦 X</h3>
+      <p>Follower: <span id="xFollowers">0</span></p>
+      <button onclick="socialPost('X')">Posten</button>
     </div>
 
   </div>
 </div>
 
-<!-- =========================
-     CHANNEL PANEL
-========================= -->
+<!-- FANS -->
+<div id="fans" class="panel hidden">
+  <h2>❤️ Deine Fans</h2>
 
-<div class="panel" id="channelPanel">
-  <button class="close" onclick="closePanels()">X</button>
+  <p>
+    Fans haben eigene Namen und reagieren unterschiedlich.
+  </p>
 
+  <div id="fanGrid" class="grid"></div>
+</div>
+
+<!-- CHANNEL -->
+<div id="channel" class="panel hidden">
   <h2>📺 Deine Kanäle</h2>
 
   <p>
-    Neue Kanäle werden freigeschaltet, wenn du
-    <strong>20.000 Abonnenten</strong> und
-    <strong>300.000 Likes</strong> erreicht hast.
+    Ein neuer Kanal wird ab <b>20.000 Abos</b> und
+    <b>300.000 Likes</b> freigeschaltet.
   </p>
 
-  <br>
+  <button onclick="createChannel()">
+    ➕ Neuen Kanal starten
+  </button>
 
-  <input id="channelName" placeholder="Name des neuen Kanals">
-
-  <button onclick="createChannel()">➕ Kanal erstellen</button>
-
-  <div id="channels"></div>
+  <div id="channelList" class="grid"></div>
 </div>
 
-<!-- =========================
-     SPONSOR PANEL
-========================= -->
-
-<div class="panel" id="sponsorPanel">
-  <button class="close" onclick="closePanels()">X</button>
-
-  <h2>🤝 Sponsoring</h2>
+<!-- SPONSOR -->
+<div id="sponsor" class="panel hidden">
+  <h2>🤝 Sponsoren</h2>
 
   <p>
-    Unternehmen, Restaurants, Geschäfte und Kioske können dir Angebote machen.
+    Du kannst im Spiel Sponsoring-Anfragen von Unternehmen,
+    Restaurants, Kiosken, Shops und Marken bekommen.
   </p>
 
-  <br>
-
-  <button onclick="generateSponsors()">🔄 Neue Angebote suchen</button>
-
-  <div id="sponsors" class="card-grid"></div>
+  <div id="sponsorGrid" class="grid"></div>
 </div>
 
-<!-- =========================
-     EMPLOYEE PANEL
-========================= -->
+<!-- EMPLOYEES -->
+<div id="employees" class="panel hidden">
+  <h2>👔 Mitarbeiter</h2>
 
-<div class="panel" id="employeePanel">
-  <button class="close" onclick="closePanels()">X</button>
+  <button onclick="hireEmployee('Manager')">Manager</button>
+  <button onclick="hireEmployee('Kameramann')">Kameramann</button>
+  <button onclick="hireEmployee('Cutter')">Cutter</button>
+  <button onclick="hireEmployee('Techniker')">Techniker</button>
+  <button onclick="hireEmployee('Fahrer')">Fahrer</button>
+  <button onclick="hireEmployee('Sicherheitsmitarbeiter')">Sicherheit</button>
+  <button onclick="hireEmployee('Haushaltshilfe')">Haushaltshilfe</button>
 
-  <h2>👥 Mitarbeiter</h2>
-
-  <p>Stelle Leute für dein Unternehmen ein.</p>
-
-  <div class="card-grid" id="employees"></div>
+  <div id="employeeList" class="grid"></div>
 </div>
 
-<!-- =========================
-     RELATIONSHIP PANEL
-========================= -->
+<!-- RELATIONSHIP -->
+<div id="relationship" class="panel hidden">
+  <h2>💙 Beziehungen</h2>
 
-<div class="panel" id="relationshipPanel">
-  <button class="close" onclick="closePanels()">X</button>
+  <p id="relationshipStatus">
+    Du bist aktuell single.
+  </p>
 
-  <h2>❤️ Beziehungen</h2>
+  <button onclick="findPartner()">Neue Person kennenlernen</button>
+  <button onclick="endRelationship()">Beziehung beenden</button>
+
+  <div id="partnerBox" class="card"></div>
+</div>
+
+<!-- AGE -->
+<div id="agePanel" class="panel hidden">
+  <h2>🎂 Alter & Generationen</h2>
 
   <p>
-    Beziehungen funktionieren hier als Spielsystem.
-    Du kannst eine Beziehung beginnen, heiraten oder eine Beziehung beenden.
+    Du kannst dein Leben als Baby starten oder deinen Charakter
+    älter werden lassen.
   </p>
 
-  <div id="relationshipBox"></div>
+  <button onclick="setAge(1)">👶 Baby</button>
+  <button onclick="setAge(6)">🧒 Kind</button>
+  <button onclick="setAge(13)">🧑 Teenager</button>
+  <button onclick="setAge(18)">🧑 Erwachsen</button>
+  <button onclick="setAge(30)">👨 Erwachsener</button>
+  <button onclick="setAge(60)">👴 Senior</button>
+
+  <div class="card">
+    <h3>👨‍👩‍👧 Generation</h3>
+    <button onclick="nextGeneration()">Nächste Generation</button>
+  </div>
 </div>
 
-<!-- =========================
-     OWNER PANEL
-========================= -->
-
-<div class="panel" id="ownerPanel">
-  <button class="close" onclick="closePanels()">X</button>
-
+<!-- OWNER -->
+<div id="owner" class="panel hidden">
   <h2>👑 Owner-Menü</h2>
 
-  <input type="password" id="ownerPassword" placeholder="Owner-Passwort">
+  <input
+    id="ownerPassword"
+    type="password"
+    placeholder="Owner-Passwort"
+    style="padding:10px;border-radius:10px;border:0;"
+  >
 
-  <button onclick="ownerLogin()">🔐 Anmelden</button>
+  <button onclick="ownerLogin()">Login</button>
 
-  <div id="ownerControls" style="display:none">
+  <div id="ownerTools" class="hidden">
 
-    <hr style="margin:15px 0;border-color:#444">
+    <h3>Owner-Funktionen</h3>
 
-    <h3>👑 Owner Controls</h3>
+    <button onclick="addMoney(1000000000)">
+      💰 +1 Milliarde €
+    </button>
 
-    <button onclick="ownerMoney()">💰 +1 Milliarde €</button>
-    <button onclick="ownerSubs()">👥 +100.000 Abos</button>
-    <button onclick="ownerLikes()">❤️ +1 Million Likes</button>
-    <button onclick="ownerFollowers()">📱 +1 Million Follower</button>
-    <button onclick="ownerAge()">🎂 Alter +1</button>
+    <button onclick="addSubs(1000000)">
+      👥 +1 Million Abos
+    </button>
 
-    <br>
+    <button onclick="addLikes(10000000)">
+      ❤️ +10 Millionen Likes
+    </button>
 
-    <button onclick="unlockEverything()">🔓 Alles freischalten</button>
+    <button onclick="addViews(100000000)">
+      👀 +100 Millionen Views
+    </button>
 
-    <button onclick="resetGame()">⚠️ Spiel zurücksetzen</button>
+    <button onclick="randomEvent()">
+      🎲 Event auslösen
+    </button>
+
+    <button onclick="saveGame()">
+      💾 Spiel speichern
+    </button>
+
+    <button onclick="resetGame()">
+      🔄 Spiel zurücksetzen
+    </button>
 
   </div>
 </div>
-
-<!-- =========================
-     AGE PANEL
-========================= -->
-
-<div class="panel" id="agePanel">
-  <button class="close" onclick="closePanels()">X</button>
-
-  <h2>👶 Lebensalter</h2>
-
-  <p id="lifeStage">Baby</p>
-
-  <div class="agebar">
-    <div class="agefill" id="ageFill"></div>
-  </div>
-
-  <p id="ageText"></p>
-
-  <button onclick="growUp()">🎂 Zeit vergehen lassen</button>
-  <button onclick="newGeneration()">🔄 Neue Generation</button>
-</div>
-
-<div class="notification" id="notification"></div>
 
 <script>
-
 /* =========================================================
-   SPIELDATEN
+   GAME DATA
 ========================================================= */
 
 const OWNER_PASSWORD = "YT-Owner-7X9!K4#P";
 
-let gameData = {
-
+let game = {
   money:1000,
   subs:0,
   likes:0,
-  followers:0,
+  views:0,
+  age:16,
 
-  age:0,
-  generation:1,
+  home:"Startwohnung",
 
-  currentWorld:"home",
+  x:330,
+  y:250,
 
-  player:{
-    x:500,
-    y:430,
-    skin:"#b87952",
-    hair:"#171717"
+  videos:0,
+
+  followers:{
+    YouTube:0,
+    TikTok:0,
+    Instagram:0,
+    Twitch:0,
+    X:0
   },
 
   channels:[
     {
-      name:"Mein erster Kanal",
-      subscribers:0,
+      name:"Mein Hauptkanal",
+      subs:0,
       likes:0
     }
   ],
 
-  social:{
-    youtube:{followers:0,likes:0},
-    tiktok:{followers:0,likes:0},
-    instagram:{followers:0,likes:0},
-    twitch:{followers:0,streams:0},
-    x:{followers:0,likes:0}
-  },
-
-  homes:[],
-
-  ownedFurniture:[],
-
-  ownedEquipment:[],
+  fans:[
+    {
+      name:"Leon",
+      mood:80,
+      moneyGiven:0,
+      gifts:0
+    },
+    {
+      name:"Maya",
+      mood:75,
+      moneyGiven:0,
+      gifts:0
+    },
+    {
+      name:"Noah",
+      mood:90,
+      moneyGiven:0,
+      gifts:0
+    },
+    {
+      name:"Sophie",
+      mood:65,
+      moneyGiven:0,
+      gifts:0
+    }
+  ],
 
   employees:[],
+  furniture:[],
 
-  sponsors:[],
+  relationship:null,
 
-  acceptedSponsors:[],
+  generation:1,
 
-  relationship:{
-    status:"single",
-    partner:null
-  },
+  inventory:[],
 
-  settings:{
-    allUnlocked:false
-  }
+  ownedHomes:["Startwohnung"]
 };
 
 /* =========================================================
-   HÄUSER
+   HOMES
 ========================================================= */
 
-const homeNames = [
-"Starter-Wohnung",
-"Kleine Wohnung",
-"Modernes Apartment",
-"Familienwohnung",
-"Creator Apartment",
-"Penthouse",
-"Luxushaus",
-"Villa",
-"Große Villa",
-"Designer Villa",
-"Stadtvilla",
-"Pool-Villa",
-"Creator Mansion",
-"Business Villa",
-"Lake House",
-"Beach House",
-"Mountain House",
-"Super Mansion",
-"Royal Mansion",
-"Mega Mansion",
-"Future House",
-"Sky Villa",
-"Diamond House",
-"Golden Mansion",
-"Legend House",
-"Infinity Mansion",
-"Creator Palace",
-"Grand Palace",
-"Ultimate House",
-"Dream Mansion",
-"Island Villa",
-"Forest Villa",
-"Modern Palace",
-"Tech Mansion",
-"Gaming Mansion",
-"Cinema Mansion",
-"Music Mansion",
-"Luxury Estate",
-"Millionaire Estate",
-"Billionaire Estate"
+const homes = [];
+
+for(let i=1;i<=40;i++){
+
+  let price;
+
+  if(i<=20){
+    price = 400000 + (i-1)*20000;
+  }else{
+    price = 20000000 + (i-21)*52000000;
+  }
+
+  homes.push({
+    name:"Haus "+i,
+    price:price
+  });
+}
+
+/* =========================================================
+   SHOP ITEMS
+========================================================= */
+
+const baseItems = [
+
+  ["Kamera","Kamera",500],
+  ["Pro Kamera","Kamera",5000],
+  ["Cinema Kamera","Kamera",50000],
+  ["Vlog Kamera","Kamera",1200],
+  ["Action Kamera","Kamera",900],
+  ["Studio Kamera","Kamera",25000],
+
+  ["Mikrofon","Audio",300],
+  ["Studio Mikrofon","Audio",3000],
+  ["Funkmikrofon","Audio",5000],
+  ["Podcast Mikrofon","Audio",2500],
+  ["Pro Mikrofon","Audio",10000],
+
+  ["Gaming PC","PC",1500],
+  ["Creator PC","PC",5000],
+  ["Pro PC","PC",15000],
+  ["Mega PC","PC",100000],
+  ["Ultra PC","PC",1000000],
+
+  ["Ringlicht","Licht",100],
+  ["Softbox","Licht",250],
+  ["Studio Licht","Licht",1000],
+  ["Pro Licht","Licht",5000],
+
+  ["Sofa","Möbel",500],
+  ["Luxus Sofa","Möbel",5000],
+  ["Bett","Möbel",700],
+  ["Luxus Bett","Möbel",10000],
+  ["Schreibtisch","Möbel",300],
+  ["Gaming Tisch","Möbel",1000],
+  ["Schrank","Möbel",600],
+  ["Luxus Schrank","Möbel",6000],
+  ["Fernseher","Möbel",800],
+  ["Gaming Fernseher","Möbel",5000],
+
+  ["Gaming Stuhl","Gaming",500],
+  ["Pro Gaming Stuhl","Gaming",2500],
+  ["Gaming Konsole","Gaming",500],
+  ["Gaming PC Setup","Gaming",5000],
+  ["VR Setup","Gaming",3000],
+
+  ["Streaming Deck","Studio",500],
+  ["Greenscreen","Studio",800],
+  ["Teleprompter","Studio",1500],
+  ["Studio Hintergrund","Studio",1000],
+  ["Pro Hintergrund","Studio",5000]
 ];
 
-function createHomes(){
+const colors = [
+  "Schwarz",
+  "Weiß",
+  "Rot",
+  "Blau",
+  "Grün",
+  "Gold",
+  "Silber",
+  "Pink",
+  "Lila",
+  "Orange"
+];
 
-  gameData.homes=[];
+const shopItems=[];
 
-  homeNames.forEach((name,index)=>{
+baseItems.forEach(item=>{
 
-    let price;
+  colors.forEach((color,index)=>{
 
-    if(index<20){
-      price=400000 + index*21000;
-    }else{
-      price=20000000 + (index-20)*50000000;
-    }
-
-    gameData.homes.push({
-      id:index,
-      name:name,
-      price:price,
-      owned:index===0
+    shopItems.push({
+      name:item[0]+" "+color,
+      category:item[1],
+      price:item[2]*(1+index*.08)
     });
 
   });
-}
-
-/* =========================================================
-   SHOP
-========================================================= */
-
-const shopTypes = [
-
-  {
-    category:"camera",
-    icon:"📷",
-    names:[
-      "Webcam",
-      "Creator Cam",
-      "4K Kamera",
-      "Cinema Kamera",
-      "Pro Kamera",
-      "Ultra Kamera",
-      "Studio Kamera",
-      "Mega Kamera",
-      "Legend Kamera",
-      "Future Kamera"
-    ]
-  },
-
-  {
-    category:"audio",
-    icon:"🎤",
-    names:[
-      "Einfaches Mikrofon",
-      "USB Mikrofon",
-      "Podcast Mikrofon",
-      "Studio Mikrofon",
-      "Pro Mikrofon",
-      "Broadcast Mikrofon",
-      "Cinema Mikrofon",
-      "Ultra Mikrofon",
-      "Legend Mikrofon",
-      "Future Mikrofon"
-    ]
-  },
-
-  {
-    category:"pc",
-    icon:"💻",
-    names:[
-      "Alter PC",
-      "Office PC",
-      "Creator PC",
-      "Gaming PC",
-      "Pro Creator PC",
-      "Ultra PC",
-      "Workstation",
-      "Mega Workstation",
-      "Legend PC",
-      "Future PC"
-    ]
-  },
-
-  {
-    category:"light",
-    icon:"💡",
-    names:[
-      "Schreibtischlampe",
-      "Ring Light",
-      "Softbox",
-      "Studio Light",
-      "RGB Light",
-      "Pro Light",
-      "Cinema Light",
-      "Mega Light",
-      "Legend Light",
-      "Future Light"
-    ]
-  },
-
-  {
-    category:"gaming",
-    icon:"🎮",
-    names:[
-      "Gamepad",
-      "Gaming Monitor",
-      "Gaming Stuhl",
-      "Gaming Tisch",
-      "Gaming PC",
-      "Gaming Konsole",
-      "VR Set",
-      "Streaming Deck",
-      "Mega Gaming Setup",
-      "Legend Gaming Setup"
-    ]
-  },
-
-  {
-    category:"studio",
-    icon:"🎬",
-    names:[
-      "Stativ",
-      "Greenscreen",
-      "Teleprompter",
-      "Akustik Set",
-      "Studio Wand",
-      "Creator Tisch",
-      "Studio Bühne",
-      "Video Monitor",
-      "Film Set",
-      "Mega Studio Set"
-    ]
-  },
-
-  {
-    category:"furniture",
-    icon:"🪑",
-    names:[
-      "Stuhl",
-      "Sofa",
-      "Tisch",
-      "Schreibtisch",
-      "Bett",
-      "Schrank",
-      "Regal",
-      "Fernseher",
-      "Teppich",
-      "Lampe",
-      "Kühlschrank",
-      "Küche",
-      "Esstisch",
-      "Bücherregal",
-      "Pflanze",
-      "Gaming Sofa",
-      "Luxus Sofa",
-      "Designer Tisch",
-      "Luxus Bett",
-      "Mega Schrank"
-    ]
-  }
-
-];
-
-/*
-  Viele Varianten werden automatisch erzeugt.
-  Dadurch entstehen sehr viele Möbel,
-  ohne Millionen Zeilen HTML zu benötigen.
-*/
-
-let shopItems=[];
-
-function generateShop(){
-
-  shopItems=[];
-
-  let id=1;
-
-  shopTypes.forEach(type=>{
-
-    type.names.forEach((name,index)=>{
-
-      for(let variant=1;variant<=10;variant++){
-
-        let price;
-
-        if(type.category==="furniture"){
-          price=(index+1)*2500*variant;
-        }else{
-          price=(index+1)*1000*variant;
-        }
-
-        shopItems.push({
-          id:id++,
-          category:type.category,
-          icon:type.icon,
-          name:name+" V"+variant,
-          price:price,
-          power:index+variant
-        });
-
-      }
-
-    });
-
-  });
-
-}
-
-/* =========================================================
-   SHOP ANZEIGEN
-========================================================= */
-
-function openShop(){
-
-  openPanel("shopPanel");
-
-  showShopCategory("all");
-
-}
-
-function showShopCategory(category){
-
-  let box=document.getElementById("shopItems");
-
-  box.innerHTML="";
-
-  let items=shopItems;
-
-  if(category!=="all"){
-    items=shopItems.filter(i=>i.category===category);
-  }
-
-  items.slice(0,300).forEach(item=>{
-
-    let div=document.createElement("div");
-
-    div.className="item";
-
-    div.innerHTML=`
-
-      <div class="item-icon">${item.icon}</div>
-
-      <h3>${item.name}</h3>
-
-      <p class="small">
-        Kategorie: ${item.category}
-      </p>
-
-      <p>
-        ⭐ Qualität: ${item.power}
-      </p>
-
-      <p class="price">
-        💰 ${formatMoney(item.price)} €
-      </p>
-
-      <button onclick="buyItem(${item.id})">
-        Kaufen
-      </button>
-
-    `;
-
-    box.appendChild(div);
-
-  });
-
-}
-
-/* =========================================================
-   KAUFEN
-========================================================= */
-
-function buyItem(id){
-
-  let item=shopItems.find(i=>i.id===id);
-
-  if(!item)return;
-
-  if(gameData.money<item.price){
-
-    notify("❌ Nicht genug Geld!");
-
-    return;
-
-  }
-
-  gameData.money-=item.price;
-
-  gameData.ownedEquipment.push(item);
-
-  if(item.category==="furniture"){
-
-    gameData.ownedFurniture.push(item);
-
-  }
-
-  notify("✅ "+item.name+" gekauft!");
-
-  updateUI();
-
-  saveGame();
-
-}
-
-/* =========================================================
-   SPIELER BEWEGUNG
-========================================================= */
-
-function movePlayer(dx,dy){
-
-  gameData.player.x+=dx;
-  gameData.player.y+=dy;
-
-  gameData.player.x=Math.max(0,Math.min(850,gameData.player.x));
-  gameData.player.y=Math.max(120,Math.min(500,gameData.player.y));
-
-  renderPlayer();
-
-}
-
-function renderPlayer(){
-
-  const p=document.getElementById("player");
-
-  p.style.left=gameData.player.x+"px";
-  p.style.top=gameData.player.y+"px";
-
-  document.querySelector(".head").style.background=
-    gameData.player.skin;
-
-  document.querySelector(".hair").style.background=
-    gameData.player.hair;
-
-}
-
-/* =========================================================
-   TASTATUR
-========================================================= */
-
-document.addEventListener("keydown",function(e){
-
-  if(e.key==="ArrowUp")movePlayer(0,-25);
-  if(e.key==="ArrowDown")movePlayer(0,25);
-  if(e.key==="ArrowLeft")movePlayer(-25,0);
-  if(e.key==="ArrowRight")movePlayer(25,0);
 
 });
 
 /* =========================================================
-   VIDEOS PRODUZIEREN
+   SPONSORS
 ========================================================= */
 
-let recording=false;
+const sponsorBusinesses = [
 
-function makeVideo(){
+  "MegaTech",
+  "FuturePhone",
+  "CityPizza",
+  "Burger House",
+  "Gaming World",
+  "SuperKiosk",
+  "Local Market",
+  "Fashion Point",
+  "Sport Center",
+  "Computer Shop",
+  "Coffee Corner",
+  "Urban Restaurant",
+  "Family Restaurant",
+  "Tech Store",
+  "Game Planet",
+  "Creator Energy",
+  "Street Food",
+  "City Barber",
+  "Music Shop",
+  "Electro World"
+];
 
-  if(recording){
+/* =========================================================
+   WORLD
+========================================================= */
 
-    notify("🎥 Du nimmst bereits ein Video auf!");
+function movePlayer(dx,dy){
 
-    return;
+  game.x += dx;
+  game.y += dy;
 
+  game.x=Math.max(20,Math.min(1000,game.x));
+  game.y=Math.max(40,Math.min(500,game.y));
+
+  const player=document.getElementById("player");
+
+  player.classList.add("walk");
+
+  setTimeout(()=>{
+    player.classList.remove("walk");
+  },220);
+
+  updatePlayerPosition();
+  saveGame();
+}
+
+function updatePlayerPosition(){
+
+  const player=document.getElementById("player");
+
+  player.style.left=game.x+"px";
+  player.style.top=game.y+"px";
+}
+
+document.addEventListener("keydown",e=>{
+
+  if(e.key==="ArrowUp"){
+    movePlayer(0,-20);
   }
 
-  recording=true;
+  if(e.key==="ArrowDown"){
+    movePlayer(0,20);
+  }
 
-  let player=document.getElementById("player");
+  if(e.key==="ArrowLeft"){
+    movePlayer(-20,0);
+  }
 
-  player.classList.add("recording");
+  if(e.key==="ArrowRight"){
+    movePlayer(20,0);
+  }
 
-  document.getElementById("recordLight").style.display="block";
+});
 
-  document.getElementById("videoStatus").style.display="block";
+/* =========================================================
+   PANELS
+========================================================= */
 
-  let time=10;
+function showPanel(id){
 
-  document.getElementById("videoTimer").textContent=time;
+  document.querySelectorAll(".panel").forEach(p=>{
+    p.classList.add("hidden");
+  });
 
-  let interval=setInterval(()=>{
+  document.getElementById(id).classList.remove("hidden");
 
-    time--;
+  if(id==="shop"){
+    renderShop();
+  }
 
-    document.getElementById("videoTimer").textContent=time;
+  if(id==="fans"){
+    renderFans();
+  }
 
-    if(time<=0){
+  if(id==="channel"){
+    renderChannels();
+  }
 
-      clearInterval(interval);
+  if(id==="sponsor"){
+    renderSponsors();
+  }
 
-      finishVideo();
+  if(id==="employees"){
+    renderEmployees();
+  }
 
-    }
+  if(id==="home"){
+    renderFurniture();
+  }
+
+  if(id==="relationship"){
+    renderRelationship();
+  }
+}
+
+/* =========================================================
+   VIDEO RECORDING
+========================================================= */
+
+function recordVideo(){
+
+  const status=document.getElementById("videoStatus");
+  const recording=document.getElementById("recording");
+  const player=document.getElementById("player");
+
+  status.innerHTML="🎬 Der Charakter geht zum PC...";
+
+  player.classList.add("walk");
+
+  setTimeout(()=>{
+
+    player.classList.remove("walk");
+
+    recording.style.display="block";
+
+    status.innerHTML="🔴 Video wird aufgenommen...";
 
   },1000);
 
-}
+  setTimeout(()=>{
 
-function finishVideo(){
+    recording.style.display="none";
 
-  recording=false;
+    const followers=Math.max(
+      1,
+      game.followers.YouTube
+    );
 
-  let player=document.getElementById("player");
+    /*
+      Follower sind NICHT automatisch Views.
+      Videos können deutlich weniger oder mehr Views bekommen.
+    */
 
-  player.classList.remove("recording");
+    const base=Math.floor(
+      Math.random()*500
+    )+50;
 
-  document.getElementById("recordLight").style.display="none";
+    const viewBonus=Math.floor(
+      Math.random()*(followers/20+1)
+    );
 
-  document.getElementById("videoStatus").style.display="none";
+    const views=Math.max(
+      20,
+      base+viewBonus
+    );
 
-  let equipmentBonus=
-    Math.min(100,gameData.ownedEquipment.length);
+    const likes=Math.floor(
+      views*(0.03+Math.random()*0.12)
+    );
 
-  gameData.money+=10+equipmentBonus;
+    const subs=Math.max(
+      1,
+      Math.floor(likes*.15)
+    );
 
-  gameData.subs+=10+Math.floor(equipmentBonus/2);
+    game.views+=views;
+    game.likes+=likes;
+    game.subs+=subs;
+    game.followers.YouTube+=subs;
 
-  gameData.likes+=20+equipmentBonus;
+    game.money+=Math.floor(
+      views*.05
+    );
 
-  gameData.social.youtube.followers+=
-    5+Math.floor(equipmentBonus/2);
+    game.videos++;
 
-  gameData.social.youtube.likes+=
-    10+equipmentBonus;
+    status.innerHTML=
+      "✅ Video fertig! "+
+      views.toLocaleString("de-DE")+
+      " Views • "+
+      likes.toLocaleString("de-DE")+
+      " Likes • "+
+      subs.toLocaleString("de-DE")+
+      " neue Abos.";
 
-  gameData.followers=
-    calculateTotalFollowers();
+    updateStats();
+    saveGame();
 
-  notify("🎉 Video fertig! Deine Community wächst!");
-
-  updateUI();
-
-  saveGame();
-
+  },10000);
 }
 
 /* =========================================================
    SOCIAL MEDIA
 ========================================================= */
 
-function postSocial(platform){
+function socialPost(platform){
 
-  let s=gameData.social[platform];
+  const followers=Math.floor(
+    Math.random()*500
+  )+50;
 
-  let quality=
-    Math.max(
-      1,
-      gameData.ownedEquipment.length+
-      Math.floor(gameData.subs/10000)
-    );
+  game.followers[platform]+=followers;
 
-  if(platform==="youtube"){
-
-    s.followers+=5+quality;
-    s.likes+=10+quality*2;
-    gameData.money+=20+quality;
-
-  }
-
-  if(platform==="tiktok"){
-
-    s.followers+=10+quality*2;
-    s.likes+=30+quality*3;
-    gameData.money+=10+quality;
-
-  }
-
-  if(platform==="instagram"){
-
-    s.followers+=7+quality;
-    s.likes+=20+quality*2;
-    gameData.money+=15+quality;
-
-  }
-
-  if(platform==="twitch"){
-
-    s.followers+=8+quality;
-    s.streams+=1;
-    gameData.money+=30+quality*3;
-
-  }
-
-  if(platform==="x"){
-
-    s.followers+=5+quality;
-    s.likes+=15+quality;
-    gameData.money+=5+quality;
-
-  }
-
-  gameData.followers=calculateTotalFollowers();
-
-  notify("📱 "+platform+" Beitrag erfolgreich!");
-
-  updateUI();
-
-  saveGame();
-
-}
-
-function calculateTotalFollowers(){
-
-  return Object.values(gameData.social)
-    .reduce((sum,x)=>sum+(x.followers||0),0);
-
-}
-
-/* =========================================================
-   KANÄLE
-========================================================= */
-
-function createChannel(){
-
-  let name=document.getElementById("channelName").value.trim();
-
-  if(!name){
-
-    notify("❌ Gib einen Kanalnamen ein!");
-
-    return;
-
-  }
-
-  if(
-    gameData.subs<20000 &&
-    !gameData.settings.allUnlocked
-  ){
-
-    notify("🔒 Du brauchst 20.000 Abonnenten!");
-
-    return;
-
-  }
-
-  if(
-    gameData.likes<300000 &&
-    !gameData.settings.allUnlocked
-  ){
-
-    notify("🔒 Du brauchst 300.000 Likes!");
-
-    return;
-
-  }
-
-  gameData.channels.push({
-    name:name,
-    subscribers:0,
-    likes:0
-  });
-
-  document.getElementById("channelName").value="";
-
-  notify("📺 Neuer Kanal erstellt!");
-
-  updateUI();
-
-  saveGame();
-
-}
-
-/* =========================================================
-   SPONSOREN
-========================================================= */
-
-const sponsorBusinesses=[
-
-  "MegaBurger",
-  "City Pizza",
-  "Star Kiosk",
-  "Future Electronics",
-  "GameWorld",
-  "Speed Delivery",
-  "Fresh Market",
-  "Urban Clothing",
-  "Tech Planet",
-  "Super Coffee",
-  "Family Restaurant",
-  "Creator Store",
-  "Mobile Center",
-  "Game Arena",
-  "Mega Market",
-  "Local Kiosk",
-  "Pizza Express",
-  "Burger House",
-  "Computer World",
-  "Sports Center",
-  "Fashion Planet",
-  "Music Store",
-  "Cinema World",
-  "Travel House",
-  "Food Corner",
-  "Street Shop",
-  "Digital Store",
-  "Supermarket Plus",
-  "Creator Energy",
-  "Mega Toys"
-];
-
-function generateSponsors(){
-
-  let box=document.getElementById("sponsors");
-
-  box.innerHTML="";
-
-  gameData.sponsors=[];
-
-  let count=Math.min(
-    12,
-    5+Math.floor(gameData.subs/10000)
+  game.money+=Math.floor(
+    followers*.02
   );
 
-  for(let i=0;i<count;i++){
+  if(platform==="YouTube"){
+    game.subs+=followers;
+  }
 
-    let business=
-      sponsorBusinesses[
-        Math.floor(Math.random()*sponsorBusinesses.length)
-      ];
+  updateStats();
+  saveGame();
 
-    let categories=[
-      "Unternehmen",
-      "Restaurant",
-      "Kiosk",
-      "Shop",
-      "Marke",
-      "lokales Geschäft"
-    ];
+  alert(
+    platform+
+    ": +"+
+    followers.toLocaleString("de-DE")+
+    " Follower 🎉"
+  );
+}
 
-    let type=
-      categories[
-        Math.floor(Math.random()*categories.length)
-      ];
+/* =========================================================
+   SHOP
+========================================================= */
 
-    let base=
-      Math.max(
-        500,
-        Math.floor(
-          (gameData.subs+gameData.followers+1000)
-          *(0.02+Math.random()*0.08)
-        )
-      );
+function renderShop(){
 
-    let offer={
-      business:business,
-      type:type,
-      payment:base,
-      duration:1+Math.floor(Math.random()*6)
-    };
+  const grid=document.getElementById("shopGrid");
 
-    gameData.sponsors.push(offer);
+  grid.innerHTML="";
 
-    let div=document.createElement("div");
+  shopItems.slice(0,250).forEach((item,index)=>{
+
+    const div=document.createElement("div");
+
+    div.className="shopItem";
+
+    div.innerHTML=`
+      <h3>${item.name}</h3>
+      <p>${item.category}</p>
+      <p class="price">
+        ${formatMoney(item.price)}
+      </p>
+      <button onclick="buyItem(${index})">
+        Kaufen
+      </button>
+    `;
+
+    grid.appendChild(div);
+
+  });
+}
+
+function buyItem(index){
+
+  const item=shopItems[index];
+
+  if(game.money<item.price){
+
+    alert("Nicht genug Geld!");
+
+    return;
+  }
+
+  game.money-=item.price;
+
+  game.inventory.push(item.name);
+
+  if(item.category==="Möbel"){
+    game.furniture.push(item.name);
+  }
+
+  updateStats();
+  renderFurniture();
+  saveGame();
+
+  alert(
+    item.name+
+    " gekauft! 🛒"
+  );
+}
+
+/* =========================================================
+   FURNITURE
+========================================================= */
+
+function renderFurniture(){
+
+  const box=document.getElementById("furnitureList");
+
+  if(!box)return;
+
+  if(game.furniture.length===0){
+
+    box.innerHTML="Noch keine Möbel.";
+
+    return;
+  }
+
+  box.innerHTML=game.furniture
+    .slice(-20)
+    .map(x=>`🛋️ ${x}`)
+    .join("<br>");
+}
+
+/* =========================================================
+   FANS
+========================================================= */
+
+function renderFans(){
+
+  const grid=document.getElementById("fanGrid");
+
+  grid.innerHTML="";
+
+  game.fans.forEach((fan,index)=>{
+
+    const div=document.createElement("div");
 
     div.className="card";
 
     div.innerHTML=`
-
-      <h3>🤝 ${business}</h3>
-
-      <p>Typ: ${type}</p>
+      <h3>❤️ ${fan.name}</h3>
 
       <p>
-        💰 Bezahlung:
-        <strong>${formatMoney(base)} €</strong>
+        Stimmung:
+        ${fan.mood}/100
       </p>
 
-      <p>
-        📅 ${offer.duration} Kampagne(n)
-      </p>
-
-      <button onclick="acceptSponsor(${i})">
-        ✅ Angebot annehmen
+      <button onclick="fanMoney(${index})">
+        💶 Geld geben
       </button>
 
+      <button onclick="fanGift(${index})">
+        🎁 Geschenk kaufen
+      </button>
+
+      <button onclick="fanVideo(${index})">
+        🎥 YouTuber Anfrage für ein Video
+      </button>
+
+      <button onclick="talkFan(${index})">
+        💬 Reden
+      </button>
     `;
 
-    box.appendChild(div);
+    grid.appendChild(div);
 
-  }
-
+  });
 }
 
-function acceptSponsor(index){
+function fanMoney(index){
 
-  let offer=gameData.sponsors[index];
+  const amount=100;
 
-  if(!offer)return;
+  if(game.money<amount){
 
-  gameData.money+=offer.payment;
+    alert("Du hast nicht genug Geld.");
 
-  gameData.acceptedSponsors.push(offer);
+    return;
+  }
 
-  notify(
-    "🤝 Sponsoring von "+
-    offer.business+
-    " angenommen!"
+  game.money-=amount;
+
+  game.fans[index].moneyGiven+=amount;
+  game.fans[index].mood=Math.min(
+    100,
+    game.fans[index].mood+8
   );
 
-  updateUI();
-
+  updateStats();
+  renderFans();
   saveGame();
+}
 
+function fanGift(index){
+
+  const price=250;
+
+  if(game.money<price){
+
+    alert("Nicht genug Geld.");
+
+    return;
+  }
+
+  game.money-=price;
+
+  game.fans[index].gifts++;
+
+  game.fans[index].mood=Math.min(
+    100,
+    game.fans[index].mood+12
+  );
+
+  updateStats();
+  renderFans();
+  saveGame();
+}
+
+function fanVideo(index){
+
+  const fan=game.fans[index];
+
+  const answer=Math.random();
+
+  if(answer>.35){
+
+    fan.mood=Math.min(
+      100,
+      fan.mood+20
+    );
+
+    game.likes+=Math.floor(
+      Math.random()*1000
+    )+100;
+
+    game.views+=Math.floor(
+      Math.random()*5000
+    )+500;
+
+    alert(
+      fan.name+
+      " hat die Video-Anfrage angenommen! 🎥🔥"
+    );
+
+  }else{
+
+    fan.mood=Math.max(
+      0,
+      fan.mood-5
+    );
+
+    alert(
+      fan.name+
+      " hat die Anfrage abgelehnt."
+    );
+  }
+
+  updateStats();
+  renderFans();
+  saveGame();
+}
+
+function talkFan(index){
+
+  const fan=game.fans[index];
+
+  fan.mood=Math.min(
+    100,
+    fan.mood+5
+  );
+
+  showSpeech(
+    fan.name+
+    ": Danke, dass du mit mir redest! ❤️"
+  );
+
+  renderFans();
+  saveGame();
 }
 
 /* =========================================================
-   MITARBEITER
+   CHANNELS
 ========================================================= */
 
-const jobs=[
+function createChannel(){
 
-  ["Kameramann","📷",1500],
-  ["Editor","✂️",1800],
-  ["Manager","💼",2500],
-  ["Techniker","🔧",2200],
-  ["Fahrer","🚗",1400],
-  ["Haushaltshilfe","🧹",1200],
-  ["Social-Media-Manager","📱",2100],
-  ["Produzent","🎬",3000],
-  ["Assistent","📋",1300],
-  ["Sicherheitsmitarbeiter","🛡️",1900]
+  if(
+    game.subs<20000 ||
+    game.likes<300000
+  ){
 
-];
-
-function hireEmployee(index){
-
-  let job=jobs[index];
-
-  if(gameData.money<job[2]){
-
-    notify("❌ Nicht genug Geld!");
+    alert(
+      "Du brauchst mindestens 20.000 Abos und 300.000 Likes."
+    );
 
     return;
-
   }
 
-  gameData.money-=job[2];
+  const name=prompt(
+    "Wie soll dein neuer Kanal heißen?"
+  );
 
-  gameData.employees.push({
-    job:job[0],
-    icon:job[1],
-    salary:job[2]
+  if(!name)return;
+
+  game.channels.push({
+    name:name,
+    subs:0,
+    likes:0
   });
 
-  notify("👥 "+job[0]+" eingestellt!");
-
-  updateUI();
-
-  saveGame();
-
-}
-
-/* =========================================================
-   BEZIEHUNG
-========================================================= */
-
-function startRelationship(){
-
-  if(gameData.relationship.status!=="single"){
-
-    notify("Du bist bereits in einer Beziehung.");
-
-    return;
-
-  }
-
-  let names=[
-    "Alex",
-    "Mia",
-    "Sam",
-    "Lina",
-    "Noah",
-    "Emma"
-  ];
-
-  let name=
-    names[Math.floor(Math.random()*names.length)];
-
-  gameData.relationship.status="relationship";
-  gameData.relationship.partner=name;
-
-  notify("❤️ Du hast "+name+" kennengelernt.");
-
-  updateUI();
-
-  saveGame();
-
-}
-
-function marry(){
-
-  if(gameData.relationship.status!=="relationship"){
-
-    notify("❌ Du bist nicht in einer Beziehung.");
-
-    return;
-
-  }
-
-  gameData.relationship.status="married";
-
-  notify("💍 Hochzeit im Spielsystem!");
-
-  updateUI();
-
-  saveGame();
-
-}
-
-function breakup(){
-
-  if(gameData.relationship.status==="single"){
-
-    notify("Du hast keine Beziehung.");
-
-    return;
-
-  }
-
-  gameData.relationship.status="single";
-  gameData.relationship.partner=null;
-
-  notify("Die Beziehung wurde beendet.");
-
-  updateUI();
-
-  saveGame();
-
-}
-
-/* =========================================================
-   ALTER / GENERATION
-========================================================= */
-
-function getLifeStage(age){
-
-  if(age<2)return"👶 Baby";
-  if(age<6)return"🧒 Kleinkind";
-  if(age<13)return"🧒 Kind";
-  if(age<18)return"🎒 Teenager";
-  if(age<30)return"🧑 Junger Erwachsener";
-  if(age<60)return"🧑 Erwachsener";
-  return"👴 Ältere Generation";
-
-}
-
-function growUp(){
-
-  gameData.age++;
-
-  if(gameData.age===2){
-    notify("🧒 Du bist jetzt ein Kleinkind!");
-  }
-
-  if(gameData.age===6){
-    notify("🧒 Du bist jetzt ein Kind!");
-  }
-
-  if(gameData.age===13){
-    notify("🎒 Du bist jetzt Teenager!");
-  }
-
-  if(gameData.age===18){
-    notify("🧑 Du bist jetzt erwachsen!");
-  }
-
-  updateUI();
-
-  saveGame();
-
-}
-
-function newGeneration(){
-
-  let oldGeneration=gameData.generation;
-
-  gameData.generation++;
-
-  gameData.age=0;
-
-  /*
-    Vermögen und große Fortschritte bleiben erhalten.
-    So kann man als Baby der nächsten Generation weiterspielen.
-  */
-
-  gameData.subs=Math.floor(gameData.subs*.75);
-
-  gameData.likes=Math.floor(gameData.likes*.75);
-
-  notify(
-    "👶 Generation "+
-    gameData.generation+
-    " beginnt! Du spielst wieder als Baby."
+  alert(
+    "Neuer Kanal erstellt! 📺"
   );
 
-  updateUI();
+  renderChannels();
+  saveGame();
+}
 
+function renderChannels(){
+
+  const list=document.getElementById("channelList");
+
+  list.innerHTML="";
+
+  game.channels.forEach((channel,index)=>{
+
+    const div=document.createElement("div");
+
+    div.className="card";
+
+    div.innerHTML=`
+      <h3>📺 ${channel.name}</h3>
+      <p>Abos: ${channel.subs.toLocaleString("de-DE")}</p>
+      <p>Likes: ${channel.likes.toLocaleString("de-DE")}</p>
+    `;
+
+    list.appendChild(div);
+
+  });
+}
+
+/* =========================================================
+   SPONSORS
+========================================================= */
+
+function renderSponsors(){
+
+  const grid=document.getElementById("sponsorGrid");
+
+  grid.innerHTML="";
+
+  sponsorBusinesses.forEach((business,index)=>{
+
+    const offer=
+      Math.floor(
+        500+
+        game.subs*.15+
+        Math.random()*5000
+      );
+
+    const div=document.createElement("div");
+
+    div.className="card";
+
+    div.innerHTML=`
+      <h3>🤝 ${business}</h3>
+      <p>
+        Sponsoring-Angebot:
+        <b>${formatMoney(offer)}</b>
+      </p>
+
+      <button onclick="acceptSponsor('${business}',${offer})">
+        Angebot annehmen
+      </button>
+    `;
+
+    grid.appendChild(div);
+
+  });
+}
+
+function acceptSponsor(name,amount){
+
+  game.money+=amount;
+
+  alert(
+    "Sponsoring von "+
+    name+
+    " angenommen! +"+
+    formatMoney(amount)
+  );
+
+  updateStats();
+  saveGame();
+}
+
+/* =========================================================
+   EMPLOYEES
+========================================================= */
+
+function hireEmployee(type){
+
+  const salaries={
+    Manager:5000,
+    Kameramann:2500,
+    Cutter:2500,
+    Techniker:3000,
+    Fahrer:2200,
+    Sicherheitsmitarbeiter:3500,
+    Haushaltshilfe:1800
+  };
+
+  const salary=salaries[type]||2000;
+
+  game.employees.push({
+    type:type,
+    salary:salary,
+    name:randomEmployeeName()
+  });
+
+  alert(
+    type+
+    " eingestellt!"
+  );
+
+  renderEmployees();
+  saveGame();
+}
+
+function randomEmployeeName(){
+
+  const names=[
+    "Alex",
+    "Chris",
+    "Sam",
+    "Luca",
+    "Max",
+    "Nico",
+    "Noah",
+    "Elias"
+  ];
+
+  return names[
+    Math.floor(
+      Math.random()*names.length
+    )
+  ];
+}
+
+function renderEmployees(){
+
+  const list=document.getElementById("employeeList");
+
+  list.innerHTML="";
+
+  game.employees.forEach(emp=>{
+
+    const div=document.createElement("div");
+
+    div.className="card";
+
+    div.innerHTML=`
+      <h3>👔 ${emp.name}</h3>
+      <p>Job: ${emp.type}</p>
+      <p>Gehalt: ${formatMoney(emp.salary)}</p>
+    `;
+
+    list.appendChild(div);
+
+  });
+}
+
+/* =========================================================
+   RELATIONSHIP
+========================================================= */
+
+function findPartner(){
+
+  const names=[
+    "Mia",
+    "Emma",
+    "Sophie",
+    "Lina",
+    "Nora",
+    "Lea",
+    "Anna"
+  ];
+
+  const name=
+    names[
+      Math.floor(
+        Math.random()*names.length
+      )
+    ];
+
+  game.relationship={
+    name:name,
+    level:10
+  };
+
+  renderRelationship();
+  saveGame();
+}
+
+function endRelationship(){
+
+  if(!game.relationship){
+
+    alert("Du bist aktuell single.");
+
+    return;
+  }
+
+  game.relationship=null;
+
+  renderRelationship();
+  saveGame();
+}
+
+function renderRelationship(){
+
+  const status=
+    document.getElementById("relationshipStatus");
+
+  const box=
+    document.getElementById("partnerBox");
+
+  if(!game.relationship){
+
+    status.innerHTML=
+      "Du bist aktuell single.";
+
+    box.innerHTML=
+      "Keine Beziehung.";
+
+    return;
+  }
+
+  status.innerHTML=
+    "Beziehung mit "+
+    game.relationship.name;
+
+  box.innerHTML=`
+    <h3>💙 ${game.relationship.name}</h3>
+    <p>Beziehungslevel: ${game.relationship.level}</p>
+    <button onclick="relationshipAction()">
+      💬 Gemeinsam etwas machen
+    </button>
+  `;
+}
+
+function relationshipAction(){
+
+  if(!game.relationship)return;
+
+  game.relationship.level=
+    Math.min(
+      100,
+      game.relationship.level+5
+    );
+
+  renderRelationship();
+  saveGame();
+}
+
+/* =========================================================
+   AGE
+========================================================= */
+
+function setAge(age){
+
+  game.age=age;
+
+  updateStats();
   saveGame();
 
+  alert(
+    "Dein Charakter ist jetzt "+
+    age+
+    " Jahre alt."
+  );
+}
+
+function nextGeneration(){
+
+  game.generation++;
+
+  game.age=1;
+
+  game.subs=Math.floor(
+    game.subs*.25
+  );
+
+  game.likes=Math.floor(
+    game.likes*.25
+  );
+
+  game.money=Math.floor(
+    game.money*.7
+  );
+
+  alert(
+    "👶 Neue Generation gestartet!\nGeneration "+
+    game.generation
+  );
+
+  updateStats();
+  saveGame();
 }
 
 /* =========================================================
    TRAINING
 ========================================================= */
 
-function training(){
+function train(){
 
-  gameData.money+=25;
+  game.money=Math.max(
+    0,
+    game.money-50
+  );
 
-  notify("🏋️ Training abgeschlossen! +25 €");
+  showSpeech(
+    "🏋️ Training abgeschlossen!"
+  );
 
   saveGame();
-
-  updateUI();
-
+  updateStats();
 }
 
 /* =========================================================
-   WELTEN
+   SPEECH
 ========================================================= */
 
-function changeWorld(world,title){
+function speak(){
 
-  let game=document.getElementById("game");
+  const messages=[
+    "Hallo Leute! 👋",
+    "Heute wird ein neues Video gemacht! 🎥",
+    "Willkommen in meinem Studio! 😎",
+    "Was soll ich als Nächstes machen?",
+    "Das wird ein riesiges Projekt! 🚀"
+  ];
 
-  game.className="";
+  const message=
+    messages[
+      Math.floor(
+        Math.random()*messages.length
+      )
+    ];
 
-  game.classList.add("world-"+world);
-
-  document.getElementById("sceneTitle").textContent=title;
-
-  gameData.currentWorld=world;
-
-  if(world==="studio"){
-
-    speak("🎥 Willkommen in deinem Studio!");
-
-  }
-
-  if(world==="shop"){
-
-    speak("🛒 Hier gibt es jede Menge Equipment!");
-
-  }
-
-  if(world==="social"){
-
-    speak("📱 Zeit für Social Media!");
-
-  }
-
-  saveGame();
-
+  showSpeech(message);
 }
 
-/* =========================================================
-   SPRACHE / BLASE
-========================================================= */
+function showSpeech(text){
 
-function speak(text){
+  const bubble=
+    document.getElementById("speech");
 
-  let bubble=document.getElementById("speech");
-
-  bubble.textContent=text;
+  bubble.innerHTML=text;
 
   bubble.style.display="block";
 
   setTimeout(()=>{
     bubble.style.display="none";
   },3000);
-
 }
 
 /* =========================================================
-   PANELS
+   HOMES
 ========================================================= */
 
-function openPanel(id){
+function changeHome(){
 
-  closePanels();
+  const available=homes.filter(
+    h=>
+      !game.ownedHomes.includes(h.name)
+  );
 
-  document.getElementById(id).style.display="block";
+  if(available.length===0){
 
+    alert(
+      "Du besitzt bereits alle Häuser."
+    );
+
+    return;
+  }
+
+  const home=available[0];
+
+  if(game.money<home.price){
+
+    alert(
+      home.name+
+      " kostet "+
+      formatMoney(home.price)
+    );
+
+    return;
+  }
+
+  game.money-=home.price;
+
+  game.ownedHomes.push(home.name);
+  game.home=home.name;
+
+  document.getElementById(
+    "homeName"
+  ).innerText=game.home;
+
+  document.getElementById(
+    "homeInfo"
+  ).innerText=game.home;
+
+  updateStats();
+  saveGame();
+
+  alert(
+    home.name+
+    " gekauft! 🏠"
+  );
 }
 
-function closePanels(){
+/* =========================================================
+   RANDOM EVENTS
+========================================================= */
 
-  document.querySelectorAll(".panel").forEach(p=>{
-    p.style.display="none";
-  });
+function randomEvent(){
 
+  const events=[
+
+    ()=>{
+      const gain=
+        Math.floor(Math.random()*10000)+1000;
+
+      game.money+=gain;
+
+      return "Du bekommst "+formatMoney(gain)+"! 💰";
+    },
+
+    ()=>{
+      const gain=
+        Math.floor(Math.random()*5000)+500;
+
+      game.subs+=gain;
+
+      return "Dein Kanal bekommt "+gain+" neue Abos! 📈";
+    },
+
+    ()=>{
+      const gain=
+        Math.floor(Math.random()*10000)+1000;
+
+      game.views+=gain;
+
+      return "Ein altes Video geht viral! 👀";
+    },
+
+    ()=>{
+      return "Ein kleiner YouTuber fragt nach einer Kollaboration! 🎥";
+    }
+
+  ];
+
+  const event=
+    events[
+      Math.floor(
+        Math.random()*events.length
+      )
+    ];
+
+  alert(event());
+
+  updateStats();
+  saveGame();
 }
 
 /* =========================================================
@@ -2069,839 +2225,194 @@ function closePanels(){
 
 function ownerLogin(){
 
-  let pass=
-    document.getElementById("ownerPassword").value;
+  const password=
+    document.getElementById(
+      "ownerPassword"
+    ).value;
 
-  if(pass===OWNER_PASSWORD){
+  if(password===OWNER_PASSWORD){
 
-    document.getElementById("ownerControls").style.display="block";
+    document.getElementById(
+      "ownerTools"
+    ).classList.remove("hidden");
 
-    notify("👑 Owner-Modus aktiviert!");
+    alert("👑 Owner-Modus aktiviert!");
 
   }else{
 
-    notify("❌ Falsches Passwort!");
-
+    alert("❌ Falsches Passwort.");
   }
-
 }
 
-function ownerMoney(){
+function addMoney(amount){
 
-  gameData.money+=1000000000;
+  game.money+=amount;
 
-  updateUI();
+  updateStats();
   saveGame();
-
 }
 
-function ownerSubs(){
+function addSubs(amount){
 
-  gameData.subs+=100000;
+  game.subs+=amount;
 
-  updateUI();
+  game.followers.YouTube+=amount;
+
+  updateStats();
   saveGame();
-
 }
 
-function ownerLikes(){
+function addLikes(amount){
 
-  gameData.likes+=1000000;
+  game.likes+=amount;
 
-  updateUI();
+  updateStats();
   saveGame();
-
 }
 
-function ownerFollowers(){
+function addViews(amount){
 
-  gameData.followers+=1000000;
+  game.views+=amount;
 
-  updateUI();
+  updateStats();
   saveGame();
-
-}
-
-function ownerAge(){
-
-  gameData.age++;
-
-  updateUI();
-  saveGame();
-
-}
-
-function unlockEverything(){
-
-  gameData.settings.allUnlocked=true;
-
-  gameData.homes.forEach(h=>h.owned=true);
-
-  notify("🔓 Alles wurde freigeschaltet!");
-
-  updateUI();
-
-  saveGame();
-
 }
 
 /* =========================================================
-   RESET
-========================================================= */
-
-function resetGame(){
-
-  if(!confirm(
-    "Wirklich das komplette Spiel zurücksetzen?"
-  ))return;
-
-  localStorage.removeItem("creatorLifeSave");
-
-  location.reload();
-
-}
-
-/* =========================================================
-   SPEICHERN
+   SAVE / LOAD
 ========================================================= */
 
 function saveGame(){
 
   localStorage.setItem(
-    "creatorLifeSave",
-    JSON.stringify(gameData)
+    "youtuberLife3D",
+    JSON.stringify(game)
   );
-
 }
 
 function loadGame(){
 
-  let save=
-    localStorage.getItem("creatorLifeSave");
+  const saved=
+    localStorage.getItem(
+      "youtuberLife3D"
+    );
 
-  if(!save)return;
+  if(!saved)return;
 
   try{
 
-    let loaded=JSON.parse(save);
+    const data=
+      JSON.parse(saved);
 
-    gameData={
-      ...gameData,
-      ...loaded,
-      player:{
-        ...gameData.player,
-        ...(loaded.player||{})
-      },
-      social:{
-        ...gameData.social,
-        ...(loaded.social||{})
-      },
-      relationship:{
-        ...gameData.relationship,
-        ...(loaded.relationship||{})
-      },
-      settings:{
-        ...gameData.settings,
-        ...(loaded.settings||{})
-      }
+    game={
+      ...game,
+      ...data
     };
 
   }catch(e){
 
-    console.log("Save konnte nicht geladen werden.");
-
+    console.log(
+      "Speicherstand konnte nicht geladen werden."
+    );
   }
-
 }
 
-/* =========================================================
-   UI
-========================================================= */
-
-function updateUI(){
-
-  document.getElementById("money").textContent=
-    formatMoney(gameData.money);
-
-  document.getElementById("subs").textContent=
-    formatNumber(gameData.subs);
-
-  document.getElementById("likes").textContent=
-    formatNumber(gameData.likes);
-
-  document.getElementById("followers").textContent=
-    formatNumber(gameData.followers);
-
-  document.getElementById("age").textContent=
-    gameData.age;
-
-  updateSocial();
-
-  renderHomes();
-
-  renderFurniture();
-
-  renderChannels();
-
-  renderEmployees();
-
-  renderRelationship();
-
-  renderAge();
-
-  renderPlayer();
-
-}
-
-function updateSocial(){
-
-  let s=gameData.social;
-
-  document.getElementById("ytFollowers").textContent=
-    formatNumber(s.youtube.followers);
-
-  document.getElementById("ytLikes").textContent=
-    formatNumber(s.youtube.likes);
-
-  document.getElementById("tiktokFollowers").textContent=
-    formatNumber(s.tiktok.followers);
-
-  document.getElementById("tiktokLikes").textContent=
-    formatNumber(s.tiktok.likes);
-
-  document.getElementById("instagramFollowers").textContent=
-    formatNumber(s.instagram.followers);
-
-  document.getElementById("instagramLikes").textContent=
-    formatNumber(s.instagram.likes);
-
-  document.getElementById("twitchFollowers").textContent=
-    formatNumber(s.twitch.followers);
-
-  document.getElementById("twitchStreams").textContent=
-    formatNumber(s.twitch.streams);
-
-  document.getElementById("xFollowers").textContent=
-    formatNumber(s.x.followers);
-
-  document.getElementById("xLikes").textContent=
-    formatNumber(s.x.likes);
-
-}
-
-/* =========================================================
-   HÄUSER RENDERN
-========================================================= */
-
-function renderHomes(){
-
-  let box=document.getElementById("homes");
-
-  if(!box)return;
-
-  box.innerHTML="";
-
-  gameData.homes.forEach(home=>{
-
-    let div=document.createElement("div");
-
-    div.className="card";
-
-    div.innerHTML=`
-
-      <h3>🏠 ${home.name}</h3>
-
-      <p>
-        💰 ${formatMoney(home.price)} €
-      </p>
-
-      <p>
-        Status:
-        ${home.owned?"✅ Besitzt":"🔒 Nicht gekauft"}
-      </p>
-
-      ${
-        home.owned
-        ?
-        `<button onclick="setHome(${home.id})">
-          🏠 Einziehen
-        </button>`
-        :
-        `<button onclick="buyHome(${home.id})">
-          💰 Kaufen
-        </button>`
-      }
-
-    `;
-
-    box.appendChild(div);
-
-  });
-
-}
-
-function buyHome(id){
-
-  let home=gameData.homes[id];
-
-  if(home.owned){
-
-    notify("Du besitzt dieses Haus bereits.");
-
-    return;
-
-  }
+function resetGame(){
 
   if(
-    gameData.money<home.price &&
-    !gameData.settings.allUnlocked
-  ){
-
-    notify("❌ Nicht genug Geld!");
-
-    return;
-
-  }
-
-  if(!gameData.settings.allUnlocked){
-
-    gameData.money-=home.price;
-
-  }
-
-  home.owned=true;
-
-  notify("🏠 "+home.name+" gekauft!");
-
-  updateUI();
-
-  saveGame();
-
-}
-
-function setHome(id){
-
-  let home=gameData.homes[id];
-
-  notify("🏠 Du wohnst jetzt in: "+home.name);
-
-  changeWorld("home","🏠 "+home.name);
-
-}
-
-/* =========================================================
-   MÖBEL
-========================================================= */
-
-function renderFurniture(){
-
-  let box=document.getElementById("ownedFurniture");
-
-  if(!box)return;
-
-  if(gameData.ownedFurniture.length===0){
-
-    box.innerHTML=
-      "<p>Noch keine Möbel gekauft.</p>";
-
-    return;
-
-  }
-
-  box.innerHTML=
-    gameData.ownedFurniture
-    .slice(-50)
-    .map(f=>
-      `<span class="card" style="display:inline-block;margin:4px">
-        ${f.icon} ${f.name}
-      </span>`
+    !confirm(
+      "Wirklich das komplette Spiel zurücksetzen?"
     )
-    .join("");
+  )return;
 
-}
-
-/* =========================================================
-   KANÄLE RENDERN
-========================================================= */
-
-function renderChannels(){
-
-  let box=document.getElementById("channels");
-
-  if(!box)return;
-
-  box.innerHTML="";
-
-  gameData.channels.forEach((channel,index)=>{
-
-    let div=document.createElement("div");
-
-    div.className="card";
-
-    div.style.marginTop="10px";
-
-    div.innerHTML=`
-
-      <h3>📺 ${channel.name}</h3>
-
-      <p>
-        👥 Abos:
-        ${formatNumber(channel.subscribers)}
-      </p>
-
-      <p>
-        ❤️ Likes:
-        ${formatNumber(channel.likes)}
-      </p>
-
-      <button onclick="makeChannelVideo(${index})">
-        🎥 Video produzieren
-      </button>
-
-    `;
-
-    box.appendChild(div);
-
-  });
-
-}
-
-function makeChannelVideo(index){
-
-  let channel=gameData.channels[index];
-
-  let quality=
-    Math.max(1,gameData.ownedEquipment.length);
-
-  channel.subscribers+=
-    10+quality;
-
-  channel.likes+=
-    20+quality*2;
-
-  gameData.money+=
-    10+quality;
-
-  notify(
-    "🎥 Video auf "+
-    channel.name+
-    " veröffentlicht!"
+  localStorage.removeItem(
+    "youtuberLife3D"
   );
 
-  updateUI();
-
-  saveGame();
-
+  location.reload();
 }
 
 /* =========================================================
-   MITARBEITER RENDERN
+   STATS
 ========================================================= */
 
-function renderEmployees(){
+function formatMoney(number){
 
-  let box=document.getElementById("employees");
-
-  if(!box)return;
-
-  box.innerHTML="";
-
-  jobs.forEach((job,index)=>{
-
-    let div=document.createElement("div");
-
-    div.className="card";
-
-    div.innerHTML=`
-
-      <h3>${job[1]} ${job[0]}</h3>
-
-      <p>Gehalt: ${formatMoney(job[2])} €/Monat</p>
-
-      <button onclick="hireEmployee(${index})">
-        👥 Einstellen
-      </button>
-
-    `;
-
-    box.appendChild(div);
-
-  });
-
-  if(gameData.employees.length){
-
-    let hired=document.createElement("div");
-
-    hired.className="card";
-
-    hired.innerHTML=`
-
-      <h3>✅ Deine Mitarbeiter</h3>
-
-      <p>
-        ${gameData.employees
-        .map(e=>e.icon+" "+e.job)
-        .join("<br>")}
-      </p>
-
-    `;
-
-    box.appendChild(hired);
-
-  }
-
+  return Math.floor(number)
+    .toLocaleString("de-DE")+" €";
 }
 
-/* =========================================================
-   BEZIEHUNG RENDERN
-========================================================= */
-
-function renderRelationship(){
-
-  let box=document.getElementById("relationshipBox");
-
-  if(!box)return;
-
-  let r=gameData.relationship;
-
-  if(r.status==="single"){
-
-    box.innerHTML=`
-
-      <div class="card">
-
-        <h3>🙂 Single</h3>
-
-        <p>Du kannst eine neue Person kennenlernen.</p>
-
-        <button onclick="startRelationship()">
-          ❤️ Person kennenlernen
-        </button>
-
-      </div>
-
-    `;
-
-  }else{
-
-    box.innerHTML=`
-
-      <div class="card">
-
-        <h3>
-          ${
-            r.status==="married"
-            ?"💍 Verheiratet"
-            :"❤️ Beziehung"
-          }
-        </h3>
-
-        <p>Partner: ${r.partner}</p>
-
-        ${
-          r.status==="relationship"
-          ?
-          `<button onclick="marry()">
-             💍 Heiraten
-           </button>`
-          :""
-        }
-
-        <button onclick="breakup()">
-          🔄 Beziehung beenden
-        </button>
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-/* =========================================================
-   ALTER RENDERN
-========================================================= */
-
-function renderAge(){
-
-  let stage=getLifeStage(gameData.age);
-
-  let progress=(gameData.age%10)*10;
-
-  if(gameData.age>=60)progress=100;
-
-  let fill=document.getElementById("ageFill");
-
-  if(fill)fill.style.width=progress+"%";
-
-  let text=document.getElementById("ageText");
-
-  if(text){
-
-    text.innerHTML=
-      "Generation: <strong>"+
-      gameData.generation+
-      "</strong><br>"+
-      "Alter: <strong>"+
-      gameData.age+
-      "</strong><br>"+
-      "Lebensphase: <strong>"+
-      stage+
-      "</strong>";
-
-  }
-
-  let stageBox=document.getElementById("lifeStage");
-
-  if(stageBox)stageBox.textContent=stage;
-
-}
-
-/* =========================================================
-   ZAHLEN
-========================================================= */
-
-function formatNumber(n){
-
-  return Math.floor(n).toLocaleString("de-DE");
-
-}
-
-function formatMoney(n){
-
-  if(n>=1e12){
-
-    return (n/1e12).toFixed(2)+" Bio.";
-
-  }
-
-  if(n>=1e9){
-
-    return (n/1e9).toFixed(2)+" Mrd.";
-
-  }
-
-  if(n>=1e6){
-
-    return (n/1e6).toFixed(2)+" Mio.";
-
-  }
-
-  if(n>=1e3){
-
-    return (n/1e3).toFixed(1)+"K";
-
-  }
-
-  return Math.floor(n).toString();
-
-}
-
-/* =========================================================
-   NOTIFICATION
-========================================================= */
-
-let notificationTimer;
-
-function notify(text){
-
-  let n=document.getElementById("notification");
-
-  n.textContent=text;
-
-  n.style.display="block";
-
-  clearTimeout(notificationTimer);
-
-  notificationTimer=setTimeout(()=>{
-
-    n.style.display="none";
-
-  },3000);
-
-}
-
-/* =========================================================
-   AUTOMATISCHE EVENTS
-========================================================= */
-
-function randomEvent(){
-
-  let events=[
-
-    {
-      text:"📈 Dein Video geht plötzlich viral!",
-      money:500,
-      subs:100
-    },
-
-    {
-      text:"🤝 Ein kleines Unternehmen möchte mit dir arbeiten!",
-      money:1000,
-      subs:50
-    },
-
-    {
-      text:"🎮 Ein Gaming-Video läuft besonders gut!",
-      money:250,
-      subs:200
-    },
-
-    {
-      text:"📱 Dein Social-Media-Post bekommt viel Aufmerksamkeit!",
-      money:100,
-      subs:50
-    },
-
-    {
-      text:"🎁 Ein Fan schickt dir eine kleine Unterstützung!",
-      money:200,
-      subs:20
-    }
-
-  ];
-
-  let e=
-    events[
-      Math.floor(Math.random()*events.length)
-    ];
-
-  gameData.money+=e.money;
-  gameData.subs+=e.subs;
-
-  notify(
-    e.text+
-    " +"+formatMoney(e.money)+
-    " € und +"+e.subs+" Abos"
-  );
-
-  updateUI();
-  saveGame();
-
-}
-
-/* =========================================================
-   NPC
-========================================================= */
-
-function createNPC(){
-
-  let npc=document.createElement("div");
-
-  npc.className="player";
-
-  npc.style.left=
-    Math.random()*700+
-    "px";
-
-  npc.style.top=
-    350+
-    Math.random()*100+
-    "px";
-
-  npc.innerHTML=`
-
-    <div class="hair"></div>
-    <div class="head"></div>
-    <div class="body" style="background:#e14b75"></div>
-    <div class="leg leg1"></div>
-    <div class="leg leg2"></div>
-
-  `;
-
-  document.getElementById("game").appendChild(npc);
-
-  let x=parseFloat(npc.style.left);
-
-  setInterval(()=>{
-
-    x+=Math.random()>0.5?10:-10;
-
-    x=Math.max(0,Math.min(800,x));
-
-    npc.style.left=x+"px";
-
-  },1000+Math.random()*2000);
-
+function updateStats(){
+
+  document.getElementById("money")
+    .innerText=
+    Math.floor(game.money)
+      .toLocaleString("de-DE");
+
+  document.getElementById("subs")
+    .innerText=
+    Math.floor(game.subs)
+      .toLocaleString("de-DE");
+
+  document.getElementById("likes")
+    .innerText=
+    Math.floor(game.likes)
+      .toLocaleString("de-DE");
+
+  document.getElementById("views")
+    .innerText=
+    Math.floor(game.views)
+      .toLocaleString("de-DE");
+
+  document.getElementById("age")
+    .innerText=game.age;
+
+  document.getElementById("homeName")
+    .innerText=game.home;
+
+  document.getElementById("ytFollowers")
+    .innerText=
+    game.followers.YouTube
+      .toLocaleString("de-DE");
+
+  document.getElementById("ttFollowers")
+    .innerText=
+    game.followers.TikTok
+      .toLocaleString("de-DE");
+
+  document.getElementById("igFollowers")
+    .innerText=
+    game.followers.Instagram
+      .toLocaleString("de-DE");
+
+  document.getElementById("twFollowers")
+    .innerText=
+    game.followers.Twitch
+      .toLocaleString("de-DE");
+
+  document.getElementById("xFollowers")
+    .innerText=
+    game.followers.X
+      .toLocaleString("de-DE");
 }
 
 /* =========================================================
    START
 ========================================================= */
 
-createHomes();
-
-generateShop();
-
 loadGame();
 
-updateUI();
+updateStats();
 
-createNPC();
-createNPC();
-createNPC();
+updatePlayerPosition();
 
-/*
-  Alle 30 Sekunden gibt es ein zufälliges Ereignis.
-*/
+renderFurniture();
 
-setInterval(()=>{
+renderChannels();
 
-  randomEvent();
+renderEmployees();
 
-},30000);
-
-/*
-  Alle 60 Sekunden kann das Spiel automatisch speichern.
-*/
-
-setInterval(()=>{
-
-  saveGame();
-
-},60000);
-
-/*
-  Klick auf den PC/Kamera-Bereich:
-  Video starten.
-*/
-
-document.querySelector(".pc").addEventListener(
-  "click",
-  makeVideo
-);
-
-document.querySelector(".camera").addEventListener(
-  "click",
-  makeVideo
-);
-
-/*
-  Alter-Panel über Taste A
-*/
-
-document.addEventListener("keydown",e=>{
-
-  if(e.key.toLowerCase()==="a"){
-
-    openPanel("agePanel");
-
-  }
-
-});
-
-/* =========================================================
-   START-TEXT
-========================================================= */
-
-setTimeout(()=>{
-
-  speak(
-    "👶 Willkommen! Du kannst dein Leben als Baby beginnen."
-  );
-
-},1000);
+renderRelationship();
 
 </script>
 
