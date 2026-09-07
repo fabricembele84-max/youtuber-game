@@ -3,2418 +3,4199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>YouTuber Life 3D</title>
+<title>YouTuber Life – Mega Life Simulator</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
-  background:#111827;
+  background:#08111f;
   color:white;
-  overflow-x:hidden;
+  overflow-x:hidden
 }
-
+button,input,select{
+  font:inherit
+}
 button{
   border:0;
   border-radius:12px;
   padding:10px 14px;
-  margin:4px;
+  cursor:pointer;
   background:#2563eb;
   color:white;
   font-weight:bold;
-  cursor:pointer;
+  margin:3px
 }
+button:hover{filter:brightness(1.15)}
+button.red{background:#dc2626}
+button.green{background:#16a34a}
+button.gold{background:#d97706}
+button.dark{background:#334155}
 
-button:hover{
-  transform:translateY(-1px);
-  filter:brightness(1.12);
-}
-
-button:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-
-.topbar{
+.top{
   position:sticky;
   top:0;
-  z-index:1000;
-  background:rgba(10,15,25,.95);
-  backdrop-filter:blur(10px);
-  padding:10px;
-  border-bottom:1px solid #334155;
+  z-index:50;
+  background:#0b1220ee;
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid #263247;
+  padding:10px
 }
-
+.top h1{margin:0 0 8px;font-size:21px}
 .stats{
   display:flex;
   flex-wrap:wrap;
-  gap:8px;
-  justify-content:center;
+  gap:6px
 }
-
 .stat{
-  background:#1e293b;
-  padding:8px 12px;
+  background:#111c30;
+  border:1px solid #263b5c;
+  padding:7px 10px;
   border-radius:10px;
-  font-size:14px;
+  font-size:13px
 }
 
 .nav{
   display:flex;
   flex-wrap:wrap;
-  justify-content:center;
+  gap:5px;
   padding:8px;
-  background:#0f172a;
+  background:#101827
 }
-
-.nav button{
-  background:#334155;
-}
+.nav button{background:#1e293b}
 
 #game{
+  min-height:560px;
   position:relative;
-  min-height:590px;
   overflow:hidden;
   background:
-    linear-gradient(#78c7ff 0 48%,#b9e8ff 48% 55%,#72b95b 55% 100%);
+    linear-gradient(#67b9ff 0 52%,#9ad85b 52% 76%,#59616c 76% 82%,#242a33 82%);
+  perspective:900px
 }
 
-/* =========================
-   3D WORLD
-========================= */
-
-.world3d{
+.cloud{
   position:absolute;
-  inset:0;
-  perspective:1100px;
-  perspective-origin:50% 55%;
-  overflow:hidden;
+  width:120px;
+  height:40px;
+  background:white;
+  border-radius:50px;
+  opacity:.8;
+  animation:cloud 25s linear infinite
 }
-
-.worldPlane{
-  position:absolute;
-  width:1200px;
-  height:700px;
-  left:50%;
-  top:50%;
-  transform:
-    translate(-50%,-50%)
-    rotateX(58deg)
-    rotateZ(0deg);
-  transform-style:preserve-3d;
-}
-
-.ground3d{
-  position:absolute;
-  width:1200px;
-  height:700px;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(255,255,255,.03) 0 80px,
-      rgba(0,0,0,.03) 80px 160px
-    ),
-    linear-gradient(#65aa50,#3d7d38);
-  transform:translateZ(0);
-  box-shadow:inset 0 0 100px rgba(0,0,0,.25);
-}
-
-.road3d{
-  position:absolute;
-  width:1200px;
-  height:120px;
-  left:0;
-  top:440px;
-  background:#333842;
-  transform:translateZ(3px);
-  box-shadow:0 0 25px rgba(0,0,0,.3);
-}
-
-.road3d:after{
+.cloud:before,.cloud:after{
   content:"";
   position:absolute;
-  left:0;
-  right:0;
-  top:55px;
-  border-top:6px dashed #facc15;
+  background:white;
+  border-radius:50%
+}
+.cloud:before{width:55px;height:55px;left:25px;top:-25px}
+.cloud:after{width:65px;height:65px;right:18px;top:-30px}
+.c1{top:70px;left:-160px}
+.c2{top:150px;left:-350px;animation-delay:8s}
+.c3{top:45px;left:-500px;animation-delay:15s}
+@keyframes cloud{
+  to{transform:translateX(140vw)}
 }
 
-.shadow{
+.sun{
   position:absolute;
-  background:rgba(0,0,0,.25);
+  width:90px;height:90px;
   border-radius:50%;
-  filter:blur(4px);
+  background:#ffe47a;
+  right:9%;
+  top:40px;
+  box-shadow:0 0 50px #ffe47a
 }
 
-/* =========================
-   3D HOUSE
-========================= */
-
-.house3d{
+.street{
   position:absolute;
+  left:0;right:0;
+  bottom:18%;
+  height:70px;
+  background:#303640;
+  border-top:4px solid #68717c;
+  border-bottom:4px solid #171b20
+}
+.street:after{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  top:31px;
+  border-top:5px dashed #e7d56d
+}
+
+.house{
+  position:absolute;
+  left:7%;
+  bottom:24%;
   width:310px;
   height:240px;
-  left:420px;
-  top:115px;
-  transform-style:preserve-3d;
-  transform:translateZ(35px);
+  background:#d8b28d;
+  border:6px solid #6b442b;
+  border-radius:8px;
+  box-shadow:25px 25px 25px #0004;
+  transform:rotateY(-3deg)
 }
-
-.houseFront{
+.house .roof{
   position:absolute;
-  width:300px;
-  height:210px;
-  bottom:0;
-  left:0;
-  background:
-    linear-gradient(90deg,rgba(255,255,255,.1),transparent),
-    #d8b08a;
-  border:5px solid #70472d;
-  transform:translateZ(50px);
-  box-shadow:0 15px 25px rgba(0,0,0,.3);
+  left:-25px;
+  top:-105px;
+  width:350px;
+  height:120px;
+  background:#743c35;
+  border:6px solid #452522;
+  clip-path:polygon(50% 0,100% 85%,94% 100%,6% 100%,0 85%)
 }
-
-.houseSide{
+.window{
   position:absolute;
-  width:110px;
-  height:210px;
-  right:-105px;
-  bottom:0;
-  background:#ae805e;
-  border:5px solid #70472d;
-  transform:rotateY(90deg) translateZ(55px);
-  transform-origin:left;
+  width:60px;height:65px;
+  background:#73cfff;
+  border:6px solid #513b2d
 }
-
-.houseRoof{
+.w1{left:30px;top:45px}
+.w2{right:30px;top:45px}
+.door{
   position:absolute;
-  width:330px;
-  height:110px;
-  left:-15px;
-  top:-60px;
-  background:#7f1d1d;
-  clip-path:polygon(50% 0,100% 100%,0 100%);
-  transform:translateZ(75px);
-  filter:drop-shadow(0 12px 7px rgba(0,0,0,.3));
+  width:65px;height:110px;
+  left:122px;bottom:0;
+  background:#63442e;
+  border:5px solid #3e291c
 }
-
-.houseRoof2{
-  position:absolute;
-  width:330px;
-  height:110px;
-  left:-15px;
-  top:-60px;
-  background:#5f1717;
-  clip-path:polygon(50% 0,100% 100%,0 100%);
-  transform:rotateY(90deg) translateZ(55px);
-}
-
-.window3d{
-  position:absolute;
-  width:65px;
-  height:65px;
-  top:45px;
-  background:#72c9f5;
-  border:7px solid #4b3527;
-  box-shadow:inset 0 0 15px rgba(255,255,255,.5);
-}
-
-.window3d:before{
+.door:after{
   content:"";
   position:absolute;
-  left:50%;
-  top:0;
-  bottom:0;
-  border-left:3px solid #4b3527;
+  right:8px;top:52px;
+  width:8px;height:8px;
+  background:#e8c46a;
+  border-radius:50%
 }
 
-.window3d:after{
-  content:"";
+.sidehouse{
   position:absolute;
-  top:50%;
-  left:0;
-  right:0;
-  border-top:3px solid #4b3527;
+  left:7%;
+  bottom:24%;
+  width:80px;height:240px;
+  transform:translateX(305px) skewY(-18deg);
+  background:#a98468;
+  border-right:6px solid #604633
 }
-
-.w1{left:35px}
-.w2{right:35px}
-
-.door3d{
-  position:absolute;
-  width:55px;
-  height:105px;
-  left:122px;
-  bottom:0;
-  background:#633c26;
-  border:6px solid #3f281b;
-  transform:translateZ(55px);
-}
-
-.door3d:after{
-  content:"";
-  position:absolute;
-  right:8px;
-  top:52px;
-  width:8px;
-  height:8px;
-  background:#facc15;
-  border-radius:50%;
-}
-
-.steps3d{
-  position:absolute;
-  width:100px;
-  height:30px;
-  left:100px;
-  bottom:-25px;
-  background:#9ca3af;
-  transform:translateZ(58px);
-  box-shadow:0 10px 0 #6b7280;
-}
-
-/* =========================
-   3D PLAYER
-========================= */
-
-.player3d{
-  position:absolute;
-  width:90px;
-  height:180px;
-  left:330px;
-  top:250px;
-  transform-style:preserve-3d;
-  transform:translateZ(90px);
-  transition:left .18s,top .18s;
-  z-index:50;
-}
-
-.playerShadow{
-  position:absolute;
-  width:75px;
-  height:22px;
-  left:8px;
-  bottom:-8px;
-  background:rgba(0,0,0,.35);
-  border-radius:50%;
-  filter:blur(3px);
-  transform:rotateX(65deg);
-}
-
-.body3d{
-  position:absolute;
-  width:54px;
-  height:70px;
-  left:18px;
-  top:60px;
-  border-radius:15px 15px 10px 10px;
-  background:linear-gradient(90deg,#2563eb,#1d4ed8);
-  transform:translateZ(20px);
-  box-shadow:inset -8px 0 12px rgba(0,0,0,.2);
-}
-
-.bodySide{
-  position:absolute;
-  width:40px;
-  height:70px;
-  left:70px;
-  top:60px;
-  background:#173b99;
-  transform:rotateY(90deg);
-  transform-origin:left;
-}
-
-.head3d{
-  position:absolute;
-  width:58px;
-  height:62px;
-  left:16px;
-  top:4px;
-  border-radius:48% 48% 44% 44%;
-  background:
-    radial-gradient(circle at 35% 35%,rgba(255,255,255,.3),transparent 18%),
-    #c98f67;
-  transform:translateZ(30px);
-  box-shadow:
-    inset -8px -5px 12px rgba(0,0,0,.18),
-    0 4px 8px rgba(0,0,0,.25);
-}
-
-.hair3d{
-  position:absolute;
-  width:62px;
-  height:25px;
-  left:14px;
-  top:0;
-  background:#24170f;
-  border-radius:50% 50% 20% 20%;
-  transform:translateZ(34px);
-}
-
-.eye{
-  position:absolute;
-  width:8px;
-  height:10px;
-  background:#111;
-  border-radius:50%;
-  top:27px;
-}
-
-.eye.left{left:15px}
-.eye.right{right:15px}
-
-.mouth{
-  position:absolute;
-  width:22px;
-  height:7px;
-  left:18px;
-  top:45px;
-  border-bottom:3px solid #632b28;
-  border-radius:50%;
-}
-
-.arm{
-  position:absolute;
-  width:18px;
-  height:65px;
-  top:66px;
-  border-radius:12px;
-  background:#2563eb;
-  transform-origin:top center;
-}
-
-.arm.left{
-  left:2px;
-  transform:rotateZ(12deg) translateZ(20px);
-}
-
-.arm.right{
-  right:2px;
-  transform:rotateZ(-12deg) translateZ(20px);
-}
-
-.leg{
-  position:absolute;
-  width:21px;
-  height:55px;
-  top:126px;
-  border-radius:10px;
-  background:#172554;
-}
-
-.leg.left{
-  left:20px;
-  transform:translateZ(18px);
-}
-
-.leg.right{
-  right:20px;
-  transform:translateZ(18px);
-}
-
-.shoe{
-  position:absolute;
-  width:28px;
-  height:15px;
-  background:#111827;
-  border-radius:10px;
-  top:170px;
-}
-
-.shoe.left{left:13px}
-.shoe.right{right:13px}
-
-.player3d.walk .leg.left{
-  animation:walk1 .25s infinite alternate;
-}
-
-.player3d.walk .leg.right{
-  animation:walk2 .25s infinite alternate;
-}
-
-.player3d.walk .arm.left{
-  animation:arm1 .25s infinite alternate;
-}
-
-.player3d.walk .arm.right{
-  animation:arm2 .25s infinite alternate;
-}
-
-@keyframes walk1{
-  from{transform:translateZ(18px) rotateX(20deg)}
-  to{transform:translateZ(18px) rotateX(-20deg)}
-}
-
-@keyframes walk2{
-  from{transform:translateZ(18px) rotateX(-20deg)}
-  to{transform:translateZ(18px) rotateX(20deg)}
-}
-
-@keyframes arm1{
-  from{transform:rotateZ(12deg) translateZ(20px) rotateX(-15deg)}
-  to{transform:rotateZ(12deg) translateZ(20px) rotateX(15deg)}
-}
-
-@keyframes arm2{
-  from{transform:rotateZ(-12deg) translateZ(20px) rotateX(15deg)}
-  to{transform:rotateZ(-12deg) translateZ(20px) rotateX(-15deg)}
-}
-
-/* =========================
-   STUDIO
-========================= */
 
 .studio{
   position:absolute;
-  width:270px;
-  height:180px;
-  left:760px;
-  top:185px;
-  transform:translateZ(45px);
+  right:7%;
+  bottom:25%;
+  width:380px;height:205px;
+  background:#202b3b;
+  border:5px solid #111827;
+  border-radius:15px;
+  box-shadow:0 20px 35px #0007
 }
-
+.studioTitle{
+  position:absolute;
+  left:15px;top:10px;
+  font-weight:bold
+}
+.desk{
+  position:absolute;
+  left:90px;bottom:35px;
+  width:190px;height:20px;
+  background:#8b5a35
+}
 .pc{
   position:absolute;
-  width:75px;
-  height:50px;
-  background:#111827;
-  border:5px solid #475569;
-  left:20px;
-  top:40px;
-  border-radius:6px;
+  left:125px;bottom:55px;
+  width:110px;height:70px;
+  background:#050505;
+  border:6px solid #777;
+  border-radius:5px
 }
-
 .pc:after{
   content:"";
   position:absolute;
-  width:8px;
-  height:55px;
-  background:#475569;
-  left:30px;
-  top:45px;
+  left:40px;bottom:-22px;
+  width:30px;height:18px;
+  background:#777
 }
-
-.pc:before{
+.camera{
+  position:absolute;
+  right:35px;bottom:50px;
+  width:75px;height:50px;
+  background:#171717;
+  border-radius:10px
+}
+.camera:after{
   content:"";
   position:absolute;
-  width:55px;
-  height:8px;
-  background:#475569;
-  left:5px;
-  top:92px;
+  right:-28px;top:10px;
+  border-left:30px solid #222;
+  border-top:15px solid transparent;
+  border-bottom:15px solid transparent
+}
+.sofa{
+  position:absolute;
+  left:15px;bottom:25px;
+  width:65px;height:70px;
+  background:#704b91;
+  border-radius:15px
 }
 
-.desk{
+#player{
   position:absolute;
-  width:150px;
-  height:15px;
-  background:#7c4a2d;
-  left:0;
-  top:105px;
+  width:52px;height:110px;
+  left:45%;
+  bottom:27%;
+  z-index:15;
+  transition:left .08s linear,bottom .08s linear;
+  filter:drop-shadow(8px 12px 8px #0007)
 }
-
-.camera3d{
+.head{
   position:absolute;
-  width:65px;
-  height:42px;
-  right:30px;
-  top:60px;
-  background:#111;
-  border-radius:10px;
-  transform:translateZ(35px);
-}
-
-.camera3d:before{
-  content:"";
-  position:absolute;
-  width:24px;
-  height:24px;
+  width:46px;height:46px;
+  left:3px;top:0;
   border-radius:50%;
-  background:#60a5fa;
-  border:5px solid #334155;
-  left:18px;
-  top:7px;
+  background:#9b623e;
+  border:2px solid #4a2e21
+}
+.hair{
+  position:absolute;
+  width:48px;height:22px;
+  left:2px;top:-2px;
+  background:#171717;
+  border-radius:50% 50% 30% 30%
+}
+.eye{
+  position:absolute;
+  width:5px;height:7px;
+  background:#111;
+  top:20px;
+  border-radius:50%
+}
+.eye.a{left:14px}.eye.b{right:14px}
+.mouth{
+  position:absolute;
+  width:13px;height:5px;
+  border-bottom:2px solid #401f1f;
+  left:16px;top:31px
+}
+.body{
+  position:absolute;
+  width:38px;height:50px;
+  left:7px;top:43px;
+  background:#2563eb;
+  border-radius:10px 10px 5px 5px
+}
+.arm{
+  position:absolute;
+  width:10px;height:43px;
+  background:#9b623e;
+  top:47px;
+  border-radius:8px
+}
+.arm.a{left:-3px;transform:rotate(8deg)}
+.arm.b{right:-3px;transform:rotate(-8deg)}
+.leg{
+  position:absolute;
+  width:13px;height:38px;
+  background:#202020;
+  top:88px;
+  border-radius:5px
+}
+.leg.a{left:10px}.leg.b{right:10px}
+.walking .leg.a{animation:walk .22s infinite alternate}
+.walking .leg.b{animation:walk .22s infinite alternate-reverse}
+@keyframes walk{
+  from{transform:rotate(18deg)}
+  to{transform:rotate(-18deg)}
 }
 
-.tripod{
+#bubble{
   position:absolute;
-  width:5px;
-  height:70px;
-  background:#222;
-  right:60px;
-  top:98px;
-  transform:rotate(10deg);
-}
-
-/* =========================
-   SPEECH
-========================= */
-
-.speech{
-  position:absolute;
-  left:420px;
-  top:210px;
+  left:50%;
+  top:30px;
+  transform:translateX(-50%);
   background:white;
-  color:#111827;
-  padding:10px 14px;
-  border-radius:16px;
-  z-index:200;
+  color:#111;
+  padding:12px 16px;
+  border-radius:15px;
   display:none;
-  max-width:220px;
-  box-shadow:0 8px 20px rgba(0,0,0,.3);
+  z-index:30;
+  box-shadow:0 5px 20px #0005
 }
 
-.speech:after{
-  content:"";
+.record{
   position:absolute;
-  bottom:-10px;
-  left:30px;
-  border-width:10px 10px 0;
-  border-style:solid;
-  border-color:white transparent transparent;
-}
-
-/* =========================
-   RECORDING
-========================= */
-
-.recording{
-  position:absolute;
-  left:850px;
-  top:145px;
-  padding:7px 12px;
+  right:25px;
+  top:20px;
   background:#dc2626;
+  padding:8px 12px;
   border-radius:20px;
   display:none;
-  z-index:500;
-  animation:blink 1s infinite;
+  z-index:40;
+  animation:pulse .8s infinite alternate
 }
-
-@keyframes blink{
-  50%{opacity:.35}
-}
-
-/* =========================
-   PANELS
-========================= */
+@keyframes pulse{to{opacity:.45}}
 
 .panel{
-  position:relative;
-  z-index:900;
-  margin:12px auto;
-  max-width:1100px;
-  background:rgba(15,23,42,.96);
-  border:1px solid #334155;
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 15px 40px rgba(0,0,0,.25);
+  margin:10px;
+  padding:15px;
+  background:#111c2d;
+  border:1px solid #2c405e;
+  border-radius:15px
 }
-
-.panel h2{
-  margin-top:0;
-}
-
+.panel h2{margin-top:0}
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:10px;
-}
-
-.card{
-  background:#1e293b;
-  border:1px solid #475569;
-  border-radius:14px;
-  padding:12px;
-}
-
-.card h3{
-  margin:5px 0;
-}
-
-.small{
-  font-size:13px;
-  color:#cbd5e1;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* =========================
-   SHOP
-========================= */
-
-.shopGrid{
-  display:grid;
   grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-  gap:10px;
+  gap:10px
 }
-
-.shopItem{
-  background:#1e293b;
-  border:1px solid #475569;
-  padding:12px;
-  border-radius:14px;
+.card{
+  background:#172337;
+  border:1px solid #314766;
+  border-radius:13px;
+  padding:12px
 }
-
-.price{
-  color:#86efac;
-  font-weight:bold;
-}
-
-/* =========================
-   CONTROLS
-========================= */
-
-.controls{
-  position:relative;
-  z-index:1000;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:5px;
-  flex-wrap:wrap;
+.small{font-size:12px;color:#b9c6d8}
+.hidden{display:none!important}
+.notice{
+  background:#172554;
+  border:1px solid #3b82f6;
   padding:10px;
+  border-radius:10px;
+  margin:8px 0
+}
+input,select{
+  width:100%;
+  padding:10px;
+  margin:4px 0;
+  border-radius:9px;
+  border:1px solid #475569;
+  background:#0f172a;
+  color:white
+}
+#toast{
+  position:fixed;
+  right:15px;
+  bottom:15px;
+  z-index:100;
+  background:#111827;
+  border:1px solid #3b82f6;
+  padding:12px 16px;
+  border-radius:12px;
+  display:none
 }
 
-.controls button{
-  min-width:55px;
-  min-height:45px;
-  font-size:20px;
+.firstPerson #game{
+  filter:saturate(1.1)
+}
+.firstPerson #player{
+  opacity:.08
+}
+.firstPerson .house,
+.firstPerson .studio{
+  transform:scale(1.12)
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width:700px){
-  #game{
-    min-height:530px;
-  }
-
-  .worldPlane{
-    transform:
-      translate(-50%,-50%)
-      rotateX(58deg)
-      scale(.72);
-  }
-
-  .house3d{
-    left:400px;
-  }
-
-  .studio{
-    left:750px;
-  }
-
-  .player3d{
-    left:300px;
-  }
+@media(max-width:800px){
+  .house{left:2%;transform:scale(.75);transform-origin:bottom left}
+  .studio{right:2%;transform:scale(.72);transform-origin:bottom right}
+  #game{min-height:500px}
 }
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
+<div class="top">
+  <h1>🎮 YouTuber Life – Mega Life Simulator</h1>
   <div class="stats">
-    <div class="stat">💰 <span id="money">1000</span> €</div>
-    <div class="stat">👥 <span id="subs">0</span> Abos</div>
+    <div class="stat">💰 <span id="money">0</span> €</div>
+    <div class="stat">👥 <span id="subs">0</span> Subs</div>
     <div class="stat">❤️ <span id="likes">0</span> Likes</div>
     <div class="stat">👀 <span id="views">0</span> Views</div>
-    <div class="stat">🎂 Alter: <span id="age">16</span></div>
-    <div class="stat">🏠 <span id="homeName">Startwohnung</span></div>
+    <div class="stat">🎂 Alter: <span id="age">0</span></div>
+    <div class="stat">💼 <span id="job">Kein Beruf</span></div>
+    <div class="stat">🏢 <span id="companyCount">0</span> Firmen</div>
   </div>
 </div>
 
 <div class="nav">
-  <button onclick="showPanel('home')">🏠 Zuhause</button>
-  <button onclick="showPanel('video')">🎥 Video</button>
-  <button onclick="showPanel('shop')">🛒 Shop</button>
-  <button onclick="showPanel('social')">📱 Social Media</button>
-  <button onclick="showPanel('fans')">❤️ Fans</button>
-  <button onclick="showPanel('channel')">📺 Kanäle</button>
-  <button onclick="showPanel('sponsor')">🤝 Sponsoren</button>
-  <button onclick="showPanel('employees')">👔 Mitarbeiter</button>
-  <button onclick="showPanel('relationship')">💙 Beziehung</button>
-  <button onclick="showPanel('agePanel')">🎂 Alter</button>
-  <button onclick="showPanel('owner')">👑 Owner</button>
-  <button onclick="saveGame()">💾 Speichern</button>
+  <button onclick="panel('home')">🏠 Zuhause</button>
+  <button onclick="panel('school')">🏫 Schule</button>
+  <button onclick="panel('career')">💼 Karriere</button>
+  <button onclick="panel('company')">🏢 Unternehmen</button>
+  <button onclick="panel('video')">🎥 Video</button>
+  <button onclick="panel('social')">📱 Social Media</button>
+  <button onclick="panel('fans')">👥 Fans</button>
+  <button onclick="panel('shop')">🛒 Shop</button>
+  <button onclick="panel('sponsor')">🤝 Sponsoren</button>
+  <button onclick="panel('employees')">👷 Mitarbeiter</button>
+  <button onclick="panel('relationship')">❤️ Beziehung</button>
+  <button onclick="panel('family')">👨‍👩‍👧 Familie</button>
+  <button onclick="panel('bodyguards')">🛡️ Schutz</button>
+  <button onclick="panel('properties')">🏠 Immobilien</button>
+  <button onclick="panel('agePanel')">🎂 Alter</button>
+  <button onclick="panel('character')">🧑 Figur</button>
+  <button onclick="panel('owner')">👑 Owner</button>
+  <button onclick="saveGame()" class="green">💾 Speichern</button>
 </div>
 
 <div id="game">
 
-  <div class="world3d">
-    <div class="worldPlane">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
 
-      <div class="ground3d"></div>
+  <div class="street"></div>
 
-      <div class="road3d"></div>
-
-      <div class="shadow"
-           style="width:360px;height:70px;left:390px;top:315px;">
-      </div>
-
-      <div class="house3d">
-
-        <div class="houseFront">
-          <div class="window3d w1"></div>
-          <div class="window3d w2"></div>
-          <div class="door3d"></div>
-          <div class="steps3d"></div>
-        </div>
-
-        <div class="houseSide"></div>
-
-        <div class="houseRoof"></div>
-        <div class="houseRoof2"></div>
-
-      </div>
-
-      <div class="studio">
-        <div class="desk"></div>
-        <div class="pc"></div>
-        <div class="camera3d"></div>
-        <div class="tripod"></div>
-      </div>
-
-      <div id="player" class="player3d">
-
-        <div class="playerShadow"></div>
-
-        <div class="head3d">
-          <div class="eye left"></div>
-          <div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
-
-        <div class="hair3d"></div>
-
-        <div class="body3d"></div>
-        <div class="bodySide"></div>
-
-        <div class="arm left"></div>
-        <div class="arm right"></div>
-
-        <div class="leg left"></div>
-        <div class="leg right"></div>
-
-        <div class="shoe left"></div>
-        <div class="shoe right"></div>
-
-      </div>
-
-      <div id="recording" class="recording">
-        🔴 AUFNAHME
-      </div>
-
-      <div id="speech" class="speech">
-        Hallo! 👋
-      </div>
-
-    </div>
+  <div class="house">
+    <div class="roof"></div>
+    <div class="window w1"></div>
+    <div class="window w2"></div>
+    <div class="door"></div>
   </div>
 
-</div>
+  <div class="sidehouse"></div>
 
-<div class="controls">
-  <button onclick="movePlayer(0,-20)">⬆️</button>
-  <button onclick="movePlayer(-20,0)">⬅️</button>
-  <button onclick="movePlayer(20,0)">➡️</button>
-  <button onclick="movePlayer(0,20)">⬇️</button>
-  <button onclick="speak()">💬</button>
-</div>
+  <div class="studio">
+    <div class="studioTitle">🎥 DEIN STUDIO</div>
+    <div class="desk"></div>
+    <div class="pc"></div>
+    <div class="camera"></div>
+    <div class="sofa"></div>
+  </div>
 
-<!-- HOME -->
-<div id="home" class="panel">
-  <h2>🏠 Dein Zuhause</h2>
+  <div id="bubble">Hallo!</div>
+  <div id="record" class="record">🔴 AUFNAHME</div>
 
-  <div class="grid">
-
-    <div class="card">
-      <h3>🏡 Aktuelles Haus</h3>
-      <p id="homeInfo">Startwohnung</p>
-      <button onclick="changeHome()">Haus wechseln</button>
+  <div id="player">
+    <div class="head">
+      <div class="hair"></div>
+      <div class="eye a"></div>
+      <div class="eye b"></div>
+      <div class="mouth"></div>
     </div>
-
-    <div class="card">
-      <h3>🛋️ Möbel</h3>
-      <p>Deine Möbel:</p>
-      <div id="furnitureList"></div>
-    </div>
-
-    <div class="card">
-      <h3>👨‍👩‍👧 Haushalt</h3>
-      <p>Du kannst Mitarbeiter deinem Haushalt zuweisen.</p>
-      <button onclick="hireEmployee('Haushaltshilfe')">
-        Haushaltshilfe einstellen
-      </button>
-    </div>
-
+    <div class="body"></div>
+    <div class="arm a"></div>
+    <div class="arm b"></div>
+    <div class="leg a"></div>
+    <div class="leg b"></div>
   </div>
 </div>
 
-<!-- VIDEO -->
-<div id="video" class="panel hidden">
-  <h2>🎥 Videos produzieren</h2>
-
-  <p>
-    Der Charakter geht zum PC und startet sichtbar die Aufnahme.
+<div class="panel">
+  <b>🚶 Bewegung</b>
+  <p class="small">
+    Tippe auf einen Ort, um automatisch dorthin zu laufen.
+    Keine festen Links-/Rechts-Tasten nötig.
   </p>
-
-  <button onclick="recordVideo()">🔴 Video aufnehmen</button>
-  <button onclick="train()">🏋️ Trainieren</button>
-
-  <div id="videoStatus" class="card">
-    Bereit für die nächste Aufnahme.
-  </div>
+  <button onclick="goTo(20,30,'🏠 Zuhause')">🏠 Haus</button>
+  <button onclick="goTo(48,32,'💻 PC')">💻 PC</button>
+  <button onclick="goTo(68,35,'🎥 Kamera')">🎥 Kamera</button>
+  <button onclick="goTo(78,48,'🛋️ Sofa')">🛋️ Sofa</button>
+  <button onclick="goTo(90,70,'🚶 Spaziergang')">🌳 Spaziergang</button>
+  <button onclick="toggleCamera()">👀 Eigene Sicht</button>
 </div>
 
-<!-- SHOP -->
-<div id="shop" class="panel hidden">
-  <h2>🛒 Mega-Shop</h2>
+<div id="panels"></div>
 
-  <p>
-    Kameras, Mikrofone, PCs, Licht, Möbel, Gaming und Studio-Zubehör.
-  </p>
-
-  <div id="shopGrid" class="shopGrid"></div>
-</div>
-
-<!-- SOCIAL -->
-<div id="social" class="panel hidden">
-  <h2>📱 Social Media</h2>
-
-  <div class="grid">
-
-    <div class="card">
-      <h3>▶️ YouTube</h3>
-      <p>Follower: <span id="ytFollowers">0</span></p>
-      <button onclick="socialPost('YouTube')">Posten</button>
-    </div>
-
-    <div class="card">
-      <h3>🎵 TikTok</h3>
-      <p>Follower: <span id="ttFollowers">0</span></p>
-      <button onclick="socialPost('TikTok')">Posten</button>
-    </div>
-
-    <div class="card">
-      <h3>📸 Instagram</h3>
-      <p>Follower: <span id="igFollowers">0</span></p>
-      <button onclick="socialPost('Instagram')">Posten</button>
-    </div>
-
-    <div class="card">
-      <h3>🎮 Twitch</h3>
-      <p>Follower: <span id="twFollowers">0</span></p>
-      <button onclick="socialPost('Twitch')">Streamen</button>
-    </div>
-
-    <div class="card">
-      <h3>🐦 X</h3>
-      <p>Follower: <span id="xFollowers">0</span></p>
-      <button onclick="socialPost('X')">Posten</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- FANS -->
-<div id="fans" class="panel hidden">
-  <h2>❤️ Deine Fans</h2>
-
-  <p>
-    Fans haben eigene Namen und reagieren unterschiedlich.
-  </p>
-
-  <div id="fanGrid" class="grid"></div>
-</div>
-
-<!-- CHANNEL -->
-<div id="channel" class="panel hidden">
-  <h2>📺 Deine Kanäle</h2>
-
-  <p>
-    Ein neuer Kanal wird ab <b>20.000 Abos</b> und
-    <b>300.000 Likes</b> freigeschaltet.
-  </p>
-
-  <button onclick="createChannel()">
-    ➕ Neuen Kanal starten
-  </button>
-
-  <div id="channelList" class="grid"></div>
-</div>
-
-<!-- SPONSOR -->
-<div id="sponsor" class="panel hidden">
-  <h2>🤝 Sponsoren</h2>
-
-  <p>
-    Du kannst im Spiel Sponsoring-Anfragen von Unternehmen,
-    Restaurants, Kiosken, Shops und Marken bekommen.
-  </p>
-
-  <div id="sponsorGrid" class="grid"></div>
-</div>
-
-<!-- EMPLOYEES -->
-<div id="employees" class="panel hidden">
-  <h2>👔 Mitarbeiter</h2>
-
-  <button onclick="hireEmployee('Manager')">Manager</button>
-  <button onclick="hireEmployee('Kameramann')">Kameramann</button>
-  <button onclick="hireEmployee('Cutter')">Cutter</button>
-  <button onclick="hireEmployee('Techniker')">Techniker</button>
-  <button onclick="hireEmployee('Fahrer')">Fahrer</button>
-  <button onclick="hireEmployee('Sicherheitsmitarbeiter')">Sicherheit</button>
-  <button onclick="hireEmployee('Haushaltshilfe')">Haushaltshilfe</button>
-
-  <div id="employeeList" class="grid"></div>
-</div>
-
-<!-- RELATIONSHIP -->
-<div id="relationship" class="panel hidden">
-  <h2>💙 Beziehungen</h2>
-
-  <p id="relationshipStatus">
-    Du bist aktuell single.
-  </p>
-
-  <button onclick="findPartner()">Neue Person kennenlernen</button>
-  <button onclick="endRelationship()">Beziehung beenden</button>
-
-  <div id="partnerBox" class="card"></div>
-</div>
-
-<!-- AGE -->
-<div id="agePanel" class="panel hidden">
-  <h2>🎂 Alter & Generationen</h2>
-
-  <p>
-    Du kannst dein Leben als Baby starten oder deinen Charakter
-    älter werden lassen.
-  </p>
-
-  <button onclick="setAge(1)">👶 Baby</button>
-  <button onclick="setAge(6)">🧒 Kind</button>
-  <button onclick="setAge(13)">🧑 Teenager</button>
-  <button onclick="setAge(18)">🧑 Erwachsen</button>
-  <button onclick="setAge(30)">👨 Erwachsener</button>
-  <button onclick="setAge(60)">👴 Senior</button>
-
-  <div class="card">
-    <h3>👨‍👩‍👧 Generation</h3>
-    <button onclick="nextGeneration()">Nächste Generation</button>
-  </div>
-</div>
-
-<!-- OWNER -->
-<div id="owner" class="panel hidden">
-  <h2>👑 Owner-Menü</h2>
-
-  <input
-    id="ownerPassword"
-    type="password"
-    placeholder="Owner-Passwort"
-    style="padding:10px;border-radius:10px;border:0;"
-  >
-
-  <button onclick="ownerLogin()">Login</button>
-
-  <div id="ownerTools" class="hidden">
-
-    <h3>Owner-Funktionen</h3>
-
-    <button onclick="addMoney(1000000000)">
-      💰 +1 Milliarde €
-    </button>
-
-    <button onclick="addSubs(1000000)">
-      👥 +1 Million Abos
-    </button>
-
-    <button onclick="addLikes(10000000)">
-      ❤️ +10 Millionen Likes
-    </button>
-
-    <button onclick="addViews(100000000)">
-      👀 +100 Millionen Views
-    </button>
-
-    <button onclick="randomEvent()">
-      🎲 Event auslösen
-    </button>
-
-    <button onclick="saveGame()">
-      💾 Spiel speichern
-    </button>
-
-    <button onclick="resetGame()">
-      🔄 Spiel zurücksetzen
-    </button>
-
-  </div>
-</div>
+<div id="toast"></div>
 
 <script>
-/* =========================================================
-   GAME DATA
-========================================================= */
+/* ============================================================
+   SPIELDATEN
+============================================================ */
 
-const OWNER_PASSWORD = "YT-Owner-7X9!K4#P";
+const KEY="mega_youtuber_life_v4";
 
-let game = {
-  money:1000,
+let game={
+  money:2500,
   subs:0,
   likes:0,
   views:0,
-  age:16,
 
-  home:"Startwohnung",
+  age:0,
+  job:"Kein Beruf",
+  education:"Keine Ausbildung",
+  schoolGrade:2,
 
-  x:330,
-  y:250,
-
-  videos:0,
-
-  followers:{
-    YouTube:0,
-    TikTok:0,
-    Instagram:0,
-    Twitch:0,
-    X:0
-  },
-
-  channels:[
-    {
-      name:"Mein Hauptkanal",
-      subs:0,
-      likes:0
-    }
-  ],
-
-  fans:[
-    {
-      name:"Leon",
-      mood:80,
-      moneyGiven:0,
-      gifts:0
-    },
-    {
-      name:"Maya",
-      mood:75,
-      moneyGiven:0,
-      gifts:0
-    },
-    {
-      name:"Noah",
-      mood:90,
-      moneyGiven:0,
-      gifts:0
-    },
-    {
-      name:"Sophie",
-      mood:65,
-      moneyGiven:0,
-      gifts:0
-    }
-  ],
-
-  employees:[],
-  furniture:[],
-
-  relationship:null,
+  familyMoney:"normal",
+  familyAttention:"normal",
 
   generation:1,
+  alive:true,
 
-  inventory:[],
+  position:{x:45,y:27},
 
-  ownedHomes:["Startwohnung"]
+  cameraMode:"third",
+
+  skin:"#9b623e",
+  hair:"#171717",
+  shirt:"#2563eb",
+
+  channels:[
+    {name:"Mein Hauptkanal",subs:0,likes:0,views:0}
+  ],
+
+  social:{
+    YouTube:{followers:0,likes:0},
+    TikTok:{followers:0,likes:0},
+    Instagram:{followers:0,likes:0},
+    Twitch:{followers:0,likes:0},
+    X:{followers:0,likes:0}
+  },
+
+  fans:[],
+  fanGifts:0,
+
+  equipment:[],
+  furniture:[],
+
+  companies:[],
+  employees:[],
+  sponsors:[],
+  properties:[],
+  rooms:[],
+
+  partner:null,
+  children:0,
+
+  bodyguards:[],
+
+  events:[],
+
+  skills:{
+    school:0,
+    fitness:0,
+    communication:0,
+    business:0,
+    tech:0,
+    creativity:0
+  },
+
+  ownedAll:false
 };
 
-/* =========================================================
-   HOMES
-========================================================= */
+/* ============================================================
+   NAMEN
+============================================================ */
 
-const homes = [];
-
-for(let i=1;i<=40;i++){
-
-  let price;
-
-  if(i<=20){
-    price = 400000 + (i-1)*20000;
-  }else{
-    price = 20000000 + (i-21)*52000000;
-  }
-
-  homes.push({
-    name:"Haus "+i,
-    price:price
-  });
-}
-
-/* =========================================================
-   SHOP ITEMS
-========================================================= */
-
-const baseItems = [
-
-  ["Kamera","Kamera",500],
-  ["Pro Kamera","Kamera",5000],
-  ["Cinema Kamera","Kamera",50000],
-  ["Vlog Kamera","Kamera",1200],
-  ["Action Kamera","Kamera",900],
-  ["Studio Kamera","Kamera",25000],
-
-  ["Mikrofon","Audio",300],
-  ["Studio Mikrofon","Audio",3000],
-  ["Funkmikrofon","Audio",5000],
-  ["Podcast Mikrofon","Audio",2500],
-  ["Pro Mikrofon","Audio",10000],
-
-  ["Gaming PC","PC",1500],
-  ["Creator PC","PC",5000],
-  ["Pro PC","PC",15000],
-  ["Mega PC","PC",100000],
-  ["Ultra PC","PC",1000000],
-
-  ["Ringlicht","Licht",100],
-  ["Softbox","Licht",250],
-  ["Studio Licht","Licht",1000],
-  ["Pro Licht","Licht",5000],
-
-  ["Sofa","Möbel",500],
-  ["Luxus Sofa","Möbel",5000],
-  ["Bett","Möbel",700],
-  ["Luxus Bett","Möbel",10000],
-  ["Schreibtisch","Möbel",300],
-  ["Gaming Tisch","Möbel",1000],
-  ["Schrank","Möbel",600],
-  ["Luxus Schrank","Möbel",6000],
-  ["Fernseher","Möbel",800],
-  ["Gaming Fernseher","Möbel",5000],
-
-  ["Gaming Stuhl","Gaming",500],
-  ["Pro Gaming Stuhl","Gaming",2500],
-  ["Gaming Konsole","Gaming",500],
-  ["Gaming PC Setup","Gaming",5000],
-  ["VR Setup","Gaming",3000],
-
-  ["Streaming Deck","Studio",500],
-  ["Greenscreen","Studio",800],
-  ["Teleprompter","Studio",1500],
-  ["Studio Hintergrund","Studio",1000],
-  ["Pro Hintergrund","Studio",5000]
+const names=[
+ "Luca","Noah","Ben","Elias","Leon","Finn","Emil","Paul",
+ "Max","Jonas","Milan","David","Samuel","Daniel","Amir",
+ "Sofia","Emma","Mia","Lina","Lea","Nora","Anna","Sarah",
+ "Maya","Laura","Aylin","Elena","Lena","Hannah","Zoe"
 ];
 
-const colors = [
-  "Schwarz",
-  "Weiß",
-  "Rot",
-  "Blau",
-  "Grün",
-  "Gold",
-  "Silber",
-  "Pink",
-  "Lila",
-  "Orange"
+const companies=[
+ ["NovaTech","Unternehmen"],
+ ["Skyline Motors","Unternehmen"],
+ ["FutureSoft","Technologie"],
+ ["GreenPower","Energie"],
+ ["UrbanStyle","Mode"],
+ ["Burger House","Restaurant"],
+ ["City Pizza","Restaurant"],
+ ["Mega Kiosk","Kiosk"],
+ ["Corner Shop","Geschäft"],
+ ["Fresh Market","Supermarkt"],
+ ["GameWorld","Gaming"],
+ ["Pixel Studio","Medien"],
+ ["Bright Mobile","Technologie"],
+ ["Family Restaurant","Restaurant"],
+ ["Local Kiosk","Kiosk"]
 ];
 
-const shopItems=[];
+/* ============================================================
+   BERUFE
+============================================================ */
 
-baseItems.forEach(item=>{
-
-  colors.forEach((color,index)=>{
-
-    shopItems.push({
-      name:item[0]+" "+color,
-      category:item[1],
-      price:item[2]*(1+index*.08)
-    });
-
-  });
-
-});
-
-/* =========================================================
-   SPONSORS
-========================================================= */
-
-const sponsorBusinesses = [
-
-  "MegaTech",
-  "FuturePhone",
-  "CityPizza",
-  "Burger House",
-  "Gaming World",
-  "SuperKiosk",
-  "Local Market",
-  "Fashion Point",
-  "Sport Center",
-  "Computer Shop",
-  "Coffee Corner",
-  "Urban Restaurant",
-  "Family Restaurant",
-  "Tech Store",
-  "Game Planet",
-  "Creator Energy",
-  "Street Food",
-  "City Barber",
-  "Music Shop",
-  "Electro World"
+const careers=[
+ ["YouTuber","Keine Pflichtausbildung","creative"],
+ ["Streamer","Keine Pflichtausbildung","creative"],
+ ["Unternehmer","Keine Pflichtausbildung","business"],
+ ["Polizist","Polizeiausbildung","police"],
+ ["Feuerwehrmann","Feuerwehrausbildung","fire"],
+ ["Arzt","Medizinstudium + Weiterbildung","medical"],
+ ["Lehrer","Lehramtsstudium + Referendariat","education"],
+ ["Anwalt","Jura-Studium + Prüfungen","law"],
+ ["Ingenieur","Ingenieurstudium","tech"],
+ ["Programmierer","IT-Ausbildung oder Studium","tech"],
+ ["Elektriker","Elektroniker-Ausbildung","craft"],
+ ["Mechaniker","Mechatronik-/Mechanik-Ausbildung","craft"],
+ ["Koch","Kochausbildung","food"],
+ ["Pilot","Pilotenausbildung","aviation"],
+ ["Wissenschaftler","Studium + Forschung","science"],
+ ["Bankmitarbeiter","Bankausbildung","finance"],
+ ["Verkäufer","Berufsausbildung optional","trade"],
+ ["Bäcker","Bäckerausbildung","food"],
+ ["Friseur","Friseurausbildung","trade"],
+ ["Architekt","Architekturstudium","architecture"],
+ ["Journalist","Ausbildung/Studium","media"],
+ ["Fotograf","Ausbildung optional","media"],
+ ["Designer","Ausbildung/Studium optional","creative"],
+ ["Sportler","Training + Karriere","sport"],
+ ["Boxer","Training + Sportkarriere","sport"],
+ ["Fußballer","Training + Vereinskarriere","sport"],
+ ["Forscher","Studium + Forschung","science"],
+ ["Manager","Studium/Ausbildung + Erfahrung","business"],
+ ["Immobilienmakler","Ausbildung möglich","property"],
+ ["Busfahrer","Führerschein + Ausbildung","transport"],
+ ["Lokführer","Lokführerausbildung","transport"],
+ ["Softwareentwickler","IT-Ausbildung/Studium","tech"],
+ ["Tierarzt","Tiermedizin-Studium","medical"],
+ ["Psychologe","Psychologiestudium + Weiterbildung","medical"],
+ ["Apotheker","Pharmaziestudium + Prüfung","medical"],
+ ["Elektroniktechniker","Technische Ausbildung","tech"],
+ ["Handwerker","Berufsausbildung","craft"],
+ ["Bauingenieur","Studium","construction"],
+ ["Architekturbüro-Leiter","Studium + Erfahrung","business"]
 ];
 
-/* =========================================================
-   WORLD
-========================================================= */
-
-function movePlayer(dx,dy){
-
-  game.x += dx;
-  game.y += dy;
-
-  game.x=Math.max(20,Math.min(1000,game.x));
-  game.y=Math.max(40,Math.min(500,game.y));
-
-  const player=document.getElementById("player");
-
-  player.classList.add("walk");
-
-  setTimeout(()=>{
-    player.classList.remove("walk");
-  },220);
-
-  updatePlayerPosition();
-  saveGame();
-}
-
-function updatePlayerPosition(){
-
-  const player=document.getElementById("player");
-
-  player.style.left=game.x+"px";
-  player.style.top=game.y+"px";
-}
-
-document.addEventListener("keydown",e=>{
-
-  if(e.key==="ArrowUp"){
-    movePlayer(0,-20);
-  }
-
-  if(e.key==="ArrowDown"){
-    movePlayer(0,20);
-  }
-
-  if(e.key==="ArrowLeft"){
-    movePlayer(-20,0);
-  }
-
-  if(e.key==="ArrowRight"){
-    movePlayer(20,0);
-  }
-
-});
-
-/* =========================================================
-   PANELS
-========================================================= */
-
-function showPanel(id){
-
-  document.querySelectorAll(".panel").forEach(p=>{
-    p.classList.add("hidden");
-  });
-
-  document.getElementById(id).classList.remove("hidden");
-
-  if(id==="shop"){
-    renderShop();
-  }
-
-  if(id==="fans"){
-    renderFans();
-  }
-
-  if(id==="channel"){
-    renderChannels();
-  }
-
-  if(id==="sponsor"){
-    renderSponsors();
-  }
-
-  if(id==="employees"){
-    renderEmployees();
-  }
-
-  if(id==="home"){
-    renderFurniture();
-  }
-
-  if(id==="relationship"){
-    renderRelationship();
-  }
-}
-
-/* =========================================================
-   VIDEO RECORDING
-========================================================= */
-
-function recordVideo(){
-
-  const status=document.getElementById("videoStatus");
-  const recording=document.getElementById("recording");
-  const player=document.getElementById("player");
-
-  status.innerHTML="🎬 Der Charakter geht zum PC...";
-
-  player.classList.add("walk");
-
-  setTimeout(()=>{
-
-    player.classList.remove("walk");
-
-    recording.style.display="block";
-
-    status.innerHTML="🔴 Video wird aufgenommen...";
-
-  },1000);
-
-  setTimeout(()=>{
-
-    recording.style.display="none";
-
-    const followers=Math.max(
-      1,
-      game.followers.YouTube
-    );
-
-    /*
-      Follower sind NICHT automatisch Views.
-      Videos können deutlich weniger oder mehr Views bekommen.
-    */
-
-    const base=Math.floor(
-      Math.random()*500
-    )+50;
-
-    const viewBonus=Math.floor(
-      Math.random()*(followers/20+1)
-    );
-
-    const views=Math.max(
-      20,
-      base+viewBonus
-    );
-
-    const likes=Math.floor(
-      views*(0.03+Math.random()*0.12)
-    );
-
-    const subs=Math.max(
-      1,
-      Math.floor(likes*.15)
-    );
-
-    game.views+=views;
-    game.likes+=likes;
-    game.subs+=subs;
-    game.followers.YouTube+=subs;
-
-    game.money+=Math.floor(
-      views*.05
-    );
-
-    game.videos++;
-
-    status.innerHTML=
-      "✅ Video fertig! "+
-      views.toLocaleString("de-DE")+
-      " Views • "+
-      likes.toLocaleString("de-DE")+
-      " Likes • "+
-      subs.toLocaleString("de-DE")+
-      " neue Abos.";
-
-    updateStats();
-    saveGame();
-
-  },10000);
-}
-
-/* =========================================================
-   SOCIAL MEDIA
-========================================================= */
-
-function socialPost(platform){
-
-  const followers=Math.floor(
-    Math.random()*500
-  )+50;
-
-  game.followers[platform]+=followers;
-
-  game.money+=Math.floor(
-    followers*.02
-  );
-
-  if(platform==="YouTube"){
-    game.subs+=followers;
-  }
-
-  updateStats();
-  saveGame();
-
-  alert(
-    platform+
-    ": +"+
-    followers.toLocaleString("de-DE")+
-    " Follower 🎉"
-  );
-}
-
-/* =========================================================
-   SHOP
-========================================================= */
-
-function renderShop(){
-
-  const grid=document.getElementById("shopGrid");
-
-  grid.innerHTML="";
-
-  shopItems.slice(0,250).forEach((item,index)=>{
-
-    const div=document.createElement("div");
-
-    div.className="shopItem";
-
-    div.innerHTML=`
-      <h3>${item.name}</h3>
-      <p>${item.category}</p>
-      <p class="price">
-        ${formatMoney(item.price)}
-      </p>
-      <button onclick="buyItem(${index})">
-        Kaufen
-      </button>
-    `;
-
-    grid.appendChild(div);
-
-  });
-}
-
-function buyItem(index){
-
-  const item=shopItems[index];
-
-  if(game.money<item.price){
-
-    alert("Nicht genug Geld!");
-
-    return;
-  }
-
-  game.money-=item.price;
-
-  game.inventory.push(item.name);
-
-  if(item.category==="Möbel"){
-    game.furniture.push(item.name);
-  }
-
-  updateStats();
-  renderFurniture();
-  saveGame();
-
-  alert(
-    item.name+
-    " gekauft! 🛒"
-  );
-}
-
-/* =========================================================
-   FURNITURE
-========================================================= */
-
-function renderFurniture(){
-
-  const box=document.getElementById("furnitureList");
-
-  if(!box)return;
-
-  if(game.furniture.length===0){
-
-    box.innerHTML="Noch keine Möbel.";
-
-    return;
-  }
-
-  box.innerHTML=game.furniture
-    .slice(-20)
-    .map(x=>`🛋️ ${x}`)
-    .join("<br>");
-}
-
-/* =========================================================
-   FANS
-========================================================= */
-
-function renderFans(){
-
-  const grid=document.getElementById("fanGrid");
-
-  grid.innerHTML="";
-
-  game.fans.forEach((fan,index)=>{
-
-    const div=document.createElement("div");
-
-    div.className="card";
-
-    div.innerHTML=`
-      <h3>❤️ ${fan.name}</h3>
-
-      <p>
-        Stimmung:
-        ${fan.mood}/100
-      </p>
-
-      <button onclick="fanMoney(${index})">
-        💶 Geld geben
-      </button>
-
-      <button onclick="fanGift(${index})">
-        🎁 Geschenk kaufen
-      </button>
-
-      <button onclick="fanVideo(${index})">
-        🎥 YouTuber Anfrage für ein Video
-      </button>
-
-      <button onclick="talkFan(${index})">
-        💬 Reden
-      </button>
-    `;
-
-    grid.appendChild(div);
-
-  });
-}
-
-function fanMoney(index){
-
-  const amount=100;
-
-  if(game.money<amount){
-
-    alert("Du hast nicht genug Geld.");
-
-    return;
-  }
-
-  game.money-=amount;
-
-  game.fans[index].moneyGiven+=amount;
-  game.fans[index].mood=Math.min(
-    100,
-    game.fans[index].mood+8
-  );
-
-  updateStats();
-  renderFans();
-  saveGame();
-}
-
-function fanGift(index){
-
-  const price=250;
-
-  if(game.money<price){
-
-    alert("Nicht genug Geld.");
-
-    return;
-  }
-
-  game.money-=price;
-
-  game.fans[index].gifts++;
-
-  game.fans[index].mood=Math.min(
-    100,
-    game.fans[index].mood+12
-  );
-
-  updateStats();
-  renderFans();
-  saveGame();
-}
-
-function fanVideo(index){
-
-  const fan=game.fans[index];
-
-  const answer=Math.random();
-
-  if(answer>.35){
-
-    fan.mood=Math.min(
-      100,
-      fan.mood+20
-    );
-
-    game.likes+=Math.floor(
-      Math.random()*1000
-    )+100;
-
-    game.views+=Math.floor(
-      Math.random()*5000
-    )+500;
-
-    alert(
-      fan.name+
-      " hat die Video-Anfrage angenommen! 🎥🔥"
-    );
-
-  }else{
-
-    fan.mood=Math.max(
-      0,
-      fan.mood-5
-    );
-
-    alert(
-      fan.name+
-      " hat die Anfrage abgelehnt."
-    );
-  }
-
-  updateStats();
-  renderFans();
-  saveGame();
-}
-
-function talkFan(index){
-
-  const fan=game.fans[index];
-
-  fan.mood=Math.min(
-    100,
-    fan.mood+5
-  );
-
-  showSpeech(
-    fan.name+
-    ": Danke, dass du mit mir redest! ❤️"
-  );
-
-  renderFans();
-  saveGame();
-}
-
-/* =========================================================
-   CHANNELS
-========================================================= */
-
-function createChannel(){
-
-  if(
-    game.subs<20000 ||
-    game.likes<300000
-  ){
-
-    alert(
-      "Du brauchst mindestens 20.000 Abos und 300.000 Likes."
-    );
-
-    return;
-  }
-
-  const name=prompt(
-    "Wie soll dein neuer Kanal heißen?"
-  );
-
-  if(!name)return;
-
-  game.channels.push({
-    name:name,
-    subs:0,
-    likes:0
-  });
-
-  alert(
-    "Neuer Kanal erstellt! 📺"
-  );
-
-  renderChannels();
-  saveGame();
-}
-
-function renderChannels(){
-
-  const list=document.getElementById("channelList");
-
-  list.innerHTML="";
-
-  game.channels.forEach((channel,index)=>{
-
-    const div=document.createElement("div");
-
-    div.className="card";
-
-    div.innerHTML=`
-      <h3>📺 ${channel.name}</h3>
-      <p>Abos: ${channel.subs.toLocaleString("de-DE")}</p>
-      <p>Likes: ${channel.likes.toLocaleString("de-DE")}</p>
-    `;
-
-    list.appendChild(div);
-
-  });
-}
-
-/* =========================================================
-   SPONSORS
-========================================================= */
-
-function renderSponsors(){
-
-  const grid=document.getElementById("sponsorGrid");
-
-  grid.innerHTML="";
-
-  sponsorBusinesses.forEach((business,index)=>{
-
-    const offer=
-      Math.floor(
-        500+
-        game.subs*.15+
-        Math.random()*5000
-      );
-
-    const div=document.createElement("div");
-
-    div.className="card";
-
-    div.innerHTML=`
-      <h3>🤝 ${business}</h3>
-      <p>
-        Sponsoring-Angebot:
-        <b>${formatMoney(offer)}</b>
-      </p>
-
-      <button onclick="acceptSponsor('${business}',${offer})">
-        Angebot annehmen
-      </button>
-    `;
-
-    grid.appendChild(div);
-
-  });
-}
-
-function acceptSponsor(name,amount){
-
-  game.money+=amount;
-
-  alert(
-    "Sponsoring von "+
-    name+
-    " angenommen! +"+
-    formatMoney(amount)
-  );
-
-  updateStats();
-  saveGame();
-}
-
-/* =========================================================
-   EMPLOYEES
-========================================================= */
-
-function hireEmployee(type){
-
-  const salaries={
-    Manager:5000,
-    Kameramann:2500,
-    Cutter:2500,
-    Techniker:3000,
-    Fahrer:2200,
-    Sicherheitsmitarbeiter:3500,
-    Haushaltshilfe:1800
-  };
-
-  const salary=salaries[type]||2000;
-
-  game.employees.push({
-    type:type,
-    salary:salary,
-    name:randomEmployeeName()
-  });
-
-  alert(
-    type+
-    " eingestellt!"
-  );
-
-  renderEmployees();
-  saveGame();
-}
-
-function randomEmployeeName(){
-
-  const names=[
-    "Alex",
-    "Chris",
-    "Sam",
-    "Luca",
-    "Max",
-    "Nico",
-    "Noah",
-    "Elias"
-  ];
-
-  return names[
-    Math.floor(
-      Math.random()*names.length
-    )
-  ];
-}
-
-function renderEmployees(){
-
-  const list=document.getElementById("employeeList");
-
-  list.innerHTML="";
-
-  game.employees.forEach(emp=>{
-
-    const div=document.createElement("div");
-
-    div.className="card";
-
-    div.innerHTML=`
-      <h3>👔 ${emp.name}</h3>
-      <p>Job: ${emp.type}</p>
-      <p>Gehalt: ${formatMoney(emp.salary)}</p>
-    `;
-
-    list.appendChild(div);
-
-  });
-}
-
-/* =========================================================
-   RELATIONSHIP
-========================================================= */
-
-function findPartner(){
-
-  const names=[
-    "Mia",
-    "Emma",
-    "Sophie",
-    "Lina",
-    "Nora",
-    "Lea",
-    "Anna"
-  ];
-
-  const name=
-    names[
-      Math.floor(
-        Math.random()*names.length
-      )
-    ];
-
-  game.relationship={
-    name:name,
-    level:10
-  };
-
-  renderRelationship();
-  saveGame();
-}
-
-function endRelationship(){
-
-  if(!game.relationship){
-
-    alert("Du bist aktuell single.");
-
-    return;
-  }
-
-  game.relationship=null;
-
-  renderRelationship();
-  saveGame();
-}
-
-function renderRelationship(){
-
-  const status=
-    document.getElementById("relationshipStatus");
-
-  const box=
-    document.getElementById("partnerBox");
-
-  if(!game.relationship){
-
-    status.innerHTML=
-      "Du bist aktuell single.";
-
-    box.innerHTML=
-      "Keine Beziehung.";
-
-    return;
-  }
-
-  status.innerHTML=
-    "Beziehung mit "+
-    game.relationship.name;
-
-  box.innerHTML=`
-    <h3>💙 ${game.relationship.name}</h3>
-    <p>Beziehungslevel: ${game.relationship.level}</p>
-    <button onclick="relationshipAction()">
-      💬 Gemeinsam etwas machen
-    </button>
-  `;
-}
-
-function relationshipAction(){
-
-  if(!game.relationship)return;
-
-  game.relationship.level=
-    Math.min(
-      100,
-      game.relationship.level+5
-    );
-
-  renderRelationship();
-  saveGame();
-}
-
-/* =========================================================
-   AGE
-========================================================= */
-
-function setAge(age){
-
-  game.age=age;
-
-  updateStats();
-  saveGame();
-
-  alert(
-    "Dein Charakter ist jetzt "+
-    age+
-    " Jahre alt."
-  );
-}
-
-function nextGeneration(){
-
-  game.generation++;
-
-  game.age=1;
-
-  game.subs=Math.floor(
-    game.subs*.25
-  );
-
-  game.likes=Math.floor(
-    game.likes*.25
-  );
-
-  game.money=Math.floor(
-    game.money*.7
-  );
-
-  alert(
-    "👶 Neue Generation gestartet!\nGeneration "+
-    game.generation
-  );
-
-  updateStats();
-  saveGame();
-}
-
-/* =========================================================
-   TRAINING
-========================================================= */
-
-function train(){
-
-  game.money=Math.max(
-    0,
-    game.money-50
-  );
-
-  showSpeech(
-    "🏋️ Training abgeschlossen!"
-  );
-
-  saveGame();
-  updateStats();
-}
-
-/* =========================================================
-   SPEECH
-========================================================= */
-
-function speak(){
-
-  const messages=[
-    "Hallo Leute! 👋",
-    "Heute wird ein neues Video gemacht! 🎥",
-    "Willkommen in meinem Studio! 😎",
-    "Was soll ich als Nächstes machen?",
-    "Das wird ein riesiges Projekt! 🚀"
-  ];
-
-  const message=
-    messages[
-      Math.floor(
-        Math.random()*messages.length
-      )
-    ];
-
-  showSpeech(message);
-}
-
-function showSpeech(text){
-
-  const bubble=
-    document.getElementById("speech");
-
-  bubble.innerHTML=text;
-
-  bubble.style.display="block";
-
-  setTimeout(()=>{
-    bubble.style.display="none";
-  },3000);
-}
-
-/* =========================================================
-   HOMES
-========================================================= */
-
-function changeHome(){
-
-  const available=homes.filter(
-    h=>
-      !game.ownedHomes.includes(h.name)
-  );
-
-  if(available.length===0){
-
-    alert(
-      "Du besitzt bereits alle Häuser."
-    );
-
-    return;
-  }
-
-  const home=available[0];
-
-  if(game.money<home.price){
-
-    alert(
-      home.name+
-      " kostet "+
-      formatMoney(home.price)
-    );
-
-    return;
-  }
-
-  game.money-=home.price;
-
-  game.ownedHomes.push(home.name);
-  game.home=home.name;
-
-  document.getElementById(
-    "homeName"
-  ).innerText=game.home;
-
-  document.getElementById(
-    "homeInfo"
-  ).innerText=game.home;
-
-  updateStats();
-  saveGame();
-
-  alert(
-    home.name+
-    " gekauft! 🏠"
-  );
-}
-
-/* =========================================================
-   RANDOM EVENTS
-========================================================= */
-
-function randomEvent(){
-
-  const events=[
-
-    ()=>{
-      const gain=
-        Math.floor(Math.random()*10000)+1000;
-
-      game.money+=gain;
-
-      return "Du bekommst "+formatMoney(gain)+"! 💰";
-    },
-
-    ()=>{
-      const gain=
-        Math.floor(Math.random()*5000)+500;
-
-      game.subs+=gain;
-
-      return "Dein Kanal bekommt "+gain+" neue Abos! 📈";
-    },
-
-    ()=>{
-      const gain=
-        Math.floor(Math.random()*10000)+1000;
-
-      game.views+=gain;
-
-      return "Ein altes Video geht viral! 👀";
-    },
-
-    ()=>{
-      return "Ein kleiner YouTuber fragt nach einer Kollaboration! 🎥";
-    }
-
-  ];
-
-  const event=
-    events[
-      Math.floor(
-        Math.random()*events.length
-      )
-    ];
-
-  alert(event());
-
-  updateStats();
-  saveGame();
-}
-
-/* =========================================================
-   OWNER
-========================================================= */
-
-function ownerLogin(){
-
-  const password=
-    document.getElementById(
-      "ownerPassword"
-    ).value;
-
-  if(password===OWNER_PASSWORD){
-
-    document.getElementById(
-      "ownerTools"
-    ).classList.remove("hidden");
-
-    alert("👑 Owner-Modus aktiviert!");
-
-  }else{
-
-    alert("❌ Falsches Passwort.");
-  }
-}
-
-function addMoney(amount){
-
-  game.money+=amount;
-
-  updateStats();
-  saveGame();
-}
-
-function addSubs(amount){
-
-  game.subs+=amount;
-
-  game.followers.YouTube+=amount;
-
-  updateStats();
-  saveGame();
-}
-
-function addLikes(amount){
-
-  game.likes+=amount;
-
-  updateStats();
-  saveGame();
-}
-
-function addViews(amount){
-
-  game.views+=amount;
-
-  updateStats();
-  saveGame();
-}
-
-/* =========================================================
-   SAVE / LOAD
-========================================================= */
-
-function saveGame(){
-
-  localStorage.setItem(
-    "youtuberLife3D",
-    JSON.stringify(game)
-  );
-}
+/* ============================================================
+   INIT
+============================================================ */
 
 function loadGame(){
-
-  const saved=
-    localStorage.getItem(
-      "youtuberLife3D"
-    );
-
-  if(!saved)return;
-
   try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){
+      game=Object.assign(game,JSON.parse(raw));
+    }
+  }catch(e){}
+  updateUI();
+  renderFans();
+  renderEmployees();
+  renderProperties();
+  renderCompanies();
+  renderBodyguards();
+  updateCharacter();
+}
 
-    const data=
-      JSON.parse(saved);
-
-    game={
-      ...game,
-      ...data
-    };
-
-  }catch(e){
-
-    console.log(
-      "Speicherstand konnte nicht geladen werden."
-    );
-  }
+function saveGame(){
+  localStorage.setItem(KEY,JSON.stringify(game));
+  toast("💾 Spiel gespeichert!");
 }
 
 function resetGame(){
-
-  if(
-    !confirm(
-      "Wirklich das komplette Spiel zurücksetzen?"
-    )
-  )return;
-
-  localStorage.removeItem(
-    "youtuberLife3D"
-  );
-
+  if(!confirm("Spiel wirklich zurücksetzen?")) return;
+  localStorage.removeItem(KEY);
   location.reload();
 }
 
-/* =========================================================
-   STATS
-========================================================= */
-
-function formatMoney(number){
-
-  return Math.floor(number)
-    .toLocaleString("de-DE")+" €";
+function toast(text){
+  const t=document.getElementById("toast");
+  t.textContent=text;
+  t.style.display="block";
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>t.style.display="none",2500);
 }
 
-function updateStats(){
-
-  document.getElementById("money")
-    .innerText=
-    Math.floor(game.money)
-      .toLocaleString("de-DE");
-
-  document.getElementById("subs")
-    .innerText=
-    Math.floor(game.subs)
-      .toLocaleString("de-DE");
-
-  document.getElementById("likes")
-    .innerText=
-    Math.floor(game.likes)
-      .toLocaleString("de-DE");
-
-  document.getElementById("views")
-    .innerText=
-    Math.floor(game.views)
-      .toLocaleString("de-DE");
-
-  document.getElementById("age")
-    .innerText=game.age;
-
-  document.getElementById("homeName")
-    .innerText=game.home;
-
-  document.getElementById("ytFollowers")
-    .innerText=
-    game.followers.YouTube
-      .toLocaleString("de-DE");
-
-  document.getElementById("ttFollowers")
-    .innerText=
-    game.followers.TikTok
-      .toLocaleString("de-DE");
-
-  document.getElementById("igFollowers")
-    .innerText=
-    game.followers.Instagram
-      .toLocaleString("de-DE");
-
-  document.getElementById("twFollowers")
-    .innerText=
-    game.followers.Twitch
-      .toLocaleString("de-DE");
-
-  document.getElementById("xFollowers")
-    .innerText=
-    game.followers.X
-      .toLocaleString("de-DE");
+function fmt(n){
+  return Math.floor(n).toLocaleString("de-DE");
 }
 
-/* =========================================================
+function money(n){
+  return fmt(n)+" €";
+}
+
+function updateUI(){
+  document.getElementById("money").textContent=fmt(game.money);
+  document.getElementById("subs").textContent=fmt(game.subs);
+  document.getElementById("likes").textContent=fmt(game.likes);
+  document.getElementById("views").textContent=fmt(game.views);
+  document.getElementById("age").textContent=game.age;
+  document.getElementById("job").textContent=game.job;
+  document.getElementById("companyCount").textContent=game.companies.length;
+}
+
+/* ============================================================
+   PANELS
+============================================================ */
+
+function panel(type){
+  const p=document.getElementById("panels");
+
+  if(type==="home") p.innerHTML=homePanel();
+  if(type==="school") p.innerHTML=schoolPanel();
+  if(type==="career") p.innerHTML=careerPanel();
+  if(type==="company") p.innerHTML=companyPanel();
+  if(type==="video") p.innerHTML=videoPanel();
+  if(type==="social") p.innerHTML=socialPanel();
+  if(type==="fans") p.innerHTML=fansPanel();
+  if(type==="shop") p.innerHTML=shopPanel();
+  if(type==="sponsor") p.innerHTML=sponsorPanel();
+  if(type==="employees") p.innerHTML=employeePanel();
+  if(type==="relationship") p.innerHTML=relationshipPanel();
+  if(type==="family") p.innerHTML=familyPanel();
+  if(type==="bodyguards") p.innerHTML=bodyguardPanel();
+  if(type==="properties") p.innerHTML=propertyPanel();
+  if(type==="agePanel") p.innerHTML=agePanel();
+  if(type==="character") p.innerHTML=characterPanel();
+  if(type==="owner") p.innerHTML=ownerPanel();
+}
+
+/* ============================================================
+   HOME
+============================================================ */
+
+function homePanel(){
+ return `
+ <div class="panel">
+  <h2>🏠 Zuhause</h2>
+  <p>Generation ${game.generation} · Alter ${game.age}</p>
+  <div class="grid">
+   <div class="card">🛋️ Wohnzimmer<br><button onclick="goTo(20,30,'Wohnzimmer')">Hingehen</button></div>
+   <div class="card">🍳 Küche<br><button onclick="goTo(23,35,'Küche')">Hingehen</button></div>
+   <div class="card">🛏️ Schlafzimmer<br><button onclick="goTo(28,38,'Schlafzimmer')">Hingehen</button></div>
+   <div class="card">🎮 Gaming-Raum<br><button onclick="goTo(32,40,'Gaming-Raum')">Hingehen</button></div>
+   <div class="card">🎥 Studio<br><button onclick="goTo(48,32,'Studio')">Hingehen</button></div>
+   <div class="card">🏋️ Trainingsraum<br><button onclick="train()">Trainieren</button></div>
+   <div class="card">💻 Büro<br><button onclick="goTo(55,35,'Büro')">Hingehen</button></div>
+   <div class="card">🚗 Garage<br><button onclick="goTo(62,50,'Garage')">Hingehen</button></div>
+  </div>
+ </div>`;
+}
+
+/* ============================================================
+   SCHULE
+============================================================ */
+
+function schoolPanel(){
+ let can=game.age>=6 && game.age<19;
+ return `
+ <div class="panel">
+ <h2>🏫 Schule</h2>
+ ${game.age<6
+ ? `<div class="notice">👶 Du bist noch zu jung für die Schule.</div>`
+ : can
+ ? `
+ <p>Klassenstufe: ${game.schoolGrade}</p>
+ <p>Schul-Skill: ${game.skills.school}</p>
+ <button onclick="study()">📚 Lernen</button>
+ <button onclick="schoolDay()">🏫 Schultag</button>
+ <button onclick="schoolFriend()">👥 Freundschaft</button>
+ <button onclick="schoolEvent()">🎲 Schulereignis</button>
+ `
+ : `<div class="notice">🎓 Deine Schulzeit ist vorbei.</div>`
+ }
+ </div>`;
+}
+
+function study(){
+ game.skills.school++;
+ if(Math.random()<.2) game.schoolGrade++;
+ toast("📚 Du hast gelernt!");
+ saveGame();
+ updateUI();
+ panel("school");
+}
+
+function schoolDay(){
+ game.skills.school+=2;
+ toast("🏫 Schultag abgeschlossen!");
+ saveGame();
+ updateUI();
+ panel("school");
+}
+
+function schoolFriend(){
+ game.skills.communication++;
+ toast("👥 Du hast eine neue Freundschaft aufgebaut!");
+ saveGame();
+}
+
+function schoolEvent(){
+ const events=[
+  "🎨 Du hast bei einem Schulprojekt geholfen.",
+  "⚽ Du hast beim Sport mitgemacht.",
+  "🎤 Du hast vor der Klasse gesprochen.",
+  "🤝 Ein Mitschüler wollte mit dir befreundet sein.",
+  "📚 Du hast bei einer Aufgabe geholfen."
+ ];
+ toast(events[Math.floor(Math.random()*events.length)]);
+ game.skills.communication++;
+ saveGame();
+}
+
+/* ============================================================
+   KARRIERE
+============================================================ */
+
+function careerPanel(){
+ return `
+ <div class="panel">
+ <h2>💼 Karriere</h2>
+ <p>Wähle deinen Lebensweg. Für viele Berufe brauchst du Ausbildung, Studium oder Training.</p>
+ <div class="grid">
+ ${careers.map((c,i)=>`
+  <div class="card">
+   <b>${c[0]}</b>
+   <div class="small">🎓 ${c[1]}</div>
+   <button onclick="chooseCareer(${i})">Weg wählen</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function chooseCareer(i){
+ if(game.age<16){
+  toast("🎂 Dafür bist du noch zu jung.");
+  return;
+ }
+
+ const c=careers[i];
+ game.job=c[0];
+
+ if(c[0]==="YouTuber" || c[0]==="Streamer" || c[0]==="Unternehmer"){
+   toast("💼 Karriere gestartet: "+c[0]);
+ }else{
+   game.education=c[1];
+   toast("🎓 Ausbildungsweg gestartet: "+c[1]);
+ }
+
+ saveGame();
+ updateUI();
+ panel("career");
+}
+
+/* ============================================================
+   UNTERNEHMEN
+============================================================ */
+
+function companyPanel(){
+ return `
+ <div class="panel">
+ <h2>🏢 Eigene Unternehmen</h2>
+ <p>Du musst kein YouTuber werden. Du kannst dein eigenes Unternehmen gründen.</p>
+
+ <input id="companyName" placeholder="Name des Unternehmens">
+ <select id="companyType">
+  <option>Technologie</option>
+  <option>Restaurant</option>
+  <option>Kiosk</option>
+  <option>Geschäft</option>
+  <option>Gaming</option>
+  <option>Medien</option>
+  <option>Handwerk</option>
+  <option>Immobilien</option>
+  <option>Transport</option>
+  <option>Finanzen</option>
+  <option>Mode</option>
+  <option>Sport</option>
+ </select>
+
+ <button class="green" onclick="createCompany()">🏢 Unternehmen gründen</button>
+
+ <div class="grid">
+ ${game.companies.map((c,i)=>`
+  <div class="card">
+   <b>${c.name}</b>
+   <div>${c.type}</div>
+   <div>💰 Wert: ${money(c.value)}</div>
+   <button onclick="growCompany(${i})">📈 Investieren</button>
+   <button onclick="hireForCompany(${i})">👷 Mitarbeiter</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function createCompany(){
+ const name=document.getElementById("companyName").value.trim();
+ const type=document.getElementById("companyType").value;
+
+ if(!name){
+   toast("Bitte einen Firmennamen eingeben.");
+   return;
+ }
+ if(game.money<5000){
+   toast("💰 Du brauchst 5.000 € Startkapital.");
+   return;
+ }
+
+ game.money-=5000;
+ game.companies.push({
+   name,
+   type,
+   value:5000,
+   employees:0,
+   level:1
+ });
+
+ toast("🏢 Unternehmen gegründet!");
+ saveGame();
+ updateUI();
+ panel("company");
+}
+
+function growCompany(i){
+ const c=game.companies[i];
+ const cost=10000*c.level;
+ if(game.money<cost){
+   toast("💰 Nicht genug Geld.");
+   return;
+ }
+ game.money-=cost;
+ c.value+=cost*3;
+ c.level++;
+ toast("📈 Unternehmen gewachsen!");
+ saveGame();
+ updateUI();
+ panel("company");
+}
+
+function hireForCompany(i){
+ game.employees.push({
+  name:names[Math.floor(Math.random()*names.length)],
+  job:"Firmenmitarbeiter",
+  salary:1200,
+  company:game.companies[i].name
+ });
+ game.companies[i].employees++;
+ toast("👷 Mitarbeiter eingestellt!");
+ saveGame();
+ panel("company");
+}
+
+/* ============================================================
+   VIDEO
+============================================================ */
+
+function videoPanel(){
+ return `
+ <div class="panel">
+ <h2>🎥 Videos</h2>
+ <p>Du kannst deine Figur tatsächlich zum PC/Kamera laufen lassen und dort aufnehmen.</p>
+ <button class="red" onclick="recordVideo()">🔴 Video aufnehmen</button>
+ <button onclick="goTo(48,32,'PC zum Aufnehmen')">💻 Zum PC</button>
+ <p>Letzte Videos: ${game.events.filter(x=>x.type==="video").length}</p>
+ </div>`;
+}
+
+function recordVideo(){
+ if(game.age<12){
+  toast("📱 Für Social-Media-Videos musst du mindestens 12 sein.");
+  return;
+ }
+
+ goTo(48,32,"PC");
+
+ setTimeout(()=>{
+  document.getElementById("record").style.display="block";
+  document.getElementById("player").classList.add("walking");
+
+  const duration=7000;
+
+  let start=Date.now();
+
+  const timer=setInterval(()=>{
+    if(Date.now()-start>=duration){
+      clearInterval(timer);
+      document.getElementById("record").style.display="none";
+      document.getElementById("player").classList.remove("walking");
+      finishVideo();
+    }
+  },100);
+ },900);
+}
+
+function finishVideo(){
+ /*
+  Followerzahl != Views.
+  Videos können deutlich weniger oder deutlich mehr Views bekommen.
+ */
+ let base=Math.max(5,Math.floor(game.subs*0.02));
+ let randomness=0.25+Math.random()*4;
+ let views=Math.max(10,Math.floor(base*randomness));
+
+ if(Math.random()<.08){
+   views*=Math.floor(5+Math.random()*20);
+ }
+
+ let likes=Math.floor(views*(0.02+Math.random()*0.1));
+ let newSubs=Math.floor(views*(0.001+Math.random()*0.01));
+ let income=Math.floor(views*0.01);
+
+ game.views+=views;
+ game.likes+=likes;
+ game.subs+=newSubs;
+ game.money+=income;
+
+ game.events.push({
+   type:"video",
+   views,
+   likes,
+   subs:newSubs,
+   date:new Date().toLocaleString()
+ });
+
+ toast(`🎥 Video fertig! ${fmt(views)} Views`);
+ updateUI();
+ saveGame();
+}
+
+/* ============================================================
+   SOCIAL MEDIA
+============================================================ */
+
+function socialPanel(){
+ const platforms=Object.keys(game.social);
+
+ return `
+ <div class="panel">
+ <h2>📱 Social Media</h2>
+ ${game.age<12
+ ? `<div class="notice">🎂 Ab 12 kannst du Social Media starten.</div>`
+ : `
+ <div class="grid">
+ ${platforms.map(p=>`
+  <div class="card">
+   <h3>${p}</h3>
+   <p>👥 ${fmt(game.social[p].followers)}</p>
+   <p>❤️ ${fmt(game.social[p].likes)}</p>
+   <button onclick="socialPost('${p}')">📱 Post</button>
+   ${p==="Twitch"?`<button onclick="stream('${p}')">🔴 Stream</button>`:""}
+  </div>
+ `).join("")}
+ </div>
+ `}
+ </div>`;
+}
+
+function socialPost(platform){
+ const f=Math.floor(10+Math.random()*5000);
+ const l=Math.floor(f*(.02+Math.random()*.08));
+ game.social[platform].followers+=Math.floor(f*.03);
+ game.social[platform].likes+=l;
+ game.likes+=l;
+ game.money+=Math.floor(f*.005);
+
+ toast(`📱 ${platform}: Post veröffentlicht!`);
+ saveGame();
+ panel("social");
+ updateUI();
+}
+
+function stream(platform){
+ const f=Math.floor(100+Math.random()*10000);
+ game.social[platform].followers+=Math.floor(f*.05);
+ game.money+=Math.floor(f*.02);
+ toast("🔴 Stream beendet!");
+ saveGame();
+ panel("social");
+ updateUI();
+}
+
+/* ============================================================
+   FANS
+============================================================ */
+
+function ensureFans(){
+ if(game.fans.length<12){
+  while(game.fans.length<12){
+   game.fans.push({
+    name:names[Math.floor(Math.random()*names.length)]+" "+(100+Math.floor(Math.random()*900)),
+    mood:50+Math.floor(Math.random()*50),
+    moneyGiven:0,
+    gifts:0,
+    requests:0
+   });
+  }
+ }
+}
+
+function fansPanel(){
+ ensureFans();
+
+ return `
+ <div class="panel">
+ <h2>👥 Fans</h2>
+ <p>Fans haben eigene Namen und reagieren unterschiedlich auf dich.</p>
+ <div class="grid">
+ ${game.fans.map((f,i)=>`
+  <div class="card">
+   <b>👤 ${f.name}</b>
+   <p>😊 Stimmung: ${f.mood}/100</p>
+   <button onclick="fanMoney(${i})">💶 Geld geben</button>
+   <button onclick="fanGift(${i})">🎁 Geschenk</button>
+   <button onclick="fanVideo(${i})">🎥 Video-Anfrage</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function fanMoney(i){
+ const amount=100;
+ if(game.money<amount){
+   toast("💰 Nicht genug Geld.");
+   return;
+ }
+ game.money-=amount;
+ game.fans[i].moneyGiven+=amount;
+ game.fans[i].mood=Math.min(100,game.fans[i].mood+8);
+ toast(`💶 Du hast ${game.fans[i].name} 100 € gegeben.`);
+ saveGame();
+ updateUI();
+ panel("fans");
+}
+
+function fanGift(i){
+ const cost=50;
+ if(game.money<cost){
+  toast("💰 Nicht genug Geld.");
+  return;
+ }
+ game.money-=cost;
+ game.fans[i].gifts++;
+ game.fans[i].mood=Math.min(100,game.fans[i].mood+12);
+ toast("🎁 Geschenk gegeben!");
+ saveGame();
+ updateUI();
+ panel("fans");
+}
+
+function fanVideo(i){
+ game.fans[i].requests++;
+ toast(`🎥 ${game.fans[i].name} möchte ein Video mit dir!`);
+ if(confirm("Video-Anfrage annehmen?")){
+  game.subs+=Math.floor(10+Math.random()*1000);
+  game.likes+=Math.floor(20+Math.random()*2000);
+  toast("🎥 Fan-Video aufgenommen!");
+ }
+ saveGame();
+ updateUI();
+}
+
+/* ============================================================
+   SHOP – MEHR ALS 200 ITEMS
+============================================================ */
+
+const shopBase=[
+ ["Kamera",500],
+ ["Pro Kamera",5000],
+ ["Studio Kamera",25000],
+ ["Mikrofon",150],
+ ["Pro Mikrofon",1500],
+ ["Studio Mikrofon",8000],
+ ["PC",800],
+ ["Gaming PC",3500],
+ ["Workstation",15000],
+ ["Monitor",200],
+ ["4K Monitor",1200],
+ ["Licht",100],
+ ["Softbox",300],
+ ["LED Licht",800],
+ ["Tripod",100],
+ ["Pro Tripod",700],
+ ["Sofa",400],
+ ["Luxus Sofa",4000],
+ ["Schreibtisch",300],
+ ["Pro Schreibtisch",2000],
+ ["Gaming Stuhl",500],
+ ["Luxus Stuhl",2500],
+ ["Bett",500],
+ ["Luxus Bett",5000],
+ ["Schrank",300],
+ ["Kleiderschrank",1500],
+ ["Gaming Tisch",800],
+ ["TV",500],
+ ["Smart TV",2500],
+ ["Kühlschrank",700],
+ ["Luxus Kühlschrank",5000],
+ ["Waschmaschine",600],
+ ["Lautsprecher",300],
+ ["Pro Lautsprecher",2000],
+ ["Konsole",500],
+ ["Gaming Konsole Pro",1500],
+ ["VR System",1200],
+ ["Studio Hintergrund",300],
+ ["Akustik Panel",250],
+ ["Server",5000]
+];
+
+const shopColors=[
+ "Schwarz","Weiß","Rot","Blau","Grün",
+ "Gold","Silber","Grau","Lila","Orange"
+];
+
+let shopItems=[];
+
+shopBase.forEach((x,i)=>{
+ shopColors.forEach((color,j)=>{
+  shopItems.push({
+   id:i+"-"+j,
+   name:x[0]+" "+color,
+   price:x[1]*(1+j*.15),
+   category:i<3?"Kamera":i<6?"Audio":i<13?"PC/Licht":"Möbel"
+  });
+ });
+});
+
+function shopPanel(){
+ return `
+ <div class="panel">
+ <h2>🛒 Mega-Shop</h2>
+ <p>Hier gibt es aktuell <b>${shopItems.length}</b> verschiedene Gegenstände.</p>
+ <p class="small">
+ Kamera · Mikrofon · PC · Licht · Möbel · Gaming · Studio usw.
+ </p>
+
+ <div class="grid">
+ ${shopItems.slice(0,300).map((x,i)=>`
+  <div class="card">
+   <b>${x.name}</b>
+   <div class="small">${x.category}</div>
+   <div>${money(x.price)}</div>
+   <button onclick="buyItem(${i})">🛒 Kaufen</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function buyItem(i){
+ const x=shopItems[i];
+ if(game.money<x.price){
+  toast("💰 Nicht genug Geld.");
+  return;
+ }
+
+ game.money-=x.price;
+
+ if(x.category==="Möbel"){
+   game.furniture.push(x.name);
+ }else{
+   game.equipment.push(x.name);
+ }
+
+ toast("🛒 Gekauft: "+x.name);
+ saveGame();
+ updateUI();
+ panel("shop");
+}
+
+/* ============================================================
+   SPONSOREN
+============================================================ */
+
+function sponsorPanel(){
+ return `
+ <div class="panel">
+ <h2>🤝 Sponsoren</h2>
+ <p>Im Spiel können Unternehmen, Restaurants, Kioske und Geschäfte Sponsoring anbieten.</p>
+ <div class="grid">
+ ${companies.map((c,i)=>`
+  <div class="card">
+   <b>${c[0]}</b>
+   <div>${c[1]}</div>
+   <button onclick="sponsor(${i})">🤝 Anfrage senden</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function sponsor(i){
+ const c=companies[i];
+ const deal={
+  name:c[0],
+  type:c[1],
+  value:Math.floor(500+Math.random()*100000)
+ };
+
+ game.sponsors.push(deal);
+ game.money+=deal.value;
+
+ toast(`🤝 Sponsoring von ${c[0]}: ${money(deal.value)}`);
+ saveGame();
+ updateUI();
+ panel("sponsor");
+}
+
+/* ============================================================
+   MITARBEITER
+============================================================ */
+
+const employeeJobs=[
+ ["Manager",2500],
+ ["Kameramann",1800],
+ ["Cutter",1700],
+ ["Techniker",1900],
+ ["Fahrer",1600],
+ ["Security",2200],
+ ["Haushaltshilfe",1400],
+ ["Social-Media-Manager",2100],
+ ["Buchhalter",2300],
+ ["Assistent",1500]
+];
+
+function employeePanel(){
+ return `
+ <div class="panel">
+ <h2>👷 Mitarbeiter</h2>
+ <div class="grid">
+ ${employeeJobs.map((j,i)=>`
+  <div class="card">
+   <b>${j[0]}</b>
+   <div>Gehalt: ${money(j[1])}/Monat</div>
+   <button onclick="hireEmployee(${i})">Einstellen</button>
+  </div>
+ `).join("")}
+ </div>
+ <hr>
+ ${game.employees.map(e=>`
+  <div class="card">
+   👤 ${e.name} – ${e.job}
+   <br>💰 ${money(e.salary)}/Monat
+  </div>
+ `).join("")}
+ </div>`;
+}
+
+function renderEmployees(){}
+
+function hireEmployee(i){
+ const j=employeeJobs[i];
+ game.employees.push({
+  name:names[Math.floor(Math.random()*names.length)],
+  job:j[0],
+  salary:j[1]
+ });
+ toast("👷 Mitarbeiter eingestellt!");
+ saveGame();
+ panel("employees");
+}
+
+/* ============================================================
+   BEZIEHUNG
+============================================================ */
+
+function relationshipPanel(){
+ return `
+ <div class="panel">
+ <h2>❤️ Beziehungen</h2>
+ ${
+ game.partner
+ ? `
+ <p>❤️ Partner: ${game.partner.name}</p>
+ <p>Beziehungslevel: ${game.partner.level}/100</p>
+ <button onclick="relationshipTime()">🕐 Zeit zusammen verbringen</button>
+ <button class="red" onclick="endRelationship()">❌ Beziehung beenden</button>
+ `
+ : `
+ <p>Du hast momentan keinen Partner.</p>
+ <button onclick="findPartner()">❤️ Neue Person kennenlernen</button>
+ `
+ }
+ </div>`;
+}
+
+function findPartner(){
+ if(game.age<16){
+  toast("🎂 Dafür bist du noch zu jung.");
+  return;
+ }
+
+ game.partner={
+  name:names[Math.floor(Math.random()*names.length)],
+  level:20
+ };
+
+ toast("❤️ Du hast jemanden kennengelernt.");
+ saveGame();
+ panel("relationship");
+}
+
+function relationshipTime(){
+ game.partner.level=Math.min(100,game.partner.level+5);
+ toast("❤️ Beziehungslevel gestiegen!");
+ saveGame();
+ panel("relationship");
+}
+
+function endRelationship(){
+ game.partner=null;
+ toast("Die Beziehung ist beendet.");
+ saveGame();
+ panel("relationship");
+}
+
+/* ============================================================
+   FAMILIE / GENERATIONEN / ERBSCHAFT
+============================================================ */
+
+function familyPanel(){
+ return `
+ <div class="panel">
+ <h2>👨‍👩‍👧 Familie</h2>
+
+ <p>Familienstatus: <b>${game.familyMoney}</b></p>
+ <p>Eltern-Aufsicht: <b>${game.familyAttention}</b></p>
+
+ <button onclick="familyEvent()">🎲 Familienereignis</button>
+ <button onclick="inheritance()">📜 Erbschaft prüfen</button>
+
+ <div class="notice">
+ 💡 Wenn ein Elternteil im Spiel stirbt, kann abhängig von der
+ Familiensituation eine Erbschaft entstehen, z. B. Haus, Geld,
+ Möbel oder Ausrüstung.
+ </div>
+ </div>`;
+}
+
+function familyEvent(){
+ const e=[
+  "👨‍👩‍👧 Deine Familie macht einen Ausflug.",
+  "🍽️ Gemeinsames Abendessen.",
+  "📚 Deine Eltern helfen dir bei der Schule.",
+  "🏠 Die Familie kauft etwas für das Zuhause.",
+  "💰 Deine Familie bekommt unerwartet Geld."
+ ];
+ toast(e[Math.floor(Math.random()*e.length)]);
+}
+
+function inheritance(){
+ if(Math.random()<.55){
+  const value=Math.floor(5000+Math.random()*100000);
+  game.money+=value;
+  game.properties.push({
+   name:"Geerbtes Familienhaus",
+   value
+  });
+  toast(`📜 Erbschaft: Haus + ${money(value)}`);
+ }else{
+  toast("📜 Heute gibt es keine neue Erbschaft.");
+ }
+ saveGame();
+ updateUI();
+ panel("family");
+}
+
+/* ============================================================
+   BODYGUARDS
+============================================================ */
+
+let guards=[];
+
+for(let i=1;i<=500;i++){
+ guards.push({
+  level:i,
+  name:
+   i<50?"Basis-Schutz":
+   i<150?"Pro-Schutz":
+   i<300?"Elite-Schutz":
+   "Maximaler Schutz",
+  attack:i,
+  defense:i,
+  damage:i
+ });
+}
+
+function bodyguardPanel(){
+ return `
+ <div class="panel">
+ <h2>🛡️ Bodyguards</h2>
+ <p>Es gibt <b>500 Schutz-Stufen</b>. Teilzeit ist günstiger als Vollzeit.</p>
+
+ <select id="guardSelect">
+ ${guards.map((g,i)=>`
+  <option value="${i}">
+   Stufe ${g.level} – ${g.name} – Schutz ${g.defense}
+  </option>
+ `).join("")}
+ </select>
+
+ <button onclick="hireGuard('Teilzeit')">⏱️ Teilzeit aktivieren</button>
+ <button onclick="hireGuard('Vollzeit')">🛡️ Vollzeit aktivieren</button>
+
+ <div class="grid">
+ ${game.bodyguards.map(g=>`
+  <div class="card">
+   🛡️ ${g.name}<br>
+   ${g.mode}<br>
+   Schutz: ${g.defense}<br>
+   Stärke: ${g.attack}<br>
+   Spielwert: ${g.damage}
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function renderBodyguards(){}
+
+function hireGuard(mode){
+ const i=Number(document.getElementById("guardSelect").value);
+ const g=guards[i];
+
+ const salary=mode==="Teilzeit"
+  ? 500+g.level*10
+  : 1000+g.level*20;
+
+ if(game.money<salary){
+  toast("💰 Nicht genug Geld für diesen Bodyguard.");
+  return;
+ }
+
+ game.money-=salary;
+
+ game.bodyguards.push({
+  name:g.name,
+  mode,
+  defense:g.defense,
+  attack:g.attack,
+  damage:g.damage
+ });
+
+ toast(`🛡️ ${mode}-Bodyguard aktiviert!`);
+ saveGame();
+ updateUI();
+ panel("bodyguards");
+}
+
+/* ============================================================
+   IMMOBILIEN
+============================================================ */
+
+function propertyPanel(){
+ const homes=[];
+
+ for(let i=1;i<=40;i++){
+  let price;
+  if(i<=20){
+   price=400000+(i-1)*21000;
+  }else{
+   price=20000000+(i-21)*50000000;
+  }
+
+  homes.push({
+   name:"Haus / Wohnung #"+i,
+   price
+  });
+ }
+
+ return `
+ <div class="panel">
+ <h2>🏠 Immobilien</h2>
+ <p>Du kannst mehrere Immobilien besitzen.</p>
+
+ <div class="grid">
+ ${homes.map((h,i)=>`
+  <div class="card">
+   <b>${h.name}</b>
+   <div>💰 ${money(h.price)}</div>
+   <div class="small">
+    ${i<20?"Bodenständig / normal":"Luxusimmobilie"}
+   </div>
+   <button onclick="buyHome(${i},${h.price})">🏠 Kaufen</button>
+   <button onclick="visitHome(${i})">🚶 Besuchen</button>
+  </div>
+ `).join("")}
+ </div>
+
+ <hr>
+
+ ${game.properties.map(p=>`
+  <div class="card">
+   🏠 ${p.name||"Immobilie"} – ${money(p.value||0)}
+  </div>
+ `).join("")}
+ </div>`;
+}
+
+function renderProperties(){}
+
+function buyHome(i,price){
+ if(game.money<price){
+  toast("💰 Nicht genug Geld.");
+  return;
+ }
+
+ game.money-=price;
+
+ game.properties.push({
+  name:"Haus #"+(i+1),
+  value:price,
+  rooms:[
+   "Wohnzimmer","Küche","Bad","Schlafzimmer",
+   "Büro","Gaming-Zimmer","Studio","Garage",
+   "Garten","Lager"
+  ]
+ });
+
+ toast("🏠 Immobilie gekauft!");
+ saveGame();
+ updateUI();
+ panel("properties");
+}
+
+function visitHome(i){
+ goTo(20,30,"Haus #"+(i+1));
+}
+
+/* ============================================================
+   ALTER
+============================================================ */
+
+function agePanel(){
+ return `
+ <div class="panel">
+ <h2>🎂 Lebensalter</h2>
+
+ <p>Aktuelles Alter: <b>${game.age}</b></p>
+ <p>Generation: <b>${game.generation}</b></p>
+
+ <button onclick="setAge(0)">👶 Baby</button>
+ <button onclick="setAge(3)">🧒 Kleinkind</button>
+ <button onclick="setAge(6)">🏫 Schulkind</button>
+ <button onclick="setAge(12)">📱 12 Jahre</button>
+ <button onclick="setAge(16)">🧑 Teenager</button>
+ <button onclick="setAge(18)">🧑‍💼 Erwachsen</button>
+ <button onclick="setAge(40)">👨 Erwachsen 40</button>
+ <button onclick="setAge(65)">👴 Senior</button>
+
+ <button class="gold" onclick="nextYear()">➡️ Ein Jahr älter</button>
+ <button onclick="newGeneration()">👶 Nächste Generation</button>
+
+ </div>`;
+}
+
+function setAge(age){
+ game.age=age;
+
+ if(age<6) toast("👶 Du bist ein Baby/Kleinkind.");
+ else if(age<12) toast("🏫 Du bist jetzt ein Schulkind.");
+ else if(age<16) toast("📱 Social Media ist jetzt möglich.");
+ else if(age<18) toast("🧑 Du bist Teenager.");
+ else toast("🧑‍💼 Du bist erwachsen.");
+
+ saveGame();
+ updateUI();
+ panel("agePanel");
+}
+
+function nextYear(){
+ game.age++;
+ toast("🎂 Du bist jetzt "+game.age+" Jahre alt.");
+ saveGame();
+ updateUI();
+}
+
+function newGeneration(){
+ if(game.age<18){
+  toast("Du musst zuerst erwachsen sein.");
+  return;
+ }
+
+ game.generation++;
+ game.age=0;
+ game.job="Kein Beruf";
+ game.education="Keine Ausbildung";
+ game.subs=0;
+ game.likes=0;
+ game.views=0;
+
+ toast("👶 Neue Generation gestartet!");
+ saveGame();
+ updateUI();
+}
+
+/* ============================================================
+   CHARAKTER
+============================================================ */
+
+function characterPanel(){
+ return `
+ <div class="panel">
+ <h2>🧑 Figur</h2>
+
+ <label>Hautfarbe</label>
+ <select onchange="changeCharacter('skin',this.value)">
+  <option value="#9b623e">Mittel</option>
+  <option value="#6b3f27">Dunkler</option>
+  <option value="#d49a70">Hell</option>
+  <option value="#4b2b20">Sehr dunkel</option>
+ </select>
+
+ <label>Haare</label>
+ <select onchange="changeCharacter('hair',this.value)">
+  <option value="#171717">Schwarz</option>
+  <option value="#5b351d">Braun</option>
+  <option value="#d6b45c">Blond</option>
+  <option value="#9ca3af">Grau</option>
+ </select>
+
+ <label>Shirt</label>
+ <select onchange="changeCharacter('shirt',this.value)">
+  <option value="#2563eb">Blau</option>
+  <option value="#dc2626">Rot</option>
+  <option value="#16a34a">Grün</option>
+  <option value="#111827">Schwarz</option>
+  <option value="#f8fafc">Weiß</option>
+ </select>
+
+ <button onclick="train()">🏋️ Trainieren</button>
+ </div>`;
+}
+
+function changeCharacter(type,value){
+ game[type]=value;
+ updateCharacter();
+ saveGame();
+}
+
+function updateCharacter(){
+ document.querySelector(".head").style.background=game.skin;
+ document.querySelector(".hair").style.background=game.hair;
+ document.querySelector(".body").style.background=game.shirt;
+}
+
+/* ============================================================
+   TRAINING
+============================================================ */
+
+function train(){
+ game.skills.fitness+=2;
+ toast("🏋️ Training abgeschlossen!");
+ saveGame();
+}
+
+/* ============================================================
+   AUTOMATISCHE BEWEGUNG
+============================================================ */
+
+function goTo(x,y,text){
+ const p=document.getElementById("player");
+
+ const targetX=x;
+ const targetY=y;
+
+ p.classList.add("walking");
+
+ let interval=setInterval(()=>{
+   const currentX=game.position.x;
+   const currentY=game.position.y;
+
+   let dx=targetX-currentX;
+   let dy=targetY-currentY;
+
+   if(Math.abs(dx)<.8 && Math.abs(dy)<.8){
+    clearInterval(interval);
+    p.classList.remove("walking");
+    game.position.x=targetX;
+    game.position.y=targetY;
+    showBubble(text);
+    return;
+   }
+
+   game.position.x+=dx*.08;
+   game.position.y+=dy*.08;
+
+   p.style.left=game.position.x+"%";
+   p.style.bottom=game.position.y+"%";
+
+ },30);
+}
+
+function showBubble(text){
+ const b=document.getElementById("bubble");
+ b.textContent=text;
+ b.style.display="block";
+
+ clearTimeout(window.bubbleTimer);
+ window.bubbleTimer=setTimeout(()=>{
+  b.style.display="none";
+ },1800);
+}
+
+/* ============================================================
+   FIRST PERSON / THIRD PERSON
+============================================================ */
+
+function toggleCamera(){
+ const body=document.body;
+
+ if(game.cameraMode==="third"){
+   game.cameraMode="first";
+   body.classList.add("firstPerson");
+   toast("👀 Eigene Sicht aktiviert");
+ }else{
+   game.cameraMode="third";
+   body.classList.remove("firstPerson");
+   toast("👤 Third Person aktiviert");
+ }
+
+ saveGame();
+}
+
+/* ============================================================
+   RANDOM EVENTS
+============================================================ */
+
+function randomEvent(){
+ const events=[
+  "📱 Dein Video wird plötzlich viral.",
+  "👥 Ein neuer Fan erkennt dich.",
+  "🏠 Ein Möbelstück geht kaputt.",
+  "🤝 Ein kleines Unternehmen möchte mit dir zusammenarbeiten.",
+  "🎥 Ein YouTuber fragt nach einer Zusammenarbeit.",
+  "🏫 Ein Freund lädt dich zu einem Schulprojekt ein.",
+  "💼 Du bekommst eine Jobchance.",
+  "🏢 Ein Unternehmen macht dir ein Angebot.",
+  "🎁 Ein Fan schickt dir ein Geschenk."
+ ];
+
+ toast(events[Math.floor(Math.random()*events.length)]);
+}
+
+setInterval(()=>{
+ if(Math.random()<.08){
+  randomEvent();
+ }
+},20000);
+
+/* ============================================================
+   OWNER PANEL
+============================================================ */
+
+const OWNER_PASSWORD="YT-Owner-7X9!K4#P";
+
+function ownerPanel(){
+ return `
+ <div class="panel">
+ <h2>👑 OWNER PANEL</h2>
+
+ <input id="ownerPass" type="password" placeholder="Owner-Passwort">
+
+ <button onclick="loginOwner()">🔐 Owner öffnen</button>
+
+ <div id="ownerControls" class="hidden">
+
+  <div class="notice">
+   👑 Owner-Modus aktiv
+  </div>
+
+  <button onclick="addMoney()">💰 +1 Milliarde €</button>
+  <button onclick="addSubs()">👥 +1 Million Subs</button>
+  <button onclick="addLikes()">❤️ +1 Million Likes</button>
+  <button onclick="addViews()">👀 +10 Millionen Views</button>
+
+  <hr>
+
+  <button class="gold" onclick="everything()">🔥 ALLES HOLEN</button>
+  <button onclick="unlockAll()">🔓 ALLES FREISCHALTEN</button>
+  <button onclick="maxSkills()">⭐ ALLE SKILLS MAX</button>
+  <button onclick="maxAge()">🎂 ALTER 18</button>
+  <button onclick="ownerEvent()">🎲 EVENT AUSLÖSEN</button>
+
+  <hr>
+
+  <button class="green" onclick="saveGame()">💾 Speichern</button>
+  <button class="red" onclick="resetGame()">🔄 Spiel zurücksetzen</button>
+
+ </div>
+ </div>`;
+}
+
+function loginOwner(){
+ const pass=document.getElementById("ownerPass").value;
+
+ if(pass!==OWNER_PASSWORD){
+  toast("❌ Falsches Passwort.");
+  return;
+ }
+
+ document.getElementById("ownerControls").classList.remove("hidden");
+ toast("👑 Owner Panel geöffnet!");
+}
+
+function addMoney(){
+ game.money+=1000000000;
+ updateUI();
+ saveGame();
+ toast("💰 +1 Milliarde €");
+}
+
+function addSubs(){
+ game.subs+=1000000;
+ updateUI();
+ saveGame();
+ toast("👥 +1 Million Subs");
+}
+
+function addLikes(){
+ game.likes+=1000000;
+ updateUI();
+ saveGame();
+ toast("❤️ +1 Million Likes");
+}
+
+function addViews(){
+ game.views+=10000000;
+ updateUI();
+ saveGame();
+ toast("👀 +10 Millionen Views");
+}
+
+function maxSkills(){
+ Object.keys(game.skills).forEach(k=>game.skills[k]=999999);
+ toast("⭐ Alle Skills maximiert!");
+ saveGame();
+}
+
+function maxAge(){
+ game.age=18;
+ updateUI();
+ saveGame();
+ toast("🎂 Alter auf 18 gesetzt.");
+}
+
+function unlockAll(){
+ game.ownedAll=true;
+
+ game.subs=1000000000;
+ game.likes=1000000000;
+ game.views=10000000000;
+ game.money=999999999999999;
+
+ game.equipment=shopItems.map(x=>x.name);
+ game.furniture=shopItems.map(x=>x.name);
+
+ game.properties=[];
+
+ for(let i=1;i<=40;i++){
+  game.properties.push({
+   name:"Freigeschaltete Immobilie #"+i,
+   value:1000000*i,
+   rooms:[
+    "Wohnzimmer","Küche","Bad","Schlafzimmer",
+    "Büro","Gaming-Zimmer","Studio",
+    "Trainingsraum","Garage","Garten",
+    "Lager","Gästezimmer"
+   ]
+  });
+ }
+
+ game.channels=[
+  {name:"Hauptkanal",subs:game.subs,likes:game.likes,views:game.views}
+ ];
+
+ Object.keys(game.social).forEach(p=>{
+  game.social[p].followers=100000000;
+  game.social[p].likes=100000000;
+ });
+
+ toast("🔓 Alles freigeschaltet!");
+ updateUI();
+ saveGame();
+}
+
+function everything(){
+ unlockAll();
+
+ game.employees=[];
+
+ employeeJobs.forEach(j=>{
+  game.employees.push({
+   name:"Premium Mitarbeiter",
+   job:j[0],
+   salary:j[1]
+  });
+ });
+
+ game.bodyguards=[];
+
+ [1,50,100,200,300,400,500].forEach(i=>{
+  const g=guards[i-1];
+  game.bodyguards.push({
+   name:g.name,
+   mode:"Vollzeit",
+   defense:g.defense,
+   attack:g.attack,
+   damage:g.damage
+  });
+ });
+
+ game.companies=[];
+
+ companies.forEach(c=>{
+  game.companies.push({
+   name:c[0],
+   type:c[1],
+   value:1000000000,
+   employees:100,
+   level:100
+  });
+ });
+
+ game.sponsors=companies.map(c=>({
+  name:c[0],
+  type:c[1],
+  value:100000000
+ }));
+
+ ensureFans();
+
+ game.fans.forEach(f=>{
+  f.mood=100;
+  f.moneyGiven=100000;
+  f.gifts=100;
+ });
+
+ toast("🔥 ALLES wurde für den Owner geholt!");
+ updateUI();
+ saveGame();
+}
+
+/* ============================================================
+   OWNER EVENT
+============================================================ */
+
+function ownerEvent(){
+ for(let i=0;i<10;i++) randomEvent();
+ toast("🎲 Owner-Event gestartet!");
+}
+
+/* ============================================================
+   AUTOSAVE
+============================================================ */
+
+setInterval(()=>{
+ try{
+  localStorage.setItem(KEY,JSON.stringify(game));
+ }catch(e){}
+},15000);
+
+/* ============================================================
+   TASTATUR – optional
+   Die Hauptsteuerung bleibt Antippen.
+============================================================ */
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="ArrowLeft"){
+  goTo(Math.max(5,game.position.x-8),game.position.y,"⬅️");
+ }
+ if(e.key==="ArrowRight"){
+  goTo(Math.min(95,game.position.x+8),game.position.y,"➡️");
+ }
+ if(e.key==="ArrowUp"){
+  goTo(game.position.x,Math.min(55,game.position.y+8),"⬆️");
+ }
+ if(e.key==="ArrowDown"){
+  goTo(game.position.x,Math.max(15,game.position.y-8),"⬇️");
+ }
+});
+
+/* ============================================================
    START
-========================================================= */
+============================================================ */
 
 loadGame();
-
-updateStats();
-
-updatePlayerPosition();
-
-renderFurniture();
-
-renderChannels();
-
-renderEmployees();
-
-renderRelationship();
+panel("home");
 
 </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>YouTuber Life – Mega Life Simulator</title>
 
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#08111f;
+  color:white;
+  overflow-x:hidden
+}
+button,input,select{
+  font:inherit
+}
+button{
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+  background:#2563eb;
+  color:white;
+  font-weight:bold;
+  margin:3px
+}
+button:hover{filter:brightness(1.15)}
+button.red{background:#dc2626}
+button.green{background:#16a34a}
+button.gold{background:#d97706}
+button.dark{background:#334155}
+
+.top{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:#0b1220ee;
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid #263247;
+  padding:10px
+}
+.top h1{margin:0 0 8px;font-size:21px}
+.stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px
+}
+.stat{
+  background:#111c30;
+  border:1px solid #263b5c;
+  padding:7px 10px;
+  border-radius:10px;
+  font-size:13px
+}
+
+.nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  padding:8px;
+  background:#101827
+}
+.nav button{background:#1e293b}
+
+#game{
+  min-height:560px;
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(#67b9ff 0 52%,#9ad85b 52% 76%,#59616c 76% 82%,#242a33 82%);
+  perspective:900px
+}
+
+.cloud{
+  position:absolute;
+  width:120px;
+  height:40px;
+  background:white;
+  border-radius:50px;
+  opacity:.8;
+  animation:cloud 25s linear infinite
+}
+.cloud:before,.cloud:after{
+  content:"";
+  position:absolute;
+  background:white;
+  border-radius:50%
+}
+.cloud:before{width:55px;height:55px;left:25px;top:-25px}
+.cloud:after{width:65px;height:65px;right:18px;top:-30px}
+.c1{top:70px;left:-160px}
+.c2{top:150px;left:-350px;animation-delay:8s}
+.c3{top:45px;left:-500px;animation-delay:15s}
+@keyframes cloud{
+  to{transform:translateX(140vw)}
+}
+
+.sun{
+  position:absolute;
+  width:90px;height:90px;
+  border-radius:50%;
+  background:#ffe47a;
+  right:9%;
+  top:40px;
+  box-shadow:0 0 50px #ffe47a
+}
+
+.street{
+  position:absolute;
+  left:0;right:0;
+  bottom:18%;
+  height:70px;
+  background:#303640;
+  border-top:4px solid #68717c;
+  border-bottom:4px solid #171b20
+}
+.street:after{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  top:31px;
+  border-top:5px dashed #e7d56d
+}
+
+.house{
+  position:absolute;
+  left:7%;
+  bottom:24%;
+  width:310px;
+  height:240px;
+  background:#d8b28d;
+  border:6px solid #6b442b;
+  border-radius:8px;
+  box-shadow:25px 25px 25px #0004;
+  transform:rotateY(-3deg)
+}
+.house .roof{
+  position:absolute;
+  left:-25px;
+  top:-105px;
+  width:350px;
+  height:120px;
+  background:#743c35;
+  border:6px solid #452522;
+  clip-path:polygon(50% 0,100% 85%,94% 100%,6% 100%,0 85%)
+}
+.window{
+  position:absolute;
+  width:60px;height:65px;
+  background:#73cfff;
+  border:6px solid #513b2d
+}
+.w1{left:30px;top:45px}
+.w2{right:30px;top:45px}
+.door{
+  position:absolute;
+  width:65px;height:110px;
+  left:122px;bottom:0;
+  background:#63442e;
+  border:5px solid #3e291c
+}
+.door:after{
+  content:"";
+  position:absolute;
+  right:8px;top:52px;
+  width:8px;height:8px;
+  background:#e8c46a;
+  border-radius:50%
+}
+
+.sidehouse{
+  position:absolute;
+  left:7%;
+  bottom:24%;
+  width:80px;height:240px;
+  transform:translateX(305px) skewY(-18deg);
+  background:#a98468;
+  border-right:6px solid #604633
+}
+
+.studio{
+  position:absolute;
+  right:7%;
+  bottom:25%;
+  width:380px;height:205px;
+  background:#202b3b;
+  border:5px solid #111827;
+  border-radius:15px;
+  box-shadow:0 20px 35px #0007
+}
+.studioTitle{
+  position:absolute;
+  left:15px;top:10px;
+  font-weight:bold
+}
+.desk{
+  position:absolute;
+  left:90px;bottom:35px;
+  width:190px;height:20px;
+  background:#8b5a35
+}
+.pc{
+  position:absolute;
+  left:125px;bottom:55px;
+  width:110px;height:70px;
+  background:#050505;
+  border:6px solid #777;
+  border-radius:5px
+}
+.pc:after{
+  content:"";
+  position:absolute;
+  left:40px;bottom:-22px;
+  width:30px;height:18px;
+  background:#777
+}
+.camera{
+  position:absolute;
+  right:35px;bottom:50px;
+  width:75px;height:50px;
+  background:#171717;
+  border-radius:10px
+}
+.camera:after{
+  content:"";
+  position:absolute;
+  right:-28px;top:10px;
+  border-left:30px solid #222;
+  border-top:15px solid transparent;
+  border-bottom:15px solid transparent
+}
+.sofa{
+  position:absolute;
+  left:15px;bottom:25px;
+  width:65px;height:70px;
+  background:#704b91;
+  border-radius:15px
+}
+
+#player{
+  position:absolute;
+  width:52px;height:110px;
+  left:45%;
+  bottom:27%;
+  z-index:15;
+  transition:left .08s linear,bottom .08s linear;
+  filter:drop-shadow(8px 12px 8px #0007)
+}
+.head{
+  position:absolute;
+  width:46px;height:46px;
+  left:3px;top:0;
+  border-radius:50%;
+  background:#9b623e;
+  border:2px solid #4a2e21
+}
+.hair{
+  position:absolute;
+  width:48px;height:22px;
+  left:2px;top:-2px;
+  background:#171717;
+  border-radius:50% 50% 30% 30%
+}
+.eye{
+  position:absolute;
+  width:5px;height:7px;
+  background:#111;
+  top:20px;
+  border-radius:50%
+}
+.eye.a{left:14px}.eye.b{right:14px}
+.mouth{
+  position:absolute;
+  width:13px;height:5px;
+  border-bottom:2px solid #401f1f;
+  left:16px;top:31px
+}
+.body{
+  position:absolute;
+  width:38px;height:50px;
+  left:7px;top:43px;
+  background:#2563eb;
+  border-radius:10px 10px 5px 5px
+}
+.arm{
+  position:absolute;
+  width:10px;height:43px;
+  background:#9b623e;
+  top:47px;
+  border-radius:8px
+}
+.arm.a{left:-3px;transform:rotate(8deg)}
+.arm.b{right:-3px;transform:rotate(-8deg)}
+.leg{
+  position:absolute;
+  width:13px;height:38px;
+  background:#202020;
+  top:88px;
+  border-radius:5px
+}
+.leg.a{left:10px}.leg.b{right:10px}
+.walking .leg.a{animation:walk .22s infinite alternate}
+.walking .leg.b{animation:walk .22s infinite alternate-reverse}
+@keyframes walk{
+  from{transform:rotate(18deg)}
+  to{transform:rotate(-18deg)}
+}
+
+#bubble{
+  position:absolute;
+  left:50%;
+  top:30px;
+  transform:translateX(-50%);
+  background:white;
+  color:#111;
+  padding:12px 16px;
+  border-radius:15px;
+  display:none;
+  z-index:30;
+  box-shadow:0 5px 20px #0005
+}
+
+.record{
+  position:absolute;
+  right:25px;
+  top:20px;
+  background:#dc2626;
+  padding:8px 12px;
+  border-radius:20px;
+  display:none;
+  z-index:40;
+  animation:pulse .8s infinite alternate
+}
+@keyframes pulse{to{opacity:.45}}
+
+.panel{
+  margin:10px;
+  padding:15px;
+  background:#111c2d;
+  border:1px solid #2c405e;
+  border-radius:15px
+}
+.panel h2{margin-top:0}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:10px
+}
+.card{
+  background:#172337;
+  border:1px solid #314766;
+  border-radius:13px;
+  padding:12px
+}
+.small{font-size:12px;color:#b9c6d8}
+.hidden{display:none!important}
+.notice{
+  background:#172554;
+  border:1px solid #3b82f6;
+  padding:10px;
+  border-radius:10px;
+  margin:8px 0
+}
+input,select{
+  width:100%;
+  padding:10px;
+  margin:4px 0;
+  border-radius:9px;
+  border:1px solid #475569;
+  background:#0f172a;
+  color:white
+}
+#toast{
+  position:fixed;
+  right:15px;
+  bottom:15px;
+  z-index:100;
+  background:#111827;
+  border:1px solid #3b82f6;
+  padding:12px 16px;
+  border-radius:12px;
+  display:none
+}
+
+.firstPerson #game{
+  filter:saturate(1.1)
+}
+.firstPerson #player{
+  opacity:.08
+}
+.firstPerson .house,
+.firstPerson .studio{
+  transform:scale(1.12)
+}
+
+@media(max-width:800px){
+  .house{left:2%;transform:scale(.75);transform-origin:bottom left}
+  .studio{right:2%;transform:scale(.72);transform-origin:bottom right}
+  #game{min-height:500px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+  <h1>🎮 YouTuber Life – Mega Life Simulator</h1>
+  <div class="stats">
+    <div class="stat">💰 <span id="money">0</span> €</div>
+    <div class="stat">👥 <span id="subs">0</span> Subs</div>
+    <div class="stat">❤️ <span id="likes">0</span> Likes</div>
+    <div class="stat">👀 <span id="views">0</span> Views</div>
+    <div class="stat">🎂 Alter: <span id="age">0</span></div>
+    <div class="stat">💼 <span id="job">Kein Beruf</span></div>
+    <div class="stat">🏢 <span id="companyCount">0</span> Firmen</div>
+  </div>
+</div>
+
+<div class="nav">
+  <button onclick="panel('home')">🏠 Zuhause</button>
+  <button onclick="panel('school')">🏫 Schule</button>
+  <button onclick="panel('career')">💼 Karriere</button>
+  <button onclick="panel('company')">🏢 Unternehmen</button>
+  <button onclick="panel('video')">🎥 Video</button>
+  <button onclick="panel('social')">📱 Social Media</button>
+  <button onclick="panel('fans')">👥 Fans</button>
+  <button onclick="panel('shop')">🛒 Shop</button>
+  <button onclick="panel('sponsor')">🤝 Sponsoren</button>
+  <button onclick="panel('employees')">👷 Mitarbeiter</button>
+  <button onclick="panel('relationship')">❤️ Beziehung</button>
+  <button onclick="panel('family')">👨‍👩‍👧 Familie</button>
+  <button onclick="panel('bodyguards')">🛡️ Schutz</button>
+  <button onclick="panel('properties')">🏠 Immobilien</button>
+  <button onclick="panel('agePanel')">🎂 Alter</button>
+  <button onclick="panel('character')">🧑 Figur</button>
+  <button onclick="panel('owner')">👑 Owner</button>
+  <button onclick="saveGame()" class="green">💾 Speichern</button>
+</div>
+
+<div id="game">
+
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+
+  <div class="street"></div>
+
+  <div class="house">
+    <div class="roof"></div>
+    <div class="window w1"></div>
+    <div class="window w2"></div>
+    <div class="door"></div>
+  </div>
+
+  <div class="sidehouse"></div>
+
+  <div class="studio">
+    <div class="studioTitle">🎥 DEIN STUDIO</div>
+    <div class="desk"></div>
+    <div class="pc"></div>
+    <div class="camera"></div>
+    <div class="sofa"></div>
+  </div>
+
+  <div id="bubble">Hallo!</div>
+  <div id="record" class="record">🔴 AUFNAHME</div>
+
+  <div id="player">
+    <div class="head">
+      <div class="hair"></div>
+      <div class="eye a"></div>
+      <div class="eye b"></div>
+      <div class="mouth"></div>
+    </div>
+    <div class="body"></div>
+    <div class="arm a"></div>
+    <div class="arm b"></div>
+    <div class="leg a"></div>
+    <div class="leg b"></div>
+  </div>
+</div>
+
+<div class="panel">
+  <b>🚶 Bewegung</b>
+  <p class="small">
+    Tippe auf einen Ort, um automatisch dorthin zu laufen.
+    Keine festen Links-/Rechts-Tasten nötig.
+  </p>
+  <button onclick="goTo(20,30,'🏠 Zuhause')">🏠 Haus</button>
+  <button onclick="goTo(48,32,'💻 PC')">💻 PC</button>
+  <button onclick="goTo(68,35,'🎥 Kamera')">🎥 Kamera</button>
+  <button onclick="goTo(78,48,'🛋️ Sofa')">🛋️ Sofa</button>
+  <button onclick="goTo(90,70,'🚶 Spaziergang')">🌳 Spaziergang</button>
+  <button onclick="toggleCamera()">👀 Eigene Sicht</button>
+</div>
+
+<div id="panels"></div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   SPIELDATEN
+============================================================ */
+
+const KEY="mega_youtuber_life_v4";
+
+let game={
+  money:2500,
+  subs:0,
+  likes:0,
+  views:0,
+
+  age:0,
+  job:"Kein Beruf",
+  education:"Keine Ausbildung",
+  schoolGrade:2,
+
+  familyMoney:"normal",
+  familyAttention:"normal",
+
+  generation:1,
+  alive:true,
+
+  position:{x:45,y:27},
+
+  cameraMode:"third",
+
+  skin:"#9b623e",
+  hair:"#171717",
+  shirt:"#2563eb",
+
+  channels:[
+    {name:"Mein Hauptkanal",subs:0,likes:0,views:0}
+  ],
+
+  social:{
+    YouTube:{followers:0,likes:0},
+    TikTok:{followers:0,likes:0},
+    Instagram:{followers:0,likes:0},
+    Twitch:{followers:0,likes:0},
+    X:{followers:0,likes:0}
+  },
+
+  fans:[],
+  fanGifts:0,
+
+  equipment:[],
+  furniture:[],
+
+  companies:[],
+  employees:[],
+  sponsors:[],
+  properties:[],
+  rooms:[],
+
+  partner:null,
+  children:0,
+
+  bodyguards:[],
+
+  events:[],
+
+  skills:{
+    school:0,
+    fitness:0,
+    communication:0,
+    business:0,
+    tech:0,
+    creativity:0
+  },
+
+  ownedAll:false
+};
+
+/* ============================================================
+   NAMEN
+============================================================ */
+
+const names=[
+ "Luca","Noah","Ben","Elias","Leon","Finn","Emil","Paul",
+ "Max","Jonas","Milan","David","Samuel","Daniel","Amir",
+ "Sofia","Emma","Mia","Lina","Lea","Nora","Anna","Sarah",
+ "Maya","Laura","Aylin","Elena","Lena","Hannah","Zoe"
+];
+
+const companies=[
+ ["NovaTech","Unternehmen"],
+ ["Skyline Motors","Unternehmen"],
+ ["FutureSoft","Technologie"],
+ ["GreenPower","Energie"],
+ ["UrbanStyle","Mode"],
+ ["Burger House","Restaurant"],
+ ["City Pizza","Restaurant"],
+ ["Mega Kiosk","Kiosk"],
+ ["Corner Shop","Geschäft"],
+ ["Fresh Market","Supermarkt"],
+ ["GameWorld","Gaming"],
+ ["Pixel Studio","Medien"],
+ ["Bright Mobile","Technologie"],
+ ["Family Restaurant","Restaurant"],
+ ["Local Kiosk","Kiosk"]
+];
+
+/* ============================================================
+   BERUFE
+============================================================ */
+
+const careers=[
+ ["YouTuber","Keine Pflichtausbildung","creative"],
+ ["Streamer","Keine Pflichtausbildung","creative"],
+ ["Unternehmer","Keine Pflichtausbildung","business"],
+ ["Polizist","Polizeiausbildung","police"],
+ ["Feuerwehrmann","Feuerwehrausbildung","fire"],
+ ["Arzt","Medizinstudium + Weiterbildung","medical"],
+ ["Lehrer","Lehramtsstudium + Referendariat","education"],
+ ["Anwalt","Jura-Studium + Prüfungen","law"],
+ ["Ingenieur","Ingenieurstudium","tech"],
+ ["Programmierer","IT-Ausbildung oder Studium","tech"],
+ ["Elektriker","Elektroniker-Ausbildung","craft"],
+ ["Mechaniker","Mechatronik-/Mechanik-Ausbildung","craft"],
+ ["Koch","Kochausbildung","food"],
+ ["Pilot","Pilotenausbildung","aviation"],
+ ["Wissenschaftler","Studium + Forschung","science"],
+ ["Bankmitarbeiter","Bankausbildung","finance"],
+ ["Verkäufer","Berufsausbildung optional","trade"],
+ ["Bäcker","Bäckerausbildung","food"],
+ ["Friseur","Friseurausbildung","trade"],
+ ["Architekt","Architekturstudium","architecture"],
+ ["Journalist","Ausbildung/Studium","media"],
+ ["Fotograf","Ausbildung optional","media"],
+ ["Designer","Ausbildung/Studium optional","creative"],
+ ["Sportler","Training + Karriere","sport"],
+ ["Boxer","Training + Sportkarriere","sport"],
+ ["Fußballer","Training + Vereinskarriere","sport"],
+ ["Forscher","Studium + Forschung","science"],
+ ["Manager","Studium/Ausbildung + Erfahrung","business"],
+ ["Immobilienmakler","Ausbildung möglich","property"],
+ ["Busfahrer","Führerschein + Ausbildung","transport"],
+ ["Lokführer","Lokführerausbildung","transport"],
+ ["Softwareentwickler","IT-Ausbildung/Studium","tech"],
+ ["Tierarzt","Tiermedizin-Studium","medical"],
+ ["Psychologe","Psychologiestudium + Weiterbildung","medical"],
+ ["Apotheker","Pharmaziestudium + Prüfung","medical"],
+ ["Elektroniktechniker","Technische Ausbildung","tech"],
+ ["Handwerker","Berufsausbildung","craft"],
+ ["Bauingenieur","Studium","construction"],
+ ["Architekturbüro-Leiter","Studium + Erfahrung","business"]
+];
+
+/* ============================================================
+   INIT
+============================================================ */
+
+function loadGame(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){
+      game=Object.assign(game,JSON.parse(raw));
+    }
+  }catch(e){}
+  updateUI();
+  renderFans();
+  renderEmployees();
+  renderProperties();
+  renderCompanies();
+  renderBodyguards();
+  updateCharacter();
+}
+
+function saveGame(){
+  localStorage.setItem(KEY,JSON.stringify(game));
+  toast("💾 Spiel gespeichert!");
+}
+
+function resetGame(){
+  if(!confirm("Spiel wirklich zurücksetzen?")) return;
+  localStorage.removeItem(KEY);
+  location.reload();
+}
+
+function toast(text){
+  const t=document.getElementById("toast");
+  t.textContent=text;
+  t.style.display="block";
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>t.style.display="none",2500);
+}
+
+function fmt(n){
+  return Math.floor(n).toLocaleString("de-DE");
+}
+
+function money(n){
+  return fmt(n)+" €";
+}
+
+function updateUI(){
+  document.getElementById("money").textContent=fmt(game.money);
+  document.getElementById("subs").textContent=fmt(game.subs);
+  document.getElementById("likes").textContent=fmt(game.likes);
+  document.getElementById("views").textContent=fmt(game.views);
+  document.getElementById("age").textContent=game.age;
+  document.getElementById("job").textContent=game.job;
+  document.getElementById("companyCount").textContent=game.companies.length;
+}
+
+/* ============================================================
+   PANELS
+============================================================ */
+
+function panel(type){
+  const p=document.getElementById("panels");
+
+  if(type==="home") p.innerHTML=homePanel();
+  if(type==="school") p.innerHTML=schoolPanel();
+  if(type==="career") p.innerHTML=careerPanel();
+  if(type==="company") p.innerHTML=companyPanel();
+  if(type==="video") p.innerHTML=videoPanel();
+  if(type==="social") p.innerHTML=socialPanel();
+  if(type==="fans") p.innerHTML=fansPanel();
+  if(type==="shop") p.innerHTML=shopPanel();
+  if(type==="sponsor") p.innerHTML=sponsorPanel();
+  if(type==="employees") p.innerHTML=employeePanel();
+  if(type==="relationship") p.innerHTML=relationshipPanel();
+  if(type==="family") p.innerHTML=familyPanel();
+  if(type==="bodyguards") p.innerHTML=bodyguardPanel();
+  if(type==="properties") p.innerHTML=propertyPanel();
+  if(type==="agePanel") p.innerHTML=agePanel();
+  if(type==="character") p.innerHTML=characterPanel();
+  if(type==="owner") p.innerHTML=ownerPanel();
+}
+
+/* ============================================================
+   HOME
+============================================================ */
+
+function homePanel(){
+ return `
+ <div class="panel">
+  <h2>🏠 Zuhause</h2>
+  <p>Generation ${game.generation} · Alter ${game.age}</p>
+  <div class="grid">
+   <div class="card">🛋️ Wohnzimmer<br><button onclick="goTo(20,30,'Wohnzimmer')">Hingehen</button></div>
+   <div class="card">🍳 Küche<br><button onclick="goTo(23,35,'Küche')">Hingehen</button></div>
+   <div class="card">🛏️ Schlafzimmer<br><button onclick="goTo(28,38,'Schlafzimmer')">Hingehen</button></div>
+   <div class="card">🎮 Gaming-Raum<br><button onclick="goTo(32,40,'Gaming-Raum')">Hingehen</button></div>
+   <div class="card">🎥 Studio<br><button onclick="goTo(48,32,'Studio')">Hingehen</button></div>
+   <div class="card">🏋️ Trainingsraum<br><button onclick="train()">Trainieren</button></div>
+   <div class="card">💻 Büro<br><button onclick="goTo(55,35,'Büro')">Hingehen</button></div>
+   <div class="card">🚗 Garage<br><button onclick="goTo(62,50,'Garage')">Hingehen</button></div>
+  </div>
+ </div>`;
+}
+
+/* ============================================================
+   SCHULE
+============================================================ */
+
+function schoolPanel(){
+ let can=game.age>=6 && game.age<19;
+ return `
+ <div class="panel">
+ <h2>🏫 Schule</h2>
+ ${game.age<6
+ ? `<div class="notice">👶 Du bist noch zu jung für die Schule.</div>`
+ : can
+ ? `
+ <p>Klassenstufe: ${game.schoolGrade}</p>
+ <p>Schul-Skill: ${game.skills.school}</p>
+ <button onclick="study()">📚 Lernen</button>
+ <button onclick="schoolDay()">🏫 Schultag</button>
+ <button onclick="schoolFriend()">👥 Freundschaft</button>
+ <button onclick="schoolEvent()">🎲 Schulereignis</button>
+ `
+ : `<div class="notice">🎓 Deine Schulzeit ist vorbei.</div>`
+ }
+ </div>`;
+}
+
+function study(){
+ game.skills.school++;
+ if(Math.random()<.2) game.schoolGrade++;
+ toast("📚 Du hast gelernt!");
+ saveGame();
+ updateUI();
+ panel("school");
+}
+
+function schoolDay(){
+ game.skills.school+=2;
+ toast("🏫 Schultag abgeschlossen!");
+ saveGame();
+ updateUI();
+ panel("school");
+}
+
+function schoolFriend(){
+ game.skills.communication++;
+ toast("👥 Du hast eine neue Freundschaft aufgebaut!");
+ saveGame();
+}
+
+function schoolEvent(){
+ const events=[
+  "🎨 Du hast bei einem Schulprojekt geholfen.",
+  "⚽ Du hast beim Sport mitgemacht.",
+  "🎤 Du hast vor der Klasse gesprochen.",
+  "🤝 Ein Mitschüler wollte mit dir befreundet sein.",
+  "📚 Du hast bei einer Aufgabe geholfen."
+ ];
+ toast(events[Math.floor(Math.random()*events.length)]);
+ game.skills.communication++;
+ saveGame();
+}
+
+/* ============================================================
+   KARRIERE
+============================================================ */
+
+function careerPanel(){
+ return `
+ <div class="panel">
+ <h2>💼 Karriere</h2>
+ <p>Wähle deinen Lebensweg. Für viele Berufe brauchst du Ausbildung, Studium oder Training.</p>
+ <div class="grid">
+ ${careers.map((c,i)=>`
+  <div class="card">
+   <b>${c[0]}</b>
+   <div class="small">🎓 ${c[1]}</div>
+   <button onclick="chooseCareer(${i})">Weg wählen</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function chooseCareer(i){
+ if(game.age<16){
+  toast("🎂 Dafür bist du noch zu jung.");
+  return;
+ }
+
+ const c=careers[i];
+ game.job=c[0];
+
+ if(c[0]==="YouTuber" || c[0]==="Streamer" || c[0]==="Unternehmer"){
+   toast("💼 Karriere gestartet: "+c[0]);
+ }else{
+   game.education=c[1];
+   toast("🎓 Ausbildungsweg gestartet: "+c[1]);
+ }
+
+ saveGame();
+ updateUI();
+ panel("career");
+}
+
+/* ============================================================
+   UNTERNEHMEN
+============================================================ */
+
+function companyPanel(){
+ return `
+ <div class="panel">
+ <h2>🏢 Eigene Unternehmen</h2>
+ <p>Du musst kein YouTuber werden. Du kannst dein eigenes Unternehmen gründen.</p>
+
+ <input id="companyName" placeholder="Name des Unternehmens">
+ <select id="companyType">
+  <option>Technologie</option>
+  <option>Restaurant</option>
+  <option>Kiosk</option>
+  <option>Geschäft</option>
+  <option>Gaming</option>
+  <option>Medien</option>
+  <option>Handwerk</option>
+  <option>Immobilien</option>
+  <option>Transport</option>
+  <option>Finanzen</option>
+  <option>Mode</option>
+  <option>Sport</option>
+ </select>
+
+ <button class="green" onclick="createCompany()">🏢 Unternehmen gründen</button>
+
+ <div class="grid">
+ ${game.companies.map((c,i)=>`
+  <div class="card">
+   <b>${c.name}</b>
+   <div>${c.type}</div>
+   <div>💰 Wert: ${money(c.value)}</div>
+   <button onclick="growCompany(${i})">📈 Investieren</button>
+   <button onclick="hireForCompany(${i})">👷 Mitarbeiter</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function createCompany(){
+ const name=document.getElementById("companyName").value.trim();
+ const type=document.getElementById("companyType").value;
+
+ if(!name){
+   toast("Bitte einen Firmennamen eingeben.");
+   return;
+ }
+ if(game.money<5000){
+   toast("💰 Du brauchst 5.000 € Startkapital.");
+   return;
+ }
+
+ game.money-=5000;
+ game.companies.push({
+   name,
+   type,
+   value:5000,
+   employees:0,
+   level:1
+ });
+
+ toast("🏢 Unternehmen gegründet!");
+ saveGame();
+ updateUI();
+ panel("company");
+}
+
+function growCompany(i){
+ const c=game.companies[i];
+ const cost=10000*c.level;
+ if(game.money<cost){
+   toast("💰 Nicht genug Geld.");
+   return;
+ }
+ game.money-=cost;
+ c.value+=cost*3;
+ c.level++;
+ toast("📈 Unternehmen gewachsen!");
+ saveGame();
+ updateUI();
+ panel("company");
+}
+
+function hireForCompany(i){
+ game.employees.push({
+  name:names[Math.floor(Math.random()*names.length)],
+  job:"Firmenmitarbeiter",
+  salary:1200,
+  company:game.companies[i].name
+ });
+ game.companies[i].employees++;
+ toast("👷 Mitarbeiter eingestellt!");
+ saveGame();
+ panel("company");
+}
+
+/* ============================================================
+   VIDEO
+============================================================ */
+
+function videoPanel(){
+ return `
+ <div class="panel">
+ <h2>🎥 Videos</h2>
+ <p>Du kannst deine Figur tatsächlich zum PC/Kamera laufen lassen und dort aufnehmen.</p>
+ <button class="red" onclick="recordVideo()">🔴 Video aufnehmen</button>
+ <button onclick="goTo(48,32,'PC zum Aufnehmen')">💻 Zum PC</button>
+ <p>Letzte Videos: ${game.events.filter(x=>x.type==="video").length}</p>
+ </div>`;
+}
+
+function recordVideo(){
+ if(game.age<12){
+  toast("📱 Für Social-Media-Videos musst du mindestens 12 sein.");
+  return;
+ }
+
+ goTo(48,32,"PC");
+
+ setTimeout(()=>{
+  document.getElementById("record").style.display="block";
+  document.getElementById("player").classList.add("walking");
+
+  const duration=7000;
+
+  let start=Date.now();
+
+  const timer=setInterval(()=>{
+    if(Date.now()-start>=duration){
+      clearInterval(timer);
+      document.getElementById("record").style.display="none";
+      document.getElementById("player").classList.remove("walking");
+      finishVideo();
+    }
+  },100);
+ },900);
+}
+
+function finishVideo(){
+ /*
+  Followerzahl != Views.
+  Videos können deutlich weniger oder deutlich mehr Views bekommen.
+ */
+ let base=Math.max(5,Math.floor(game.subs*0.02));
+ let randomness=0.25+Math.random()*4;
+ let views=Math.max(10,Math.floor(base*randomness));
+
+ if(Math.random()<.08){
+   views*=Math.floor(5+Math.random()*20);
+ }
+
+ let likes=Math.floor(views*(0.02+Math.random()*0.1));
+ let newSubs=Math.floor(views*(0.001+Math.random()*0.01));
+ let income=Math.floor(views*0.01);
+
+ game.views+=views;
+ game.likes+=likes;
+ game.subs+=newSubs;
+ game.money+=income;
+
+ game.events.push({
+   type:"video",
+   views,
+   likes,
+   subs:newSubs,
+   date:new Date().toLocaleString()
+ });
+
+ toast(`🎥 Video fertig! ${fmt(views)} Views`);
+ updateUI();
+ saveGame();
+}
+
+/* ============================================================
+   SOCIAL MEDIA
+============================================================ */
+
+function socialPanel(){
+ const platforms=Object.keys(game.social);
+
+ return `
+ <div class="panel">
+ <h2>📱 Social Media</h2>
+ ${game.age<12
+ ? `<div class="notice">🎂 Ab 12 kannst du Social Media starten.</div>`
+ : `
+ <div class="grid">
+ ${platforms.map(p=>`
+  <div class="card">
+   <h3>${p}</h3>
+   <p>👥 ${fmt(game.social[p].followers)}</p>
+   <p>❤️ ${fmt(game.social[p].likes)}</p>
+   <button onclick="socialPost('${p}')">📱 Post</button>
+   ${p==="Twitch"?`<button onclick="stream('${p}')">🔴 Stream</button>`:""}
+  </div>
+ `).join("")}
+ </div>
+ `}
+ </div>`;
+}
+
+function socialPost(platform){
+ const f=Math.floor(10+Math.random()*5000);
+ const l=Math.floor(f*(.02+Math.random()*.08));
+ game.social[platform].followers+=Math.floor(f*.03);
+ game.social[platform].likes+=l;
+ game.likes+=l;
+ game.money+=Math.floor(f*.005);
+
+ toast(`📱 ${platform}: Post veröffentlicht!`);
+ saveGame();
+ panel("social");
+ updateUI();
+}
+
+function stream(platform){
+ const f=Math.floor(100+Math.random()*10000);
+ game.social[platform].followers+=Math.floor(f*.05);
+ game.money+=Math.floor(f*.02);
+ toast("🔴 Stream beendet!");
+ saveGame();
+ panel("social");
+ updateUI();
+}
+
+/* ============================================================
+   FANS
+============================================================ */
+
+function ensureFans(){
+ if(game.fans.length<12){
+  while(game.fans.length<12){
+   game.fans.push({
+    name:names[Math.floor(Math.random()*names.length)]+" "+(100+Math.floor(Math.random()*900)),
+    mood:50+Math.floor(Math.random()*50),
+    moneyGiven:0,
+    gifts:0,
+    requests:0
+   });
+  }
+ }
+}
+
+function fansPanel(){
+ ensureFans();
+
+ return `
+ <div class="panel">
+ <h2>👥 Fans</h2>
+ <p>Fans haben eigene Namen und reagieren unterschiedlich auf dich.</p>
+ <div class="grid">
+ ${game.fans.map((f,i)=>`
+  <div class="card">
+   <b>👤 ${f.name}</b>
+   <p>😊 Stimmung: ${f.mood}/100</p>
+   <button onclick="fanMoney(${i})">💶 Geld geben</button>
+   <button onclick="fanGift(${i})">🎁 Geschenk</button>
+   <button onclick="fanVideo(${i})">🎥 Video-Anfrage</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function fanMoney(i){
+ const amount=100;
+ if(game.money<amount){
+   toast("💰 Nicht genug Geld.");
+   return;
+ }
+ game.money-=amount;
+ game.fans[i].moneyGiven+=amount;
+ game.fans[i].mood=Math.min(100,game.fans[i].mood+8);
+ toast(`💶 Du hast ${game.fans[i].name} 100 € gegeben.`);
+ saveGame();
+ updateUI();
+ panel("fans");
+}
+
+function fanGift(i){
+ const cost=50;
+ if(game.money<cost){
+  toast("💰 Nicht genug Geld.");
+  return;
+ }
+ game.money-=cost;
+ game.fans[i].gifts++;
+ game.fans[i].mood=Math.min(100,game.fans[i].mood+12);
+ toast("🎁 Geschenk gegeben!");
+ saveGame();
+ updateUI();
+ panel("fans");
+}
+
+function fanVideo(i){
+ game.fans[i].requests++;
+ toast(`🎥 ${game.fans[i].name} möchte ein Video mit dir!`);
+ if(confirm("Video-Anfrage annehmen?")){
+  game.subs+=Math.floor(10+Math.random()*1000);
+  game.likes+=Math.floor(20+Math.random()*2000);
+  toast("🎥 Fan-Video aufgenommen!");
+ }
+ saveGame();
+ updateUI();
+}
+
+/* ============================================================
+   SHOP – MEHR ALS 200 ITEMS
+============================================================ */
+
+const shopBase=[
+ ["Kamera",500],
+ ["Pro Kamera",5000],
+ ["Studio Kamera",25000],
+ ["Mikrofon",150],
+ ["Pro Mikrofon",1500],
+ ["Studio Mikrofon",8000],
+ ["PC",800],
+ ["Gaming PC",3500],
+ ["Workstation",15000],
+ ["Monitor",200],
+ ["4K Monitor",1200],
+ ["Licht",100],
+ ["Softbox",300],
+ ["LED Licht",800],
+ ["Tripod",100],
+ ["Pro Tripod",700],
+ ["Sofa",400],
+ ["Luxus Sofa",4000],
+ ["Schreibtisch",300],
+ ["Pro Schreibtisch",2000],
+ ["Gaming Stuhl",500],
+ ["Luxus Stuhl",2500],
+ ["Bett",500],
+ ["Luxus Bett",5000],
+ ["Schrank",300],
+ ["Kleiderschrank",1500],
+ ["Gaming Tisch",800],
+ ["TV",500],
+ ["Smart TV",2500],
+ ["Kühlschrank",700],
+ ["Luxus Kühlschrank",5000],
+ ["Waschmaschine",600],
+ ["Lautsprecher",300],
+ ["Pro Lautsprecher",2000],
+ ["Konsole",500],
+ ["Gaming Konsole Pro",1500],
+ ["VR System",1200],
+ ["Studio Hintergrund",300],
+ ["Akustik Panel",250],
+ ["Server",5000]
+];
+
+const shopColors=[
+ "Schwarz","Weiß","Rot","Blau","Grün",
+ "Gold","Silber","Grau","Lila","Orange"
+];
+
+let shopItems=[];
+
+shopBase.forEach((x,i)=>{
+ shopColors.forEach((color,j)=>{
+  shopItems.push({
+   id:i+"-"+j,
+   name:x[0]+" "+color,
+   price:x[1]*(1+j*.15),
+   category:i<3?"Kamera":i<6?"Audio":i<13?"PC/Licht":"Möbel"
+  });
+ });
+});
+
+function shopPanel(){
+ return `
+ <div class="panel">
+ <h2>🛒 Mega-Shop</h2>
+ <p>Hier gibt es aktuell <b>${shopItems.length}</b> verschiedene Gegenstände.</p>
+ <p class="small">
+ Kamera · Mikrofon · PC · Licht · Möbel · Gaming · Studio usw.
+ </p>
+
+ <div class="grid">
+ ${shopItems.slice(0,300).map((x,i)=>`
+  <div class="card">
+   <b>${x.name}</b>
+   <div class="small">${x.category}</div>
+   <div>${money(x.price)}</div>
+   <button onclick="buyItem(${i})">🛒 Kaufen</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function buyItem(i){
+ const x=shopItems[i];
+ if(game.money<x.price){
+  toast("💰 Nicht genug Geld.");
+  return;
+ }
+
+ game.money-=x.price;
+
+ if(x.category==="Möbel"){
+   game.furniture.push(x.name);
+ }else{
+   game.equipment.push(x.name);
+ }
+
+ toast("🛒 Gekauft: "+x.name);
+ saveGame();
+ updateUI();
+ panel("shop");
+}
+
+/* ============================================================
+   SPONSOREN
+============================================================ */
+
+function sponsorPanel(){
+ return `
+ <div class="panel">
+ <h2>🤝 Sponsoren</h2>
+ <p>Im Spiel können Unternehmen, Restaurants, Kioske und Geschäfte Sponsoring anbieten.</p>
+ <div class="grid">
+ ${companies.map((c,i)=>`
+  <div class="card">
+   <b>${c[0]}</b>
+   <div>${c[1]}</div>
+   <button onclick="sponsor(${i})">🤝 Anfrage senden</button>
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function sponsor(i){
+ const c=companies[i];
+ const deal={
+  name:c[0],
+  type:c[1],
+  value:Math.floor(500+Math.random()*100000)
+ };
+
+ game.sponsors.push(deal);
+ game.money+=deal.value;
+
+ toast(`🤝 Sponsoring von ${c[0]}: ${money(deal.value)}`);
+ saveGame();
+ updateUI();
+ panel("sponsor");
+}
+
+/* ============================================================
+   MITARBEITER
+============================================================ */
+
+const employeeJobs=[
+ ["Manager",2500],
+ ["Kameramann",1800],
+ ["Cutter",1700],
+ ["Techniker",1900],
+ ["Fahrer",1600],
+ ["Security",2200],
+ ["Haushaltshilfe",1400],
+ ["Social-Media-Manager",2100],
+ ["Buchhalter",2300],
+ ["Assistent",1500]
+];
+
+function employeePanel(){
+ return `
+ <div class="panel">
+ <h2>👷 Mitarbeiter</h2>
+ <div class="grid">
+ ${employeeJobs.map((j,i)=>`
+  <div class="card">
+   <b>${j[0]}</b>
+   <div>Gehalt: ${money(j[1])}/Monat</div>
+   <button onclick="hireEmployee(${i})">Einstellen</button>
+  </div>
+ `).join("")}
+ </div>
+ <hr>
+ ${game.employees.map(e=>`
+  <div class="card">
+   👤 ${e.name} – ${e.job}
+   <br>💰 ${money(e.salary)}/Monat
+  </div>
+ `).join("")}
+ </div>`;
+}
+
+function renderEmployees(){}
+
+function hireEmployee(i){
+ const j=employeeJobs[i];
+ game.employees.push({
+  name:names[Math.floor(Math.random()*names.length)],
+  job:j[0],
+  salary:j[1]
+ });
+ toast("👷 Mitarbeiter eingestellt!");
+ saveGame();
+ panel("employees");
+}
+
+/* ============================================================
+   BEZIEHUNG
+============================================================ */
+
+function relationshipPanel(){
+ return `
+ <div class="panel">
+ <h2>❤️ Beziehungen</h2>
+ ${
+ game.partner
+ ? `
+ <p>❤️ Partner: ${game.partner.name}</p>
+ <p>Beziehungslevel: ${game.partner.level}/100</p>
+ <button onclick="relationshipTime()">🕐 Zeit zusammen verbringen</button>
+ <button class="red" onclick="endRelationship()">❌ Beziehung beenden</button>
+ `
+ : `
+ <p>Du hast momentan keinen Partner.</p>
+ <button onclick="findPartner()">❤️ Neue Person kennenlernen</button>
+ `
+ }
+ </div>`;
+}
+
+function findPartner(){
+ if(game.age<16){
+  toast("🎂 Dafür bist du noch zu jung.");
+  return;
+ }
+
+ game.partner={
+  name:names[Math.floor(Math.random()*names.length)],
+  level:20
+ };
+
+ toast("❤️ Du hast jemanden kennengelernt.");
+ saveGame();
+ panel("relationship");
+}
+
+function relationshipTime(){
+ game.partner.level=Math.min(100,game.partner.level+5);
+ toast("❤️ Beziehungslevel gestiegen!");
+ saveGame();
+ panel("relationship");
+}
+
+function endRelationship(){
+ game.partner=null;
+ toast("Die Beziehung ist beendet.");
+ saveGame();
+ panel("relationship");
+}
+
+/* ============================================================
+   FAMILIE / GENERATIONEN / ERBSCHAFT
+============================================================ */
+
+function familyPanel(){
+ return `
+ <div class="panel">
+ <h2>👨‍👩‍👧 Familie</h2>
+
+ <p>Familienstatus: <b>${game.familyMoney}</b></p>
+ <p>Eltern-Aufsicht: <b>${game.familyAttention}</b></p>
+
+ <button onclick="familyEvent()">🎲 Familienereignis</button>
+ <button onclick="inheritance()">📜 Erbschaft prüfen</button>
+
+ <div class="notice">
+ 💡 Wenn ein Elternteil im Spiel stirbt, kann abhängig von der
+ Familiensituation eine Erbschaft entstehen, z. B. Haus, Geld,
+ Möbel oder Ausrüstung.
+ </div>
+ </div>`;
+}
+
+function familyEvent(){
+ const e=[
+  "👨‍👩‍👧 Deine Familie macht einen Ausflug.",
+  "🍽️ Gemeinsames Abendessen.",
+  "📚 Deine Eltern helfen dir bei der Schule.",
+  "🏠 Die Familie kauft etwas für das Zuhause.",
+  "💰 Deine Familie bekommt unerwartet Geld."
+ ];
+ toast(e[Math.floor(Math.random()*e.length)]);
+}
+
+function inheritance(){
+ if(Math.random()<.55){
+  const value=Math.floor(5000+Math.random()*100000);
+  game.money+=value;
+  game.properties.push({
+   name:"Geerbtes Familienhaus",
+   value
+  });
+  toast(`📜 Erbschaft: Haus + ${money(value)}`);
+ }else{
+  toast("📜 Heute gibt es keine neue Erbschaft.");
+ }
+ saveGame();
+ updateUI();
+ panel("family");
+}
+
+/* ============================================================
+   BODYGUARDS
+============================================================ */
+
+let guards=[];
+
+for(let i=1;i<=500;i++){
+ guards.push({
+  level:i,
+  name:
+   i<50?"Basis-Schutz":
+   i<150?"Pro-Schutz":
+   i<300?"Elite-Schutz":
+   "Maximaler Schutz",
+  attack:i,
+  defense:i,
+  damage:i
+ });
+}
+
+function bodyguardPanel(){
+ return `
+ <div class="panel">
+ <h2>🛡️ Bodyguards</h2>
+ <p>Es gibt <b>500 Schutz-Stufen</b>. Teilzeit ist günstiger als Vollzeit.</p>
+
+ <select id="guardSelect">
+ ${guards.map((g,i)=>`
+  <option value="${i}">
+   Stufe ${g.level} – ${g.name} – Schutz ${g.defense}
+  </option>
+ `).join("")}
+ </select>
+
+ <button onclick="hireGuard('Teilzeit')">⏱️ Teilzeit aktivieren</button>
+ <button onclick="hireGuard('Vollzeit')">🛡️ Vollzeit aktivieren</button>
+
+ <div class="grid">
+ ${game.bodyguards.map(g=>`
+  <div class="card">
+   🛡️ ${g.name}<br>
+   ${g.mode}<br>
+   Schutz: ${g.defense}<br>
+   Stärke: ${g.attack}<br>
+   Spielwert: ${g.damage}
+  </div>
+ `).join("")}
+ </div>
+ </div>`;
+}
+
+function renderBodyguards(){}
+
+function hireGuard(mode){
+ const i=Number(document.getElementById("guardSelect").value);
+ const g=guards[i];
+
+ const salary=mode==="Teilzeit"
+  ? 500+g.level*10
+  : 1000+g.level*20;
+
+ if(game.money<salary){
+  toast("💰 Nicht genug Geld für diesen Bodyguard.");
+  return;
+ }
+
+ game.money-=salary;
+
+ game.bodyguards.push({
+  name:g.name,
+  mode,
+  defense:g.defense,
+  attack:g.attack,
+  damage:g.damage
+ });
+
+ toast(`🛡️ ${mode}-Bodyguard aktiviert!`);
+ saveGame();
+ updateUI();
+ panel("bodyguards");
+}
+
+/* ============================================================
+   IMMOBILIEN
+============================================================ */
+
+function propertyPanel(){
+ const homes=[];
+
+ for(let i=1;i<=40;i++){
+  let price;
+  if(i<=20){
+   price=400000+(i-1)*21000;
+  }else{
+   price=20000000+(i-21)*50000000;
+  }
+
+  homes.push({
+   name:"Haus / Wohnung #"+i,
+   price
+  });
+ }
+
+ return `
+ <div class="panel">
+ <h2>🏠 Immobilien</h2>
+ <p>Du kannst mehrere Immobilien besitzen.</p>
+
+ <div class="grid">
+ ${homes.map((h,i)=>`
+  <div class="card">
+   <b>${h.name}</b>
+   <div>💰 ${money(h.price)}</div>
+   <div class="small">
+    ${i<20?"Bodenständig / normal":"Luxusimmobilie"}
+   </div>
+   <button onclick="buyHome(${i},${h.price})">🏠 Kaufen</button>
+   <button onclick="visitHome(${i})">🚶 Besuchen</button>
+  </div>
+ `).join("")}
+ </div>
+
+ <hr>
+
+ ${game.properties.map(p=>`
+  <div class="card">
+   🏠 ${p.name||"Immobilie"} – ${money(p.value||0)}
+  </div>
+ `).join("")}
+ </div>`;
+}
+
+function renderProperties(){}
+
+function buyHome(i,price){
+ if(game.money<price){
+  toast("💰 Nicht genug Geld.");
+  return;
+ }
+
+ game.money-=price;
+
+ game.properties.push({
+  name:"Haus #"+(i+1),
+  value:price,
+  rooms:[
+   "Wohnzimmer","Küche","Bad","Schlafzimmer",
+   "Büro","Gaming-Zimmer","Studio","Garage",
+   "Garten","Lager"
+  ]
+ });
+
+ toast("🏠 Immobilie gekauft!");
+ saveGame();
+ updateUI();
+ panel("properties");
+}
+
+function visitHome(i){
+ goTo(20,30,"Haus #"+(i+1));
+}
+
+/* ============================================================
+   ALTER
+============================================================ */
+
+function agePanel(){
+ return `
+ <div class="panel">
+ <h2>🎂 Lebensalter</h2>
+
+ <p>Aktuelles Alter: <b>${game.age}</b></p>
+ <p>Generation: <b>${game.generation}</b></p>
+
+ <button onclick="setAge(0)">👶 Baby</button>
+ <button onclick="setAge(3)">🧒 Kleinkind</button>
+ <button onclick="setAge(6)">🏫 Schulkind</button>
+ <button onclick="setAge(12)">📱 12 Jahre</button>
+ <button onclick="setAge(16)">🧑 Teenager</button>
+ <button onclick="setAge(18)">🧑‍💼 Erwachsen</button>
+ <button onclick="setAge(40)">👨 Erwachsen 40</button>
+ <button onclick="setAge(65)">👴 Senior</button>
+
+ <button class="gold" onclick="nextYear()">➡️ Ein Jahr älter</button>
+ <button onclick="newGeneration()">👶 Nächste Generation</button>
+
+ </div>`;
+}
+
+function setAge(age){
+ game.age=age;
+
+ if(age<6) toast("👶 Du bist ein Baby/Kleinkind.");
+ else if(age<12) toast("🏫 Du bist jetzt ein Schulkind.");
+ else if(age<16) toast("📱 Social Media ist jetzt möglich.");
+ else if(age<18) toast("🧑 Du bist Teenager.");
+ else toast("🧑‍💼 Du bist erwachsen.");
+
+ saveGame();
+ updateUI();
+ panel("agePanel");
+}
+
+function nextYear(){
+ game.age++;
+ toast("🎂 Du bist jetzt "+game.age+" Jahre alt.");
+ saveGame();
+ updateUI();
+}
+
+function newGeneration(){
+ if(game.age<18){
+  toast("Du musst zuerst erwachsen sein.");
+  return;
+ }
+
+ game.generation++;
+ game.age=0;
+ game.job="Kein Beruf";
+ game.education="Keine Ausbildung";
+ game.subs=0;
+ game.likes=0;
+ game.views=0;
+
+ toast("👶 Neue Generation gestartet!");
+ saveGame();
+ updateUI();
+}
+
+/* ============================================================
+   CHARAKTER
+============================================================ */
+
+function characterPanel(){
+ return `
+ <div class="panel">
+ <h2>🧑 Figur</h2>
+
+ <label>Hautfarbe</label>
+ <select onchange="changeCharacter('skin',this.value)">
+  <option value="#9b623e">Mittel</option>
+  <option value="#6b3f27">Dunkler</option>
+  <option value="#d49a70">Hell</option>
+  <option value="#4b2b20">Sehr dunkel</option>
+ </select>
+
+ <label>Haare</label>
+ <select onchange="changeCharacter('hair',this.value)">
+  <option value="#171717">Schwarz</option>
+  <option value="#5b351d">Braun</option>
+  <option value="#d6b45c">Blond</option>
+  <option value="#9ca3af">Grau</option>
+ </select>
+
+ <label>Shirt</label>
+ <select onchange="changeCharacter('shirt',this.value)">
+  <option value="#2563eb">Blau</option>
+  <option value="#dc2626">Rot</option>
+  <option value="#16a34a">Grün</option>
+  <option value="#111827">Schwarz</option>
+  <option value="#f8fafc">Weiß</option>
+ </select>
+
+ <button onclick="train()">🏋️ Trainieren</button>
+ </div>`;
+}
+
+function changeCharacter(type,value){
+ game[type]=value;
+ updateCharacter();
+ saveGame();
+}
+
+function updateCharacter(){
+ document.querySelector(".head").style.background=game.skin;
+ document.querySelector(".hair").style.background=game.hair;
+ document.querySelector(".body").style.background=game.shirt;
+}
+
+/* ============================================================
+   TRAINING
+============================================================ */
+
+function train(){
+ game.skills.fitness+=2;
+ toast("🏋️ Training abgeschlossen!");
+ saveGame();
+}
+
+/* ============================================================
+   AUTOMATISCHE BEWEGUNG
+============================================================ */
+
+function goTo(x,y,text){
+ const p=document.getElementById("player");
+
+ const targetX=x;
+ const targetY=y;
+
+ p.classList.add("walking");
+
+ let interval=setInterval(()=>{
+   const currentX=game.position.x;
+   const currentY=game.position.y;
+
+   let dx=targetX-currentX;
+   let dy=targetY-currentY;
+
+   if(Math.abs(dx)<.8 && Math.abs(dy)<.8){
+    clearInterval(interval);
+    p.classList.remove("walking");
+    game.position.x=targetX;
+    game.position.y=targetY;
+    showBubble(text);
+    return;
+   }
+
+   game.position.x+=dx*.08;
+   game.position.y+=dy*.08;
+
+   p.style.left=game.position.x+"%";
+   p.style.bottom=game.position.y+"%";
+
+ },30);
+}
+
+function showBubble(text){
+ const b=document.getElementById("bubble");
+ b.textContent=text;
+ b.style.display="block";
+
+ clearTimeout(window.bubbleTimer);
+ window.bubbleTimer=setTimeout(()=>{
+  b.style.display="none";
+ },1800);
+}
+
+/* ============================================================
+   FIRST PERSON / THIRD PERSON
+============================================================ */
+
+function toggleCamera(){
+ const body=document.body;
+
+ if(game.cameraMode==="third"){
+   game.cameraMode="first";
+   body.classList.add("firstPerson");
+   toast("👀 Eigene Sicht aktiviert");
+ }else{
+   game.cameraMode="third";
+   body.classList.remove("firstPerson");
+   toast("👤 Third Person aktiviert");
+ }
+
+ saveGame();
+}
+
+/* ============================================================
+   RANDOM EVENTS
+============================================================ */
+
+function randomEvent(){
+ const events=[
+  "📱 Dein Video wird plötzlich viral.",
+  "👥 Ein neuer Fan erkennt dich.",
+  "🏠 Ein Möbelstück geht kaputt.",
+  "🤝 Ein kleines Unternehmen möchte mit dir zusammenarbeiten.",
+  "🎥 Ein YouTuber fragt nach einer Zusammenarbeit.",
+  "🏫 Ein Freund lädt dich zu einem Schulprojekt ein.",
+  "💼 Du bekommst eine Jobchance.",
+  "🏢 Ein Unternehmen macht dir ein Angebot.",
+  "🎁 Ein Fan schickt dir ein Geschenk."
+ ];
+
+ toast(events[Math.floor(Math.random()*events.length)]);
+}
+
+setInterval(()=>{
+ if(Math.random()<.08){
+  randomEvent();
+ }
+},20000);
+
+/* ============================================================
+   OWNER PANEL
+============================================================ */
+
+const OWNER_PASSWORD="YT-Owner-7X9!K4#P";
+
+function ownerPanel(){
+ return `
+ <div class="panel">
+ <h2>👑 OWNER PANEL</h2>
+
+ <input id="ownerPass" type="password" placeholder="Owner-Passwort">
+
+ <button onclick="loginOwner()">🔐 Owner öffnen</button>
+
+ <div id="ownerControls" class="hidden">
+
+  <div class="notice">
+   👑 Owner-Modus aktiv
+  </div>
+
+  <button onclick="addMoney()">💰 +1 Milliarde €</button>
+  <button onclick="addSubs()">👥 +1 Million Subs</button>
+  <button onclick="addLikes()">❤️ +1 Million Likes</button>
+  <button onclick="addViews()">👀 +10 Millionen Views</button>
+
+  <hr>
+
+  <button class="gold" onclick="everything()">🔥 ALLES HOLEN</button>
+  <button onclick="unlockAll()">🔓 ALLES FREISCHALTEN</button>
+  <button onclick="maxSkills()">⭐ ALLE SKILLS MAX</button>
+  <button onclick="maxAge()">🎂 ALTER 18</button>
+  <button onclick="ownerEvent()">🎲 EVENT AUSLÖSEN</button>
+
+  <hr>
+
+  <button class="green" onclick="saveGame()">💾 Speichern</button>
+  <button class="red" onclick="resetGame()">🔄 Spiel zurücksetzen</button>
+
+ </div>
+ </div>`;
+}
+
+function loginOwner(){
+ const pass=document.getElementById("ownerPass").value;
+
+ if(pass!==OWNER_PASSWORD){
+  toast("❌ Falsches Passwort.");
+  return;
+ }
+
+ document.getElementById("ownerControls").classList.remove("hidden");
+ toast("👑 Owner Panel geöffnet!");
+}
+
+function addMoney(){
+ game.money+=1000000000;
+ updateUI();
+ saveGame();
+ toast("💰 +1 Milliarde €");
+}
+
+function addSubs(){
+ game.subs+=1000000;
+ updateUI();
+ saveGame();
+ toast("👥 +1 Million Subs");
+}
+
+function addLikes(){
+ game.likes+=1000000;
+ updateUI();
+ saveGame();
+ toast("❤️ +1 Million Likes");
+}
+
+function addViews(){
+ game.views+=10000000;
+ updateUI();
+ saveGame();
+ toast("👀 +10 Millionen Views");
+}
+
+function maxSkills(){
+ Object.keys(game.skills).forEach(k=>game.skills[k]=999999);
+ toast("⭐ Alle Skills maximiert!");
+ saveGame();
+}
+
+function maxAge(){
+ game.age=18;
+ updateUI();
+ saveGame();
+ toast("🎂 Alter auf 18 gesetzt.");
+}
+
+function unlockAll(){
+ game.ownedAll=true;
+
+ game.subs=1000000000;
+ game.likes=1000000000;
+ game.views=10000000000;
+ game.money=999999999999999;
+
+ game.equipment=shopItems.map(x=>x.name);
+ game.furniture=shopItems.map(x=>x.name);
+
+ game.properties=[];
+
+ for(let i=1;i<=40;i++){
+  game.properties.push({
+   name:"Freigeschaltete Immobilie #"+i,
+   value:1000000*i,
+   rooms:[
+    "Wohnzimmer","Küche","Bad","Schlafzimmer",
+    "Büro","Gaming-Zimmer","Studio",
+    "Trainingsraum","Garage","Garten",
+    "Lager","Gästezimmer"
+   ]
+  });
+ }
+
+ game.channels=[
+  {name:"Hauptkanal",subs:game.subs,likes:game.likes,views:game.views}
+ ];
+
+ Object.keys(game.social).forEach(p=>{
+  game.social[p].followers=100000000;
+  game.social[p].likes=100000000;
+ });
+
+ toast("🔓 Alles freigeschaltet!");
+ updateUI();
+ saveGame();
+}
+
+function everything(){
+ unlockAll();
+
+ game.employees=[];
+
+ employeeJobs.forEach(j=>{
+  game.employees.push({
+   name:"Premium Mitarbeiter",
+   job:j[0],
+   salary:j[1]
+  });
+ });
+
+ game.bodyguards=[];
+
+ [1,50,100,200,300,400,500].forEach(i=>{
+  const g=guards[i-1];
+  game.bodyguards.push({
+   name:g.name,
+   mode:"Vollzeit",
+   defense:g.defense,
+   attack:g.attack,
+   damage:g.damage
+  });
+ });
+
+ game.companies=[];
+
+ companies.forEach(c=>{
+  game.companies.push({
+   name:c[0],
+   type:c[1],
+   value:1000000000,
+   employees:100,
+   level:100
+  });
+ });
+
+ game.sponsors=companies.map(c=>({
+  name:c[0],
+  type:c[1],
+  value:100000000
+ }));
+
+ ensureFans();
+
+ game.fans.forEach(f=>{
+  f.mood=100;
+  f.moneyGiven=100000;
+  f.gifts=100;
+ });
+
+ toast("🔥 ALLES wurde für den Owner geholt!");
+ updateUI();
+ saveGame();
+}
+
+/* ============================================================
+   OWNER EVENT
+============================================================ */
+
+function ownerEvent(){
+ for(let i=0;i<10;i++) randomEvent();
+ toast("🎲 Owner-Event gestartet!");
+}
+
+/* ============================================================
+   AUTOSAVE
+============================================================ */
+
+setInterval(()=>{
+ try{
+  localStorage.setItem(KEY,JSON.stringify(game));
+ }catch(e){}
+},15000);
+
+/* ============================================================
+   TASTATUR – optional
+   Die Hauptsteuerung bleibt Antippen.
+============================================================ */
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="ArrowLeft"){
+  goTo(Math.max(5,game.position.x-8),game.position.y,"⬅️");
+ }
+ if(e.key==="ArrowRight"){
+  goTo(Math.min(95,game.position.x+8),game.position.y,"➡️");
+ }
+ if(e.key==="ArrowUp"){
+  goTo(game.position.x,Math.min(55,game.position.y+8),"⬆️");
+ }
+ if(e.key==="ArrowDown"){
+  goTo(game.position.x,Math.max(15,game.position.y-8),"⬇️");
+ }
+});
+
+/* ============================================================
+   START
+============================================================ */
+
+loadGame();
+panel("home");
+
+</script>
 </body>
 </html>
