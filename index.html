@@ -1,307 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>YouTuber Life 3D – Realistic Life Simulator</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>YouTuber Life – Realistic Edition</title>
 <style>
 *{box-sizing:border-box}
-html,body{
-  margin:0;width:100%;height:100%;overflow:hidden;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#07111f;color:#fff;
-}
-#game{position:fixed;inset:0}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#111;color:white}
 canvas{display:block}
-
-#hud{
- position:fixed;left:14px;right:14px;top:12px;z-index:30;
- display:flex;gap:7px;flex-wrap:wrap;pointer-events:none
-}
-.stat{
- background:rgba(8,13,22,.78);
- backdrop-filter:blur(12px);
- border:1px solid rgba(255,255,255,.16);
- border-radius:12px;
- padding:8px 11px;font-size:12px;
- box-shadow:0 7px 25px #0008
-}
-
-#help{
- position:fixed;left:50%;top:14px;transform:translateX(-50%);
- max-width:430px;text-align:center;z-index:25;
- background:rgba(7,12,20,.62);
- backdrop-filter:blur(10px);
- border:1px solid rgba(255,255,255,.13);
- border-radius:24px;padding:7px 13px;font-size:11px
-}
-
-#menu{
- position:fixed;left:50%;bottom:12px;transform:translateX(-50%);
- max-width:96%;z-index:40;
- display:flex;gap:6px;flex-wrap:wrap;justify-content:center;
- background:rgba(5,10,18,.78);
- backdrop-filter:blur(13px);
- border:1px solid rgba(255,255,255,.13);
- padding:7px;border-radius:19px;
- box-shadow:0 10px 35px #0008
-}
-
-button,input,select{font:inherit}
-
-button{
- border:0;border-radius:10px;padding:9px 11px;
- background:#203852;color:white;cursor:pointer
-}
-button:hover{background:#315574}
-button.good{background:#176b46}
-button.warn{background:#73551d}
-button.red{background:#71303a}
-
-#panel{
- position:fixed;z-index:60;top:64px;right:14px;
- width:min(450px,calc(100% - 28px));
- max-height:calc(100% - 130px);
- overflow:auto;
- background:rgba(5,10,18,.94);
- backdrop-filter:blur(18px);
- border:1px solid rgba(255,255,255,.16);
- border-radius:18px;padding:15px;display:none;
- box-shadow:0 15px 55px #000b
-}
-#panel.show{display:block}
-
-.row{
- display:flex;gap:7px;flex-wrap:wrap;margin:7px 0
-}
-.row>*{flex:1;min-width:100px}
-
-input,select{
- background:#0d1b2d;color:#fff;
- border:1px solid #385474;
- border-radius:8px;padding:8px
-}
-
-h2,h3{margin:5px 0 10px}
-
-.card{
- background:rgba(13,26,42,.86);
- border:1px solid #25425f;
- border-radius:12px;padding:10px;margin:8px 0
-}
-
-.small{font-size:12px;color:#b9c8d9}
-
-.close{
- float:right!important;
- background:#202a38!important;
- border-radius:50%!important;
- width:38px;height:38px;
- padding:0!important;font-size:20px!important
-}
-
-#toast{
- position:fixed;left:50%;bottom:90px;
- transform:translateX(-50%);
- z-index:100;
- background:#101d2e;
- border:1px solid #4e78a5;
- border-radius:12px;
- padding:10px 15px;
- display:none;
- box-shadow:0 10px 35px #0009
-}
-
-#record{
- position:fixed;left:50%;top:70px;
- transform:translateX(-50%);
- z-index:80;
- background:#9c1d2c;
- border-radius:20px;
- padding:8px 15px;
- display:none;
- box-shadow:0 0 28px #e51f3b88;
- animation:pulse 1s infinite
-}
-@keyframes pulse{
- 50%{transform:translateX(-50%) scale(1.06);opacity:.65}
-}
-
-#miniMap{
- position:fixed;right:14px;top:14px;
- width:130px;height:130px;
- border-radius:50%;overflow:hidden;
- z-index:35;
- border:3px solid rgba(255,255,255,.75);
- box-shadow:0 8px 30px #0009;
- background:
- radial-gradient(circle at 50% 50%,#456b49 0 17%,transparent 18%),
- linear-gradient(135deg,#19374b,#315f42)
-}
-
-#miniMap:before{
- content:"";
- position:absolute;
- width:18px;height:140%;
- left:45%;
- top:-20%;
- background:rgba(220,220,220,.28);
- transform:rotate(23deg)
-}
-#miniMap:after{
- content:"";
- position:absolute;
- height:15px;width:140%;
- left:-20%;top:47%;
- background:rgba(220,220,220,.22);
- transform:rotate(-10deg)
-}
-
-#mapDot{
- position:absolute;
- left:50%;top:50%;
- width:13px;height:13px;
- border-radius:50%;
- background:#ff354d;
- border:2px solid white;
- transform:translate(-50%,-50%);
- z-index:4
-}
-
-#quick{
- position:fixed;right:14px;top:158px;
- z-index:35;
- display:flex;flex-direction:column;gap:8px
-}
-
-.quickBtn{
- width:48px;height:48px;
- border-radius:50%;
- background:rgba(9,16,25,.82);
- border:1px solid rgba(255,255,255,.2);
- color:white;font-size:20px;
- box-shadow:0 8px 22px #0007
-}
-
-#joystick{
- position:fixed;
- left:22px;bottom:82px;
- width:132px;height:132px;
- border-radius:50%;
- z-index:70;
- background:rgba(5,10,17,.43);
- border:2px solid rgba(255,255,255,.2);
- box-shadow:inset 0 0 30px #0008,0 8px 30px #0008;
- touch-action:none
-}
-
-#joyKnob{
- position:absolute;
- left:50%;top:50%;
- width:58px;height:58px;
- border-radius:50%;
- transform:translate(-50%,-50%);
- background:rgba(220,225,230,.65);
- border:2px solid rgba(255,255,255,.8);
- box-shadow:0 5px 16px #0009
-}
-
-#bottomCards{
- position:fixed;
- left:50%;bottom:76px;
- transform:translateX(-50%);
- z-index:25;
- display:flex;gap:8px;
- max-width:72%;
- overflow:hidden
-}
-
-.lifeCard{
- min-width:150px;
- background:rgba(7,13,22,.78);
- backdrop-filter:blur(10px);
- border:1px solid rgba(255,255,255,.13);
- border-radius:12px;
- padding:9px;font-size:11px
-}
-.lifeCard b{font-size:13px}
-
-@media(max-width:700px){
- #miniMap{width:92px;height:92px;right:9px;top:8px}
- .stat{font-size:10px;padding:6px 8px}
- .stat:nth-child(n+5){display:none}
- #help{top:105px;max-width:280px}
- .lifeCard{min-width:125px}
- .lifeCard:nth-child(n+3){display:none}
- #joystick{
-   width:118px;height:118px;
-   left:14px;bottom:82px
- }
- #quick{right:9px;top:110px}
- .quickBtn{width:43px;height:43px}
-}
+#hud{position:fixed;top:12px;left:12px;z-index:10;background:rgba(10,10,15,.82);padding:12px;border-radius:14px;backdrop-filter:blur(8px);min-width:250px}
+#hud b{font-size:18px}
+.stat{margin:4px 0;font-size:13px}
+button{border:0;border-radius:10px;padding:9px 12px;margin:3px;background:#242936;color:#fff;cursor:pointer;font-weight:bold}
+button:hover{background:#394052}
+#buttons{position:fixed;right:12px;top:12px;z-index:10;width:180px}
+#buttons button{width:100%}
+#panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:20;width:min(94vw,650px);max-height:82vh;overflow:auto;background:rgba(15,18,25,.97);padding:20px;border-radius:18px;display:none;box-shadow:0 20px 80px #000}
+#panel h2{margin-top:0}
+.card{background:#202532;border-radius:12px;padding:12px;margin:8px 0}
+.close{background:#b22}
+#joy{position:fixed;left:25px;bottom:25px;width:125px;height:125px;border-radius:50%;background:rgba(30,35,45,.75);border:3px solid rgba(255,255,255,.2);z-index:12;touch-action:none}
+#stick{position:absolute;width:55px;height:55px;border-radius:50%;background:#777;left:32px;top:32px}
+#rec{position:fixed;left:50%;top:25px;transform:translateX(-50%);background:#d11;padding:8px 15px;border-radius:20px;display:none;z-index:15;font-weight:bold}
+#mode{position:fixed;bottom:20px;right:20px;z-index:11}
+#loading{position:fixed;inset:0;background:#090b10;z-index:99;display:flex;align-items:center;justify-content:center;font-size:22px}
 </style>
 </head>
-
 <body>
 
-<div id="game"></div>
-<div id="hud"></div>
+<div id="loading">Welt wird geladen...</div>
 
-<div id="help">
-🎮 Bewege dich mit dem Steuerkreis · 🎥 PC/Kamera = Video · 🏠 Häuser = Räume
+<div id="hud">
+<b>🎥 YouTuber Life</b>
+<div class="stat">💰 Geld: €<span id="money">10000</span></div>
+<div class="stat">👥 Abonnenten: <span id="subs">0</span></div>
+<div class="stat">❤️ Likes: <span id="likes">0</span></div>
+<div class="stat">👁️ Views: <span id="views">0</span></div>
+<div class="stat">🎂 Alter: <span id="age">16</span></div>
+<div class="stat">⭐ Level: <span id="level">1</span></div>
 </div>
 
-<div id="record">🔴 AUFNAHME LÄUFT</div>
-
-<div id="miniMap">
- <div id="mapDot"></div>
+<div id="buttons">
+<button onclick="openPanel('social')">📱 Social Media</button>
+<button onclick="recordVideo()">🎥 Video aufnehmen</button>
+<button onclick="openPanel('shop')">🛒 Shop</button>
+<button onclick="openPanel('fans')">👥 Fans</button>
+<button onclick="openPanel('homes')">🏠 Häuser</button>
+<button onclick="openPanel('jobs')">💼 Berufe</button>
+<button onclick="openPanel('company')">🏢 Unternehmen</button>
+<button onclick="openPanel('guards')">🛡️ Bodyguards</button>
+<button onclick="openPanel('life')">❤️ Leben</button>
+<button onclick="openPanel('owner')">👑 Besitzer</button>
+<button onclick="saveGame()">💾 Speichern</button>
+<button onclick="loadGame()">📂 Laden</button>
 </div>
 
-<div id="quick">
- <button class="quickBtn" onclick="recordVideo()">🎥</button>
- <button class="quickBtn" onclick="openPanel('social')">📱</button>
- <button class="quickBtn" onclick="openPanel('company')">🏢</button>
- <button class="quickBtn" onclick="openPanel('home')">🏠</button>
+<div id="mode">
+<button onclick="toggleCamera()">👁️ Perspektive wechseln</button>
 </div>
 
-<div id="joystick">
- <div id="joyKnob"></div>
-</div>
-
-<div id="bottomCards">
- <div class="lifeCard">
-  <b>🎬 Creator</b><br>
-  Videos · Social Media · Fans
- </div>
- <div class="lifeCard">
-  <b>🏢 Unternehmen</b><br>
-  Firmen · Mitarbeiter · Expansion
- </div>
- <div class="lifeCard">
-  <b>🌍 Leben</b><br>
-  Häuser · Jobs · Familie
- </div>
-</div>
-
-<div id="menu">
- <button onclick="openPanel('life')">👤 Leben</button>
- <button onclick="openPanel('social')">📱 Social</button>
- <button onclick="openPanel('shop')">🛒 Shop</button>
- <button onclick="openPanel('fans')">❤️ Fans</button>
- <button onclick="openPanel('home')">🏠 Häuser</button>
- <button onclick="openPanel('jobs')">💼 Jobs</button>
- <button onclick="openPanel('company')">🏢 Firmen</button>
- <button onclick="openPanel('guards')">🛡️ Schutz</button>
- <button onclick="openPanel('owner')">👑 Owner</button>
- <button onclick="toggleCamera()">🎥 Sicht</button>
- <button onclick="saveGame()">💾 Speichern</button>
- <button onclick="loadGame()">↩ Laden</button>
-</div>
+<div id="joy"><div id="stick"></div></div>
+<div id="rec">🔴 AUFNAHME LÄUFT</div>
 
 <div id="panel"></div>
-<div id="toast"></div>
 
 <script type="importmap">
 {
@@ -313,3449 +74,695 @@ h2,h3{margin:5px 0 10px}
 </script>
 
 <script type="module">
-
 import * as THREE from "three";
-import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 
-const $=id=>document.getElementById(id);
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x9eb7d4);
+scene.fog=new THREE.Fog(0x9eb7d4,80,260);
 
-const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,500);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+document.body.appendChild(renderer.domElement);
 
-const money=n=>new Intl.NumberFormat("de-DE",{
- style:"currency",
- currency:"EUR",
- maximumFractionDigits:0
-}).format(n);
+const hemi=new THREE.HemisphereLight(0xffffff,0x445566,2.2);
+scene.add(hemi);
 
-const fmt=n=>new Intl.NumberFormat("de-DE",{
- notation:"compact",
- maximumFractionDigits:1
-}).format(n);
+const sun=new THREE.DirectionalLight(0xffffff,3);
+sun.position.set(80,120,60);
+sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left=-150;
+sun.shadow.camera.right=150;
+sun.shadow.camera.top=150;
+sun.shadow.camera.bottom=-150;
+scene.add(sun);
 
+const ground=new THREE.Mesh(
+ new THREE.PlaneGeometry(500,500),
+ new THREE.MeshStandardMaterial({color:0x46504a,roughness:1})
+);
+ground.rotation.x=-Math.PI/2;
+ground.receiveShadow=true;
+scene.add(ground);
 
-/* =========================
-   SPIELDATEN
-========================= */
+function box(x,y,z,w,h,d,color){
+ const m=new THREE.Mesh(
+  new THREE.BoxGeometry(w,h,d),
+  new THREE.MeshStandardMaterial({color,roughness:.7})
+ );
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ m.receiveShadow=true;
+ scene.add(m);
+ return m;
+}
 
-const state={
- name:"Johovanni",
- age:0,
- money:2500,
- followers:0,
+function cyl(x,y,z,r,h,color){
+ const m=new THREE.Mesh(
+  new THREE.CylinderGeometry(r,r,h,20),
+  new THREE.MeshStandardMaterial({color,roughness:.7})
+ );
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ scene.add(m);
+ return m;
+}
+
+/* STADT */
+box(0,.05,0,500,.1,500,0x30332f);
+
+for(let i=-100;i<=100;i+=25){
+ box(i,.08,0,8,.12,240,0x25282b);
+ box(0,.09,i,240,.12,8,0x25282b);
+}
+
+for(let x=-110;x<=110;x+=22){
+ for(let z=-110;z<=110;z+=22){
+  if(Math.abs(x)<35 && Math.abs(z)<35)continue;
+  let h=8+Math.random()*25;
+  box(x,h/2,z,13,h,13,
+   new THREE.Color().setHSL(.58,.12,.18+Math.random()*.15));
+ }
+}
+
+/* BÄUME */
+for(let i=0;i<100;i++){
+ let x=(Math.random()-.5)*230;
+ let z=(Math.random()-.5)*230;
+ if(Math.abs(x)<40&&Math.abs(z)<40)continue;
+ cyl(x,2,z,.8,4,0x5b3a24);
+ let crown=cyl(x,5,z,2.7,5,0x285c32);
+}
+
+/* HAUS */
+box(0,2,-10,30,4,20,0xc8c0ad);
+box(0,5,-10,31,2,21,0x403d3a);
+
+box(-10,2,-20,8,4,.4,0x22252a);
+box(0,2,-20,8,4,.4,0x22252a);
+box(10,2,-20,8,4,.4,0x22252a);
+
+const door=box(0,2,-20.25,3,4,.5,0x513b2d);
+
+/* STUDIO */
+box(0,1,-4,12,2,7,0x20252b);
+box(-4,2,-6,2,2,2,0x111318);
+box(-4,3,-6,2,1.5,.15,0x10151a);
+
+const cameraObj=new THREE.Group();
+const camBody=box(5,2,-6,2,1.2,1.3,0x111111);
+cameraObj.add(camBody);
+const lens=new THREE.Mesh(
+ new THREE.CylinderGeometry(.55,.55,.8,24),
+ new THREE.MeshStandardMaterial({color:0x111827,metalness:.5,roughness:.3})
+);
+lens.rotation.z=Math.PI/2;
+lens.position.set(6,2,-6);
+lens.castShadow=true;
+cameraObj.add(lens);
+scene.add(cameraObj);
+
+box(5,.7,-6,2.5,.2,2.5,0x111111);
+box(4.2,2.8,-6,.15,2.8,.15,0x222222);
+box(5.8,2.8,-6,.15,2.8,.15,0x222222);
+
+/* MENSCH */
+const player=new THREE.Group();
+
+const body=new THREE.Mesh(
+ new THREE.CapsuleGeometry(.55,1.35,8,16),
+ new THREE.MeshStandardMaterial({color:0x6b3f25,roughness:.8})
+);
+body.position.y=1.45;
+body.castShadow=true;
+player.add(body);
+
+const head=new THREE.Mesh(
+ new THREE.SphereGeometry(.52,32,24),
+ new THREE.MeshStandardMaterial({color:0x6b3f25,roughness:.75})
+);
+head.position.y=2.65;
+head.castShadow=true;
+player.add(head);
+
+const hair=new THREE.Mesh(
+ new THREE.SphereGeometry(.55,32,18,0,Math.PI*2,0,Math.PI*.55),
+ new THREE.MeshStandardMaterial({color:0x141414,roughness:.9})
+);
+hair.position.y=2.78;
+hair.castShadow=true;
+player.add(hair);
+
+function eye(x){
+ const e=new THREE.Mesh(
+  new THREE.SphereGeometry(.075,16,12),
+  new THREE.MeshStandardMaterial({color:0xffffff})
+ );
+ e.position.set(x,2.72,.47);
+ player.add(e);
+ const p=new THREE.Mesh(
+  new THREE.SphereGeometry(.035,12,8),
+  new THREE.MeshStandardMaterial({color:0x111111})
+ );
+ p.position.set(x,2.72,.535);
+ player.add(p);
+}
+eye(-.18);eye(.18);
+
+const nose=new THREE.Mesh(
+ new THREE.ConeGeometry(.06,.18,12),
+ new THREE.MeshStandardMaterial({color:0x59331f})
+);
+nose.rotation.x=Math.PI/2;
+nose.position.set(0,2.57,.53);
+player.add(nose);
+
+const mouth=box(0,2.43,.52,.22,.035,.03,0x301515);
+player.add(mouth);
+
+const leg1=box(-.22,.55,0,.35,1,.35,0x171b25);
+const leg2=box(.22,.55,0,.35,1,.35,0x171b25);
+player.add(leg1,leg2);
+
+player.position.set(0,0,15);
+scene.add(player);
+
+/* SPIELDATEN */
+let data={
+ money:10000,
+ subs:0,
  likes:0,
  views:0,
-
- energy:100,
- health:100,
- popularity:0,
- education:0,
- skill:10,
-
- career:"Noch kein Beruf",
-
- channelCount:1,
- currentChannel:0,
-
- channels:[
-  {
-   name:"Mein Kanal",
-   subs:0,
-   likes:0,
-   views:0,
-   income:0
-  }
- ],
-
- social:{
-  youtube:0,
-  tiktok:0,
-  instagram:0,
-  twitch:0,
-  x:0
+ age:16,
+ level:1,
+ channels:1,
+ followers:{
+  YouTube:0,TikTok:0,Instagram:0,Twitch:0,X:0
  },
-
- inventory:[],
+ skills:{
+  intelligence:10,
+  social:10,
+  creativity:10,
+  fitness:10
+ },
  homes:[],
- currentHome:0,
+ inventory:[],
  companies:[],
- employees:[],
-
- fans:[],
- sponsors:[],
  guards:[],
-
- skin:"#8b5a3c",
- hair:"#21150f",
- height:1,
- head:1,
- face:50,
- hairStyle:"Kurz",
- outfit:"Alltag",
-
- cameraMode:"third",
- recording:false,
-
- schoolFriends:[],
-
- unlocked:true,
- generation:1,
- alive:true,
- room:"Studio"
+ fans:[],
+ job:"Kein Beruf"
 };
 
-
-/* =========================
-   SAVE / LOAD
-========================= */
-
-function toast(t){
- $("toast").textContent=t;
- $("toast").style.display="block";
-
- clearTimeout(window.tt);
-
- window.tt=setTimeout(()=>{
-  $("toast").style.display="none";
- },2200);
-}
-
-function saveGame(){
- localStorage.setItem(
-  "ytLifeMega",
-  JSON.stringify(state)
- );
-
- toast("💾 Spiel gespeichert!");
-}
-
-function loadGame(){
-
- const x=localStorage.getItem("ytLifeMega");
-
- if(!x){
-  toast("Kein Spielstand gefunden.");
-  return;
- }
-
- Object.assign(state,JSON.parse(x));
-
- refreshCharacter();
- updateHUD();
-
- toast("↩ Spielstand geladen!");
-}
-
-window.saveGame=saveGame;
-window.loadGame=loadGame;
-
-
-/* =========================
-   HUD
-========================= */
+const names=[
+ "Lukas","Mia","Noah","Emma","Jonas","Sofia","Leon","Amira",
+ "David","Sarah","Paul","Lina","Elias","Nina","Ben","Lea",
+ "Samuel","Marie","Daniel","Amina"
+];
 
 function updateHUD(){
-
- $("hud").innerHTML=`
-
- <div class="stat">👤 ${state.name}</div>
-
- <div class="stat">
- 🎂 ${state.age} Jahre
- </div>
-
- <div class="stat">
- 💶 ${money(state.money)}
- </div>
-
- <div class="stat">
- 👥 ${fmt(state.followers)} Follower
- </div>
-
- <div class="stat">
- ❤️ ${fmt(state.likes)} Likes
- </div>
-
- <div class="stat">
- 👁️ ${fmt(state.views)} Views
- </div>
-
- <div class="stat">
- 💼 ${state.career}
- </div>
-
- <div class="stat">
- 🏠 ${state.homes.length} Häuser
- </div>
-
- <div class="stat">
- 🏢 ${state.companies.length} Firmen
- </div>
-
- `;
+ money.textContent=Math.floor(data.money).toLocaleString("de-DE");
+ subs.textContent=Math.floor(data.subs).toLocaleString("de-DE");
+ likes.textContent=Math.floor(data.likes).toLocaleString("de-DE");
+ views.textContent=Math.floor(data.views).toLocaleString("de-DE");
+ age.textContent=data.age;
+ level.textContent=data.level;
 }
 
-
-/* =========================
-   PANELS
-========================= */
-
 function openPanel(type){
+ const p=document.getElementById("panel");
+ p.style.display="block";
 
- const p=$("panel");
+ let html=`<button class="close" onclick="closePanel()">✖ Schließen</button>`;
 
- p.classList.add("show");
+ if(type==="social"){
+  html+=`<h2>📱 Social Media</h2>`;
+  for(let s of Object.keys(data.followers)){
+   html+=`<div class="card"><b>${s}</b><br>
+   Follower: ${data.followers[s].toLocaleString("de-DE")}
+   <button onclick="socialPost('${s}')">Posten</button>
+   <button onclick="socialStream('${s}')">Stream</button></div>`;
+  }
+ }
 
- const close=
- `<button class="close"
- onclick="$('panel').classList.remove('show')">✖</button>`;
+ if(type==="shop"){
+  html+=`<h2>🛒 Mega-Shop</h2>`;
+  const items=[
+   ["4K Kamera",1200],["Pro Kamera",8500],["Studio Kamera",25000],
+   ["Gaming-PC",1800],["High-End PC",8000],["Server-PC",30000],
+   ["Mikrofon",300],["Pro Mikrofon",1500],["Studio Mikrofon",5000],
+   ["Ringlicht",120],["Studio Licht",600],["Pro Lichtsystem",4000],
+   ["Gamingstuhl",250],["Luxussofa",3000],["Creator-Schreibtisch",1500],
+   ["Gaming Monitor",700],["4K Monitor",1800],["Studio Monitor",5000],
+   ["Kühlschrank",1200],["Bett",1000],["Luxus-Bett",12000],
+   ["Fitnessgerät",900],["Pro Laufband",5000],["Kamera-Drohne",2500]
+  ];
+  for(let i=0;i<220;i++){
+   let base=items[i%items.length];
+   let mult=1+Math.floor(i/items.length)*.8;
+   let price=Math.floor(base[1]*mult);
+   html+=`<button onclick="buyItem('${base[0]} ${i+1}',${price})">
+   ${base[0]} ${i+1} – €${price.toLocaleString("de-DE")}</button>`;
+  }
+ }
 
- if(type==="life")p.innerHTML=close+lifeHTML();
- if(type==="social")p.innerHTML=close+socialHTML();
- if(type==="shop")p.innerHTML=close+shopHTML();
- if(type==="fans")p.innerHTML=close+fansHTML();
- if(type==="home")p.innerHTML=close+homeHTML();
- if(type==="jobs")p.innerHTML=close+jobsHTML();
- if(type==="company")p.innerHTML=close+companyHTML();
- if(type==="guards")p.innerHTML=close+guardsHTML();
- if(type==="owner")p.innerHTML=close+ownerHTML();
+ if(type==="fans"){
+  html+=`<h2>👥 Fans</h2>`;
+  if(!data.fans.length) html+=`<p>Noch keine persönlichen Fans. Erstelle Videos!</p>`;
+  data.fans.slice(0,50).forEach((f,i)=>{
+   html+=`<div class="card"><b>${f.name}</b><br>
+   Sympathie: ${f.like}<br>
+   <button onclick="fanMoney(${i})">💶 Geld geben</button>
+   <button onclick="fanGift(${i})">🎁 Geschenk</button>
+   <button onclick="fanVideo(${i})">🎥 YouTuber Anfrage für ein Video</button>
+   </div>`;
+  });
+ }
+
+ if(type==="homes"){
+  html+=`<h2>🏠 Immobilien</h2>`;
+  const homes=[];
+  for(let i=1;i<=40;i++){
+   let price=i<=20?400000+(i-1)*21000:20000000+(i-21)*50000000;
+   homes.push([`Luxushaus ${i}`,price]);
+  }
+  homes.forEach((h,i)=>{
+   html+=`<div class="card"><b>${h[0]}</b><br>€${h[1].toLocaleString("de-DE")}
+   <button onclick="buyHome('${h[0]}',${h[1]})">Kaufen</button></div>`;
+  });
+  html+=`<p>Besitztümer: ${data.homes.join(", ")||"keine"}</p>`;
+ }
+
+ if(type==="jobs"){
+  html+=`<h2>💼 Berufe</h2>`;
+  const jobs=[
+   ["Feuerwehrmann",20],["Polizist",20],["Arzt",25],["Lehrer",22],
+   ["Anwalt",25],["Programmierer",18],["Elektriker",18],
+   ["Mechaniker",18],["Koch",16],["Pilot",25],["Wissenschaftler",25],
+   ["Banker",20],["Architekt",22],["Ingenieur",23],["Fotograf",16],
+   ["Musiker",16],["Schauspieler",16],["Unternehmer",18],
+   ["YouTuber",12],["Streamer",12]
+  ];
+  jobs.forEach(j=>{
+   html+=`<div class="card"><b>${j[0]}</b><br>Startalter: ${j[1]}
+   <button onclick="chooseJob('${j[0]}',${j[1]})">Beruf wählen</button></div>`;
+  });
+  html+=`<p>Aktueller Beruf: <b>${data.job}</b></p>`;
+ }
+
+ if(type==="company"){
+  html+=`<h2>🏢 Unternehmen</h2>
+  <button onclick="createCompany()">➕ Unternehmen gründen</button>`;
+  data.companies.forEach(c=>{
+   html+=`<div class="card"><b>${c.name}</b><br>
+   Branche: ${c.industry}<br>
+   Mitarbeiter: ${c.employees}<br>
+   Umsatz: €${c.money.toLocaleString("de-DE")}
+   </div>`;
+  });
+ }
+
+ if(type==="guards"){
+  html+=`<h2>🛡️ Bodyguards</h2>`;
+  for(let i=1;i<=500;i++){
+   let damage=Math.min(300,i);
+   let price=500+i*5000;
+   html+=`<button onclick="hireGuard(${i},${price})">
+   Stufe ${i} – Schutz ${damage} – €${price.toLocaleString("de-DE")}</button>`;
+  }
+ }
+
+ if(type==="life"){
+  html+=`<h2>❤️ Leben</h2>
+  <div class="card">Alter: ${data.age}</div>
+  <button onclick="ageUp()">🎂 Ein Jahr älter werden</button>
+  <button onclick="train()">🏋️ Trainieren</button>
+  <button onclick="study()">📚 Lernen</button>
+  <button onclick="walk()">🚶 Spaziergang</button>
+  <button onclick="makeFan()">👥 Zufälligen Fan treffen</button>`;
+ }
+
+ if(type==="owner"){
+  html+=`<h2>👑 Besitzer-Panel</h2>
+  <input id="ownerpass" type="password" placeholder="Passwort">
+  <button onclick="ownerLogin()">Einloggen</button>
+  <div id="ownerarea"></div>`;
+ }
+
+ p.innerHTML=html;
 }
 
 window.openPanel=openPanel;
 
-
-/* =========================
-   LEBEN
-========================= */
-
-function phase(){
-
- if(state.age<3)return"👶 Baby";
- if(state.age<6)return"🧒 Kleinkind";
- if(state.age<12)return"🎒 Kind";
- if(state.age<18)return"🧑 Teenager";
- if(state.age<65)return"🧑 Erwachsener";
-
- return"👴 Senior";
-}
-
-function personality(){
-
- return[
-  "ruhig",
-  "freundlich",
-  "ehrgeizig",
-  "kreativ",
-  "sportlich",
-  "neugierig"
- ][state.generation%6];
-}
-
-function lifeHTML(){
-
- return`
-
- <h2>👤 Mein Leben</h2>
-
- <div class="card">
-  <b>Lebensphase:</b> ${phase()}<br>
-  <span class="small">
-   Baby → Kind → Teenager → Erwachsener → Senior
-  </span>
- </div>
-
- <div class="row">
-  <input id="pname"
-   value="${state.name}"
-   placeholder="Name">
-
-  <button onclick="setName()">
-   Name ändern
-  </button>
- </div>
-
- <div class="row">
-  <button class="good"
-   onclick="ageUp()">
-   🎂 1 Jahr älter
-  </button>
-
-  <button onclick="walk()">
-   🚶 Spaziergang
-  </button>
- </div>
-
- <div class="card">
-
-  <b>Ausbildung:</b> ${state.education}%<br>
-
-  <b>Skill:</b> ${state.skill}/100<br>
-
-  <b>Gesundheit:</b> ${state.health}/100<br>
-
-  <b>Energie:</b> ${state.energy}/100
-
- </div>
-
- <h3>🎨 Realistische Charakter-Anpassung</h3>
-
- <div class="row">
-
-  <label>
-   Haut
-   <input type="color"
-    id="skin"
-    value="${state.skin}">
-  </label>
-
-  <label>
-   Haare
-   <input type="color"
-    id="hair"
-    value="${state.hair}">
-  </label>
-
- </div>
-
- <div class="row">
-
-  <select id="hairStyle">
-
-   <option>Kurz</option>
-   <option>Lang</option>
-   <option>Lockig</option>
-   <option>Mohawk</option>
-   <option>Afro</option>
-   <option>Wellen</option>
-
-  </select>
-
-  <select id="outfit">
-
-   <option>Alltag</option>
-   <option>Sport</option>
-   <option>Business</option>
-   <option>Schule</option>
-   <option>Creator</option>
-
-  </select>
-
- </div>
-
- <button onclick="applyCharacter()">
-  🎨 Charakter anwenden
- </button>
-
- <div class="card">
-  <b>Persönlichkeit:</b>
-  ${personality()}
- </div>
-
- <div class="card">
-  <b>👤 Gesichtssystem</b><br>
-  Augen · Nase · Mund · Ohren · Augenbrauen · Haare · Hals · Schultern
- </div>
-
- `;
-}
-
-function setName(){
-
- state.name=$("pname").value||"Johovanni";
-
- refreshCharacter();
- updateHUD();
-
- toast("Name geändert!");
-}
-
-function applyCharacter(){
-
- state.skin=$("skin").value;
- state.hair=$("hair").value;
- state.hairStyle=$("hairStyle").value;
- state.outfit=$("outfit").value;
-
- refreshCharacter();
-
- toast("🎨 Realistischer Charakter aktualisiert!");
-}
-
-function ageUp(){
-
- if(state.age>=100){
-  toast("Maximales Alter erreicht.");
-  return;
- }
-
- state.age++;
-
- if(state.age===6){
-  state.education+=5;
-  state.schoolFriends.push("Noah","Lina");
-  toast("🎒 Schule beginnt!");
- }
-
- if(state.age===12){
-  state.social.youtube+=1;
-  toast("📱 Social Media freigeschaltet!");
- }
-
- if(state.age===18){
-  toast("🎓 Erwachsenenleben freigeschaltet!");
- }
-
- if(state.age===65){
-  toast("👴 Seniorenphase erreicht.");
- }
-
- if(Math.random()<.12){
-  lifeEvent();
- }
-
- refreshCharacter();
- updateHUD();
-}
-
-window.ageUp=ageUp;
-window.setName=setName;
-window.applyCharacter=applyCharacter;
-
-function lifeEvent(){
-
- const events=[
-  "Ein neuer Schulfreund möchte mit dir lernen.",
-  "Ein Nachbar ist neidisch auf deinen Erfolg.",
-  "Du bekommst eine kleine Belohnung.",
-  "Ein Fan schreibt dir eine nette Nachricht.",
-  "Du findest ein interessantes Hobby.",
-  "Du lernst eine neue Person kennen."
- ];
-
- const e=events[Math.floor(Math.random()*events.length)];
-
- toast("🎲 "+e);
-
- if(e.includes("Belohnung")){
-  state.money+=250;
- }
-}
-
-function walk(){
-
- state.energy=clamp(
-  state.energy-4,
-  0,
-  100
- );
-
- toast("🚶 Du gehst spazieren.");
-
- moveTo(
-  new THREE.Vector3(
-   Math.random()*50-25,
-   0,
-   Math.random()*50-25
-  )
- );
-}
-
-window.walk=walk;
-
-
-/* =========================
-   SOCIAL
-========================= */
-
-function socialHTML(){
-
- return`
-
- <h2>📱 Social Media</h2>
-
- ${Object.entries(state.social)
-  .map(([k,v])=>`
-
-   <div class="card">
-    <b>${k.toUpperCase()}</b>:
-    ${fmt(v)} Follower
-   </div>
-
-  `).join("")}
-
- <div class="row">
-
-  <button class="good"
-   onclick="postSocial()">
-   📣 Post
-  </button>
-
-  <button onclick="stream()">
-   🔴 Stream
-  </button>
-
- </div>
-
- <h3>🎬 YouTube</h3>
-
- <div class="card">
-
-  Kanal:
-  ${state.channels[state.currentChannel].name}
-
-  <br>
-
-  Abos:
-  ${fmt(state.channels[state.currentChannel].subs)}
-
-  · Likes:
-  ${fmt(state.channels[state.currentChannel].likes)}
-
-  · Views:
-  ${fmt(state.channels[state.currentChannel].views)}
-
- </div>
-
- <button class="good"
- onclick="recordVideo()">
- 🎥 Video aufnehmen
- </button>
-
- <button onclick="newChannel()">
- ➕ Neuer Kanal
- </button>
-
- <div class="small">
- Neuer Kanal:
- 20.000 Abos + 300.000 Likes
- </div>
-
- `;
-}
-
-function postSocial(){
-
- if(state.age<12){
-  toast("📱 Social Media ist erst ab 12 freigeschaltet.");
-  return;
- }
-
- let v=
- 500+
- Math.floor(Math.random()*50000);
-
- for(const k of Object.keys(state.social)){
-  state.social[k]+=
-   Math.floor(v*(.2+Math.random()));
- }
-
- state.likes+=Math.floor(v/2);
- state.money+=Math.floor(v/30);
-
- updateHUD();
-
- toast("📣 Dein Post geht ab!");
-}
-
-function stream(){
-
- if(state.age<12){
-  toast("Noch nicht freigeschaltet.");
-  return;
- }
-
- let v=
- 100+
- Math.floor(Math.random()*100000);
-
- state.views+=v;
- state.followers+=Math.floor(v/20);
- state.money+=Math.floor(v/80);
-
- updateHUD();
-
- toast(
-  "🔴 Stream beendet: "+
-  fmt(v)+" Views"
- );
-}
+function closePanel(){document.getElementById("panel").style.display="none"}
+window.closePanel=closePanel;
 
 function recordVideo(){
-
- if(state.age<12){
-  toast("🎥 Creator-Modus ist noch nicht freigeschaltet.");
-  return;
- }
-
- if(state.recording){
-  toast("🎥 Du nimmst bereits auf.");
-  return;
- }
-
- state.recording=true;
-
- $("record").style.display="block";
-
- toast("🎥 Kamera läuft...");
-
+ const rec=document.getElementById("rec");
+ rec.style.display="block";
+ cameraObj.position.y=.4;
  setTimeout(()=>{
+  rec.style.display="none";
+  cameraObj.position.y=0;
+  let v=Math.floor(100+Math.random()*1000000);
+  let l=Math.floor(v*(.02+Math.random()*.08));
+  let s=Math.floor(v*(.005+Math.random()*.02));
+  let moneyGain=Math.floor(v*.015);
+  data.views+=v;
+  data.likes+=l;
+  data.subs+=s;
+  data.money+=moneyGain;
+  data.followers.YouTube+=s;
+  data.level=Math.max(1,Math.floor(data.subs/20000)+1);
 
-  state.recording=false;
-
-  $("record").style.display="none";
-
-  const views=
-   Math.max(
-    20,
-    Math.floor(Math.random()*5000000)
-   );
-
-  const likes=
-   Math.floor(
-    views*(.02+Math.random()*.10)
-   );
-
-  const subs=
-   Math.floor(
-    views*(.001+Math.random()*.012)
-   );
-
-  const income=
-   Math.max(
-    1,
-    Math.floor(
-     views*(.002+Math.random()*.004)
-    )
-   );
-
-  state.views+=views;
-  state.likes+=likes;
-  state.followers+=subs;
-  state.money+=income;
-
-  let ch=
-   state.channels[state.currentChannel];
-
-  ch.views+=views;
-  ch.likes+=likes;
-  ch.subs+=subs;
-  ch.income+=income;
-
-  toast(
-   `🎬 Video fertig:
-   ${fmt(views)} Views ·
-   ${fmt(likes)} Likes ·
-   +${fmt(subs)} Abos ·
-   +${money(income)}`
-  );
-
+  let newFans=Math.min(10,Math.floor(v/100000)+1);
+  for(let i=0;i<newFans;i++){
+   data.fans.push({
+    name:names[Math.floor(Math.random()*names.length)]+" #"+(data.fans.length+1),
+    like:Math.floor(50+Math.random()*51)
+   });
+  }
   updateHUD();
-
- },3500);
+  alert(`Video veröffentlicht!\n\n👁️ ${v.toLocaleString("de-DE")} Views\n❤️ ${l.toLocaleString("de-DE")} Likes\n👥 +${s.toLocaleString("de-DE")} Abos\n💰 +€${moneyGain.toLocaleString("de-DE")}`);
+ },3000);
 }
-
-function newChannel(){
-
- let ch=
-  state.channels[state.currentChannel];
-
- if(
-  ch.subs<20000 ||
-  ch.likes<300000
- ){
-  toast("❌ Voraussetzungen nicht erfüllt.");
-  return;
- }
-
- state.channels.push({
-  name:"Kanal "+(state.channels.length+1),
-  subs:0,
-  likes:0,
-  views:0,
-  income:0
- });
-
- state.currentChannel=
-  state.channels.length-1;
-
- toast("📺 Neuer Kanal erstellt!");
-}
-
-window.postSocial=postSocial;
-window.stream=stream;
 window.recordVideo=recordVideo;
-window.newChannel=newChannel;
 
-
-/* =========================
-   SHOP
-========================= */
-
-const shopItems=[];
-
-const types=[
- "Kamera","Mikrofon","PC","Monitor",
- "Licht","Schreibtisch","Gamingstuhl",
- "Sofa","Bett","Küche","TV","Regal",
- "Deko","Pflanze","Studio-Set",
- "Streaming-Deck","Laptop","Tablet",
- "Konsole","Headset"
-];
-
-const adjectives=[
- "Basic","Pro","Ultra","Creator",
- "Studio","Elite","Mega",
- "Legend","Diamond","Future"
-];
-
-for(let i=0;i<250;i++){
-
- let type=types[i%types.length];
-
- let tier=Math.floor(i/25)+1;
-
- shopItems.push({
-  name:
-   `${adjectives[i%adjectives.length]} ${type} ${i+1}`,
-
-  price:
-   Math.floor(
-    80+
-    Math.pow(tier,2)*300+
-    i*27
-   ),
-
-  power:1+tier
- });
-}
-
-function shopHTML(){
-
- return`
-
- <h2>🛒 Mega-Shop</h2>
-
- <div class="small">
-  250 Ausrüstungs- und Möbelvarianten.
- </div>
-
- ${shopItems.slice(0,80).map((x,i)=>`
-
- <div class="card">
-
-  <b>${x.name}</b><br>
-
-  ${money(x.price)}
-  · +${x.power} Creator-Power
-
-  <button onclick="buyItem(${i})">
-   Kaufen
-  </button>
-
- </div>
-
- `).join("")}
-
- `;
-}
-
-function buyItem(i){
-
- let x=shopItems[i];
-
- if(state.money<x.price){
-  toast("💸 Zu wenig Geld.");
-  return;
- }
-
- state.money-=x.price;
-
- state.inventory.push(x);
-
+function socialPost(s){
+ let f=Math.floor(20+Math.random()*50000);
+ let money=Math.floor(f*.02);
+ data.followers[s]+=f;
+ data.money+=money;
+ data.likes+=Math.floor(f*.4);
  updateHUD();
-
- toast("🛒 "+x.name+" gekauft!");
+ alert(`${s}-Post veröffentlicht!\n+${f.toLocaleString("de-DE")} Follower`);
 }
+window.socialPost=socialPost;
 
+function socialStream(s){
+ let f=Math.floor(100+Math.random()*100000);
+ data.followers[s]+=f;
+ data.money+=Math.floor(f*.03);
+ updateHUD();
+ alert(`${s}-Stream beendet!\n+${f.toLocaleString("de-DE")} Follower`);
+}
+window.socialStream=socialStream;
+
+function buyItem(name,price){
+ if(data.money<price)return alert("Nicht genug Geld!");
+ data.money-=price;
+ data.inventory.push(name);
+ updateHUD();
+}
 window.buyItem=buyItem;
 
-
-/* =========================
-   FANS
-========================= */
-
-function fansHTML(){
-
- if(!state.fans.length){
-
-  for(let i=0;i<12;i++){
-
-   state.fans.push({
-    name:[
-     "Lina","Noah","Mia","Elias",
-     "Amira","Leon","Sofia","Paul",
-     "Nora","David","Emma","Ben"
-    ][i],
-
-    money:100+Math.random()*900,
-    friend:0
-   });
-
-  }
- }
-
- return`
-
- <h2>❤️ Fans</h2>
-
- ${state.fans.map((f,i)=>`
-
- <div class="card">
-
-  <b>👤 ${f.name}</b><br>
-
-  Freundschaft:
-  ${f.friend}/100
-
-  · Fan-Geld:
-  ${money(f.money)}
-
-  <div class="row">
-
-   <button onclick="fanTalk(${i})">
-    💬 Reden
-   </button>
-
-   <button onclick="fanGift(${i})">
-    🎁 Geschenk
-   </button>
-
-   <button onclick="fanRequest(${i})">
-    🎥 Video-Anfrage
-   </button>
-
-  </div>
-
- </div>
-
- `).join("")}
- `;
-}
-
-function fanTalk(i){
-
- state.fans[i].friend=
-  clamp(
-   state.fans[i].friend+10,
-   0,100
-  );
-
- toast(
-  "💬 Du hast mit "+
-  state.fans[i].name+
-  " gesprochen."
- );
-}
-
-function fanGift(i){
-
- if(state.money<50){
-  toast("Nicht genug Geld.");
-  return;
- }
-
- state.money-=50;
-
- state.fans[i].friend=
-  clamp(
-   state.fans[i].friend+20,
-   0,100
-  );
-
- toast(
-  "🎁 Geschenk an "+
-  state.fans[i].name
- );
-
+function buyHome(name,price){
+ if(data.money<price)return alert("Nicht genug Geld!");
+ data.money-=price;
+ data.homes.push(name);
  updateHUD();
+ alert(`${name} gekauft!`);
 }
-
-function fanRequest(i){
-
- if(Math.random()<.75){
-
-  state.likes+=200;
-  state.views+=1000;
-
-  toast(
-   "🎥 Video-Anfrage von "+
-   state.fans[i].name+
-   " angenommen!"
-  );
-
- }else{
-
-  toast(
-   "❌ Anfrage abgelehnt."
-  );
-
- }
-
- updateHUD();
-}
-
-window.fanTalk=fanTalk;
-window.fanGift=fanGift;
-window.fanRequest=fanRequest;
-
-
-/* =========================
-   HÄUSER
-========================= */
-
-const homeNames=[
- "Kleine Wohnung","Starter-Haus",
- "Modernes Haus","Familienhaus",
- "Stadtvilla","Penthouse",
- "Designer-Villa","Seehaus",
- "Landhaus","Luxushaus",
- "Mega-Villa","Business-Villa",
- "Skyline-Penthouse","Resort-Haus",
- "Palast","Private Villa",
- "Grand Estate","Ultra Estate",
- "Millionärshaus","Elite Mansion",
- "Mega Mansion","Royal Estate",
- "Ocean Estate","Mountain Estate",
- "City Palace","Diamond Villa",
- "Billionaire Estate","Grand Palace",
- "Future Mansion","Infinity Estate",
- "Golden Mansion","Legend Estate",
- "Super Estate","Empire House",
- "Titan Estate","Cosmos Villa",
- "Galaxy Mansion","Royal Palace",
- "World Estate","Ultimate Mansion"
-];
-
-const homes=
- homeNames.map((n,i)=>({
-
-  name:n,
-
-  price:
-   i<20
-    ?400000+i*21000
-    :20000000+(i-20)*51000000,
-
-  rooms:[
-   "Schlafzimmer",
-   "Wohnzimmer",
-   "Küche",
-   "Bad",
-   "Gamingraum",
-   "Studio",
-   "Büro",
-   "Fitnessraum",
-   "Lager",
-   "Garten",
-   "Garage",
-   "Gästezimmer"
-  ]
-
- }));
-
-function homeHTML(){
-
- return`
-
- <h2>🏠 Immobilien</h2>
-
- <div class="small">
-  Mehrere Häuser gleichzeitig möglich.
- </div>
-
- ${homes.map((h,i)=>`
-
- <div class="card">
-
-  <b>${i+1}. ${h.name}</b><br>
-
-  ${money(h.price)}
-
-  <br>
-
-  <span class="small">
-   ${h.rooms.join(" · ")}
-  </span>
-
-  <br>
-
-  ${
-   state.homes.includes(i)
-   ?
-   `<button onclick="setHome(${i})">
-     🏠 Als Zuhause setzen
-    </button>`
-   :
-   `<button onclick="buyHome(${i})">
-     Kaufen
-    </button>`
-  }
-
- </div>
-
- `).join("")}
- `;
-}
-
-function buyHome(i){
-
- let h=homes[i];
-
- if(state.money<h.price){
-  toast("💸 Zu wenig Geld.");
-  return;
- }
-
- state.money-=h.price;
-
- state.homes.push(i);
-
- state.currentHome=i;
-
- toast(
-  "🏠 "+h.name+
-  " gekauft!"
- );
-
- updateHUD();
-}
-
-function setHome(i){
-
- if(!state.homes.includes(i))return;
-
- state.currentHome=i;
-
- toast("🏠 Zuhause gewechselt.");
-}
-
 window.buyHome=buyHome;
-window.setHome=setHome;
 
-
-/* =========================
-   BERUFE
-========================= */
-
-const jobs=[
- ["Schüler",0,0],
- ["Feuerwehr",6,15],
- ["Polizei",6,20],
- ["Koch",3,15],
- ["Elektriker",3,20],
- ["Mechaniker",3,20],
- ["Programmierer",5,35],
- ["Lehrer",8,40],
- ["Arzt",10,60],
- ["Anwalt",8,55],
- ["Pilot",10,60],
- ["Wissenschaftler",10,65],
- ["Banker",7,45],
- ["Architekt",8,50],
- ["Journalist",5,30],
- ["Sportler",3,40],
- ["YouTuber",0,10],
- ["Streamer",0,10],
- ["Unternehmer",0,30],
- ["Fotograf",3,25]
-];
-
-function jobsHTML(){
-
- return`
-
- <h2>💼 Berufe</h2>
-
- ${jobs.map((j,i)=>`
-
- <div class="card">
-
-  <b>${j[0]}</b><br>
-
-  Ausbildung:
-  ${j[1]}
-  · Skill:
-  ${j[2]}
-
-  <button onclick="chooseJob(${i})">
-   Wählen
-  </button>
-
- </div>
-
- `).join("")}
-
- <div class="card">
-  Jeder Beruf hat eigene Anforderungen.
- </div>
-
- `;
+function chooseJob(job,minAge){
+ if(data.age<minAge)return alert(`Für diesen Beruf brauchst du mindestens ${minAge} Jahre.`);
+ data.job=job;
+ alert(`Du arbeitest jetzt als ${job}.`);
 }
-
-function chooseJob(i){
-
- let j=jobs[i];
-
- if(state.age<16 && j[0]!=="Schüler"){
-  toast("Noch zu jung für diesen Beruf.");
-  return;
- }
-
- if(state.education<j[1]){
-  state.education+=10;
-  toast(
-   "📚 Mehr Ausbildung nötig. Lernen +10."
-  );
-  return;
- }
-
- if(state.skill<j[2]){
-  toast("💪 Mehr Skill nötig.");
-  return;
- }
-
- state.career=j[0];
-
- toast(
-  "💼 Neuer Beruf: "+j[0]
- );
-
- updateHUD();
-}
-
 window.chooseJob=chooseJob;
 
-
-/* =========================
-   FIRMEN
-========================= */
-
-function companyHTML(){
-
- return`
-
- <h2>🏢 Eigene Firmen</h2>
-
- <div class="row">
-
-  <input id="cname"
-   placeholder="Firmenname">
-
-  <input id="cind"
-   placeholder="Branche">
-
-  <button onclick="createCompany()">
-   Firma gründen
-  </button>
-
- </div>
-
- ${state.companies.map((c,i)=>`
-
- <div class="card">
-
-  <b>${c.name}</b>
-  · ${c.industry}
-
-  <br>
-
-  Ort:
-  ${c.location}
-
-  · Mitarbeiter:
-  ${c.employees}
-
-  <br>
-
-  Service:
-  ${c.product}
-
-  <br>
-
-  Umsatz:
-  ${money(c.revenue)}
-
-  <div class="row">
-
-   <button onclick="growCompany(${i})">
-    📈 Expansion
-   </button>
-
-   <button onclick="hireEmployee(${i})">
-    👷 Mitarbeiter
-   </button>
-
-  </div>
-
- </div>
-
- `).join("")}
-
- `;
-}
-
 function createCompany(){
-
- if(state.money<1000){
-  toast("Mindestens 1.000 € nötig.");
-  return;
- }
-
- let name=
-  $("cname").value||
-  "Meine Firma";
-
- let ind=
-  $("cind").value||
-  "Dienstleistung";
-
- state.money-=1000;
-
- state.companies.push({
-
-  name,
-  industry:ind,
-  location:"Meine Stadt",
-  employees:0,
-  product:"Service",
-  revenue:0
-
- });
-
- toast("🏢 Firma gegründet!");
-
+ if(data.money<50000)return alert("Du brauchst mindestens €50.000 Startkapital.");
+ let name=prompt("Name des Unternehmens:");
+ if(!name)return;
+ let industry=prompt("Branche:");
+ if(!industry)return;
+ data.money-=50000;
+ data.companies.push({name,industry,employees:1,money:0});
  updateHUD();
-
  openPanel("company");
 }
-
-function growCompany(i){
-
- let c=state.companies[i];
-
- let gain=
-  500+
-  Math.floor(Math.random()*5000);
-
- c.revenue+=gain;
-
- state.money+=gain;
-
- toast(
-  "📈 Firma verdient "+
-  money(gain)
- );
-
- updateHUD();
-}
-
-function hireEmployee(i){
-
- if(state.money<500){
-  toast("Zu wenig Geld.");
-  return;
- }
-
- state.money-=500;
-
- state.companies[i].employees++;
-
- state.employees.push({
-  company:i,
-  name:
-   "Mitarbeiter "+
-   state.employees.length
- });
-
- toast("👷 Mitarbeiter eingestellt.");
-
- updateHUD();
-}
-
 window.createCompany=createCompany;
-window.growCompany=growCompany;
-window.hireEmployee=hireEmployee;
 
-
-/* =========================
-   SCHUTZ
-========================= */
-
-function guardsHTML(){
-
- return`
-
- <h2>🛡️ Schutz-Team</h2>
-
- <div class="small">
-  Nur Spielwerte: Schutz und Verteidigung,
-  keine grafische Gewalt.
- </div>
-
- ${Array.from(
-  {length:50},
-  (_,i)=>{
-
-   let level=i+1;
-
-   let power=
-    Math.min(300,level*6);
-
-   return`
-
-   <div class="card">
-
-    <b>
-     Schutz-Team Stufe ${level}
-    </b>
-
-    <br>
-
-    Verteidigung:
-    ${power}/300
-
-    · Schutz:
-    ${power}/300
-
-    ·
-    ${level<20?"Teilzeit":"Vollzeit"}
-
-    <button onclick="hireGuard(${level})">
-     Anheuern
-    </button>
-
-   </div>
-
-   `
-
-  }).join("")}
-
- `;
-}
-
-function hireGuard(level){
-
- let cost=level*1000;
-
- if(state.money<cost){
-  toast("💸 Zu wenig Geld.");
-  return;
- }
-
- state.money-=cost;
-
- state.guards.push({
-  level,
-  power:Math.min(300,level*6),
-  type:level<20?"Teilzeit":"Vollzeit"
- });
-
- toast(
-  "🛡️ Schutz-Team Stufe "+
-  level+
-  " aktiviert."
- );
-
+function hireGuard(level,price){
+ if(data.money<price)return alert("Nicht genug Geld!");
+ data.money-=price;
+ data.guards.push({level,damage:Math.min(300,level)});
  updateHUD();
 }
-
 window.hireGuard=hireGuard;
 
-
-/* =========================
-   OWNER
-========================= */
-
-function ownerHTML(){
-
- return`
-
- <h2>👑 Owner-Panel</h2>
-
- <div class="small">
-  Hinweis: Das Passwort im Frontend ist
-  keine echte Web-Sicherheit.
- </div>
-
- <div class="row">
-
-  <input
-   id="ownerpw"
-   type="password"
-   placeholder="Owner-Passwort">
-
-  <button onclick="ownerLogin()">
-   Login
-  </button>
-
- </div>
-
- <div id="ownerArea"></div>
-
- `;
+function fanMoney(i){
+ if(data.money<100)return alert("Du hast nicht genug Geld.");
+ data.money-=100;
+ data.fans[i].like=Math.min(100,data.fans[i].like+5);
+ updateHUD();
 }
+window.fanMoney=fanMoney;
+
+function fanGift(i){
+ if(data.money<500)return alert("Nicht genug Geld.");
+ data.money-=500;
+ data.fans[i].like=Math.min(100,data.fans[i].like+10);
+ updateHUD();
+}
+window.fanGift=fanGift;
+
+function fanVideo(i){
+ if(Math.random()<.7){
+  data.views+=Math.floor(500+Math.random()*50000);
+  data.likes+=Math.floor(50+Math.random()*5000);
+  data.subs+=Math.floor(20+Math.random()*2000);
+  updateHUD();
+  alert(`${data.fans[i].name} hat dein Video unterstützt! 🎥`);
+ }else{
+  alert(`${data.fans[i].name} hat die Anfrage abgelehnt.`);
+ }
+}
+window.fanVideo=fanVideo;
+
+function ageUp(){
+ data.age++;
+ if(data.age===6)alert("🏫 Du kommst in die Schule!");
+ if(data.age===12)alert("📱 Du kannst jetzt Social Media nutzen!");
+ if(data.age===16)alert("💼 Viele Jobs werden jetzt möglich!");
+ if(data.age===18)alert("🎓 Du bist volljährig!");
+ updateHUD();
+ closePanel();
+}
+window.ageUp=ageUp;
+
+function train(){
+ data.skills.fitness++;
+ data.skills.social+=Math.random()<.2?1:0;
+ alert("Training abgeschlossen! 💪");
+}
+window.train=train;
+
+function study(){
+ data.skills.intelligence++;
+ data.skills.creativity+=Math.random()<.3?1:0;
+ alert("Du hast gelernt! 📚");
+}
+window.study=study;
+
+function walk(){
+ player.position.x+=(Math.random()-.5)*20;
+ player.position.z+=(Math.random()-.5)*20;
+ alert("Du gehst spazieren. 🚶");
+}
+window.walk=walk;
+
+function makeFan(){
+ data.fans.push({
+  name:names[Math.floor(Math.random()*names.length)]+" #"+(data.fans.length+1),
+  like:Math.floor(40+Math.random()*61)
+ });
+ alert("Du hast einen neuen Fan getroffen! 👥");
+}
+window.makeFan=makeFan;
 
 function ownerLogin(){
-
- if(
-  $("ownerpw").value!==
-  "YT-Owner-7X9!K4#P"
- ){
-  toast("❌ Falsches Passwort.");
+ const pass=document.getElementById("ownerpass").value;
+ const area=document.getElementById("ownerarea");
+ if(pass!=="YT-Owner-7X9!K4#P"){
+  area.innerHTML="<p>❌ Falsches Passwort</p>";
   return;
  }
-
- $("ownerArea").innerHTML=`
-
+ area.innerHTML=`
  <div class="card">
-
-  <button onclick="give(1000000)">
-   💶 +1 Mio
-  </button>
-
-  <button onclick="give(1000000000)">
-   💶 +1 Mrd
-  </button>
-
-  <button onclick="give(1000000000000)">
-   💶 +1 Bio
-  </button>
-
- </div>
-
- <div class="card">
-
-  <button onclick="boost('followers',1000000)">
-   👥 +1 Mio Follower
-  </button>
-
-  <button onclick="boost('likes',10000000)">
-   ❤️ +10 Mio Likes
-  </button>
-
-  <button onclick="boost('views',100000000)">
-   👁️ +100 Mio Views
-  </button>
-
- </div>
-
- <div class="card">
-
-  <button onclick="unlockAll()">
-   🔓 Alles freischalten
-  </button>
-
-  <button onclick="maxSkills()">
-   ⭐ Max Skills
-  </button>
-
-  <button onclick="setAge100()">
-   🎂 Alter 100
-  </button>
-
- </div>
-
- <div class="card">
-
-  <button onclick="resetGame()" class="red">
-   ♻️ Spiel zurücksetzen
-  </button>
-
- </div>
-
- `;
+ <h3>👑 Besitzer freigeschaltet</h3>
+ <button onclick="ownerMoney()">💰 +1 Milliarde €</button>
+ <button onclick="ownerMax()">⭐ Alles maximieren</button>
+ <button onclick="ownerUnlock()">🔓 Alles freischalten</button>
+ <button onclick="ownerAge()">🎂 Alter setzen</button>
+ <button onclick="ownerViews()">👁️ +1 Milliarde Views</button>
+ <button onclick="ownerSubs()">👥 +1 Milliarde Abos</button>
+ <button onclick="ownerLikes()">❤️ +1 Milliarde Likes</button>
+ </div>`;
 }
-
-function give(n){
-
- state.money+=n;
-
- updateHUD();
-
- toast("👑 Geld hinzugefügt.");
-}
-
-function boost(k,n){
-
- state[k]+=n;
-
- if(state.channels[0]){
-
-  if(k==="followers")
-   state.channels[0].subs+=n;
-
-  if(k==="likes")
-   state.channels[0].likes+=n;
-
-  if(k==="views")
-   state.channels[0].views+=n;
-
- }
-
- updateHUD();
-
- toast("👑 Wert erhöht.");
-}
-
-function unlockAll(){
-
- state.unlocked=true;
-
- state.followers=
-  Math.max(state.followers,100000);
-
- state.likes=
-  Math.max(state.likes,300000);
-
- toast("🔓 Alles freigeschaltet!");
-
- updateHUD();
-}
-
-function maxSkills(){
-
- state.skill=100;
- state.education=100;
- state.health=100;
- state.energy=100;
-
- toast("⭐ Werte maximiert.");
-}
-
-function setAge100(){
-
- state.age=100;
-
- refreshCharacter();
- updateHUD();
-
- toast("🎂 Alter gesetzt.");
-}
-
-function resetGame(){
-
- localStorage.removeItem("ytLifeMega");
-
- location.reload();
-}
-
-window.give=give;
-window.boost=boost;
-window.unlockAll=unlockAll;
-window.maxSkills=maxSkills;
-window.setAge100=setAge100;
-window.resetGame=resetGame;
 window.ownerLogin=ownerLogin;
 
-
-/* ==========================================================
-   REALISTISCHES 3D
-========================================================== */
-
-let scene;
-let camera;
-let renderer;
-
-let playerGroup;
-
-let target=null;
-
-let thirdPerson=true;
-
-let playerSpeed=.075;
-
-let playerParts={};
-
-const clickable=[];
-
-
-/* =========================
-   REALISTISCHE MATERIALIEN
-========================= */
-
-function skinMaterial(){
-
- return new THREE.MeshPhysicalMaterial({
-
-  color:state.skin,
-
-  roughness:.58,
-
-  metalness:0,
-
-  clearcoat:.08,
-
-  clearcoatRoughness:.35,
-
-  sheen:.12
-
- });
+function ownerMoney(){data.money+=1000000000;updateHUD()}
+function ownerMax(){
+ data.money=999999999999999;
+ data.subs=999999999999999;
+ data.likes=999999999999999;
+ data.views=999999999999999;
+ for(let k in data.skills)data.skills[k]=999;
+ updateHUD();
+ alert("Alles maximiert!");
 }
-
-function clothMaterial(color){
-
- return new THREE.MeshStandardMaterial({
-
-  color,
-
-  roughness:.82,
-
-  metalness:.02
-
- });
+function ownerUnlock(){
+ data.channels=999999;
+ for(let i=1;i<=40;i++)if(!data.homes.includes("Luxushaus "+i))data.homes.push("Luxushaus "+i);
+ alert("Alles freigeschaltet!");
 }
-
-function hairMaterial(){
-
- return new THREE.MeshStandardMaterial({
-
-  color:state.hair,
-
-  roughness:.48,
-
-  metalness:.02
-
- });
+function ownerAge(){
+ let a=prompt("Alter:",data.age);
+ if(a!==null)data.age=Math.max(0,parseInt(a)||data.age);
+ updateHUD();
 }
+function ownerViews(){data.views+=1000000000;updateHUD()}
+function ownerSubs(){data.subs+=1000000000;updateHUD()}
+function ownerLikes(){data.likes+=1000000000;updateHUD()}
+window.ownerMoney=ownerMoney;
+window.ownerMax=ownerMax;
+window.ownerUnlock=ownerUnlock;
+window.ownerAge=ownerAge;
+window.ownerViews=ownerViews;
+window.ownerSubs=ownerSubs;
+window.ownerLikes=ownerLikes;
 
-function metalMaterial(color){
-
- return new THREE.MeshStandardMaterial({
-
-  color,
-
-  roughness:.25,
-
-  metalness:.82
-
- });
+/* SPEICHERN */
+function saveGame(){
+ localStorage.setItem("youtuberLifeSave",JSON.stringify(data));
+ alert("Spiel gespeichert! 💾");
 }
+window.saveGame=saveGame;
 
-function glassMaterial(){
-
- return new THREE.MeshPhysicalMaterial({
-
-  color:0x8bbbd1,
-
-  roughness:.08,
-
-  metalness:.05,
-
-  transmission:.55,
-
-  transparent:true,
-
-  opacity:.5,
-
-  thickness:.2
-
- });
+function loadGame(){
+ let s=localStorage.getItem("youtuberLifeSave");
+ if(!s)return alert("Kein Spielstand gefunden.");
+ data=JSON.parse(s);
+ updateHUD();
+ alert("Spielstand geladen! 📂");
 }
-
-function mat(c){
-
- return new THREE.MeshStandardMaterial({
-
-  color:c,
-
-  roughness:.72,
-
-  metalness:0
-
- });
-}
-
-
-/* =========================
-   3D HELPERS
-========================= */
-
-function box(
- name,x,y,z,
- sx,sy,sz,
- color,
- clickFn
-){
-
- let o=new THREE.Mesh(
-  new THREE.BoxGeometry(
-   sx,sy,sz
-  ),
-  mat(color)
- );
-
- o.position.set(x,y,z);
-
- o.name=name;
-
- o.castShadow=true;
- o.receiveShadow=true;
-
- scene.add(o);
-
- if(clickFn){
-
-  o.userData.clickFn=clickFn;
-
-  clickable.push(o);
- }
-
- return o;
-}
-
-function sphere(
- x,y,z,
- r,
- material,
- segments=32
-){
-
- let o=new THREE.Mesh(
-  new THREE.SphereGeometry(
-   r,
-   segments,
-   segments
-  ),
-  material
- );
-
- o.position.set(x,y,z);
-
- o.castShadow=true;
- o.receiveShadow=true;
-
- return o;
-}
-
-function cyl(
- x,y,z,
- r,h,
- color
-){
-
- let o=new THREE.Mesh(
-  new THREE.CylinderGeometry(
-   r,r,h,32
-  ),
-  mat(color)
- );
-
- o.position.set(x,y,z);
-
- o.castShadow=true;
- o.receiveShadow=true;
-
- scene.add(o);
-
- return o;
-}
-
-
-/* =========================
-   3D INITIALISIERUNG
-========================= */
-
-function init3D(){
-
- scene=new THREE.Scene();
-
- scene.background=
-  new THREE.Color(0x87b8df);
-
- scene.fog=
-  new THREE.Fog(
-   0x87b8df,
-   70,
-   180
-  );
-
-
- camera=
-  new THREE.PerspectiveCamera(
-   63,
-   innerWidth/innerHeight,
-   .1,
-   500
-  );
-
-
- renderer=
-  new THREE.WebGLRenderer({
-   antialias:true,
-   powerPreference:"high-performance"
-  });
-
- renderer.setPixelRatio(
-  Math.min(devicePixelRatio,2)
- );
-
- renderer.setSize(
-  innerWidth,
-  innerHeight
- );
-
- renderer.outputColorSpace=
-  THREE.SRGBColorSpace;
-
- renderer.shadowMap.enabled=true;
-
- renderer.shadowMap.type=
-  THREE.PCFSoftShadowMap;
-
- renderer.toneMapping=
-  THREE.ACESFilmicToneMapping;
-
- renderer.toneMappingExposure=1.1;
-
- $("game").appendChild(
-  renderer.domElement
- );
-
-
- /* Himmellicht */
-
- const hemi=
-  new THREE.HemisphereLight(
-   0xffffff,
-   0x4c6370,
-   2.0
-  );
-
- scene.add(hemi);
-
-
- /* Sonne */
-
- const sun=
-  new THREE.DirectionalLight(
-   0xfff3df,
-   3.2
-  );
-
- sun.position.set(
-  35,55,25
- );
-
- sun.castShadow=true;
-
- sun.shadow.mapSize.width=2048;
- sun.shadow.mapSize.height=2048;
-
- sun.shadow.camera.near=1;
- sun.shadow.camera.far=180;
-
- sun.shadow.camera.left=-70;
- sun.shadow.camera.right=70;
- sun.shadow.camera.top=70;
- sun.shadow.camera.bottom=-70;
-
- scene.add(sun);
-
-
- /* weiches Fill-Light */
-
- const fill=
-  new THREE.DirectionalLight(
-   0xb8d8ff,
-   .55
-  );
-
- fill.position.set(
-  -30,20,-40
- );
-
- scene.add(fill);
-
-
- /* Boden */
-
- const ground=
-  new THREE.Mesh(
-   new THREE.PlaneGeometry(
-    180,180,
-    2,2
-   ),
-   new THREE.MeshStandardMaterial({
-    color:0x587d4d,
-    roughness:1
-   })
-  );
-
- ground.rotation.x=-Math.PI/2;
-
- ground.receiveShadow=true;
-
- scene.add(ground);
-
-
- buildWorld();
-
- buildPlayer();
-
- window.addEventListener(
-  "resize",
-  resize
- );
-
- animate();
-}
-
-
-/* ==========================================================
-   REALISTISCHE STADT
-========================================================== */
-
-function buildWorld(){
-
- /* Straßen */
-
- const roadMat=
-  new THREE.MeshStandardMaterial({
-   color:0x24282b,
-   roughness:.94
-  });
-
- for(let i=-3;i<=3;i++){
-
-  const road=
-   new THREE.Mesh(
-    new THREE.BoxGeometry(
-     10,.08,180
-    ),
-    roadMat
-   );
-
-  road.position.x=i*25;
-
-  road.position.y=.02;
-
-  road.receiveShadow=true;
-
-  scene.add(road);
- }
-
- for(let i=-3;i<=3;i++){
-
-  const road=
-   new THREE.Mesh(
-    new THREE.BoxGeometry(
-     180,.08,10
-    ),
-    roadMat
-   );
-
-  road.position.z=i*25;
-
-  road.position.y=.025;
-
-  road.receiveShadow=true;
-
-  scene.add(road);
- }
-
-
- /* Gebäude */
-
- const buildingColors=[
-  0xb6b4af,
-  0x9cabb4,
-  0xd3c6ae,
-  0x7f8e98,
-  0xc5b99d,
-  0x999fa2
- ];
-
- for(let i=0;i<38;i++){
-
-  let x=
-   -75+
-   Math.floor(Math.random()*7)*25;
-
-  let z=
-   -75+
-   Math.floor(Math.random()*7)*25;
-
-  if(Math.abs(x)<15 &&
-     Math.abs(z)<15)continue;
-
-  let w=
-   7+
-   Math.random()*8;
-
-  let h=
-   6+
-   Math.random()*25;
-
-  let d=
-   7+
-   Math.random()*8;
-
-  let building=
-   new THREE.Mesh(
-    new THREE.BoxGeometry(
-     w,h,d
-    ),
-    new THREE.MeshStandardMaterial({
-     color:
-      buildingColors[
-       i%buildingColors.length
-      ],
-     roughness:.78,
-     metalness:.02
-    })
-   );
-
-  building.position.set(
-   x,
-   h/2,
-   z
-  );
-
-  building.castShadow=true;
-  building.receiveShadow=true;
-
-  scene.add(building);
-
-
-  /* Fenster */
-
-  for(let y=4;y<h-1;y+=4){
-
-   for(let sx=-w/2+1;sx<w/2;sx+=2.2){
-
-    let window=
-     new THREE.Mesh(
-      new THREE.BoxGeometry(
-       1.25,
-       1.65,
-       .08
-      ),
-      new THREE.MeshStandardMaterial({
-       color:
-        Math.random()>.18
-        ?0x8eb6c9
-        :0x202c35,
-       roughness:.18,
-       metalness:.1
-      })
-     );
-
-    window.position.set(
-     x+sx,
-     y,
-     z-d/2-.05
-    );
-
-    scene.add(window);
-   }
-  }
- }
-
-
- /* eigenes Haus */
-
- const house=
-  box(
-   "house",
-   -10,2,-8,
-   12,4,9,
-   0xded3c3,
-   ()=>goRoom("Wohnzimmer")
-  );
-
- const roof=
-  box(
-   "roof",
-   -10,4.5,-8,
-   13,1,10,
-   0x513c3b
-  );
-
- roof.rotation.y=.04;
-
- box(
-  "door",
-  -10,1,-3.45,
-  2,2.3,.2,
-  0x583c2e,
-  ()=>goRoom("Eingang")
- );
-
-
- /* Creator Studio */
-
- box(
-  "studio",
-  10,2,-7,
-  9,4,8,
-  0x8797a0,
-  ()=>goRoom("Studio")
- );
-
-
- /* große Studio-Fenster */
-
- for(let i=-1;i<=1;i++){
-
-  let win=
-   new THREE.Mesh(
-    new THREE.BoxGeometry(
-     2.2,2,.08
-    ),
-    glassMaterial()
-   );
-
-  win.position.set(
-   10+i*2.7,
-   2.3,
-   -2.95
-  );
-
-  scene.add(win);
- }
-
-
- /* Schreibtisch */
-
- box(
-  "studioDesk",
-  8,.9,-4,
-  4,.4,1.5,
-  0x432f22,
-  ()=>recordVideo()
- );
-
-
- /* PC */
-
- box(
-  "pc",
-  8,1.65,-4,
-  .9,1,.25,
-  0x182a3b,
-  ()=>recordVideo()
- );
-
-
- /* Bildschirm */
-
- box(
-  "screen",
-  8,2.25,-4.04,
-  1.4,.75,.12,
-  0x10151a,
-  ()=>recordVideo()
- );
-
-
- /* Kamera */
-
- const cam=
-  new THREE.Mesh(
-   new THREE.BoxGeometry(
-    .65,.5,.9
-   ),
-   metalMaterial(0x111111)
-  );
-
- cam.position.set(
-  10,1.55,-4
- );
-
- cam.castShadow=true;
-
- scene.add(cam);
-
- cam.userData.clickFn=recordVideo;
-
- clickable.push(cam);
-
-
- /* Sofa */
-
- box(
-  "sofa",
-  -12,1,-10,
-  5,1.3,1.5,
-  0x3d5669
- );
-
-
- /* Basketballplatz */
-
- box(
-  "court",
-  15,.02,10,
-  12,.1,7,
-  0xa56e42,
-  ()=>toast("🏀 Basketballplatz")
- );
-
-
- /* Fußballplatz */
-
- box(
-  "field",
-  -15,.02,10,
-  14,.1,9,
-  0x3d7e40,
-  ()=>toast("⚽ Fußballplatz")
- );
-
-
- /* Bäume */
-
- for(let i=0;i<65;i++){
-
-  let x=
-   -75+
-   Math.random()*150;
-
-  let z=
-   -75+
-   Math.random()*150;
-
-  if(Math.abs(x)<10 &&
-     Math.abs(z)<10)continue;
-
-  createTree(x,z);
- }
-
-
- /* wichtige Orte */
-
- const spots=[
-  [-22,-18,"🏪 Shop"],
-  [22,-18,"🏫 Schule"],
-  [25,0,"🏙️ Stadt"],
-  [-25,0,"🏢 Arbeit"],
-  [0,22,"🌳 Park"]
- ];
-
- spots.forEach(
-  ([x,z,n])=>
-   box(
-    n,x,.5,z,
-    5,1,5,
-    0x244c6a,
-    ()=>toast(n)
-   )
- );
-}
-
-
-/* =========================
-   BÄUME
-========================= */
-
-function createTree(x,z){
-
- const trunk=
-  new THREE.Mesh(
-   new THREE.CylinderGeometry(
-    .28,.36,3.2,16
-   ),
-   new THREE.MeshStandardMaterial({
-    color:0x63432d,
-    roughness:1
-   })
-  );
-
- trunk.position.set(
-  x,1.6,z
- );
-
- trunk.castShadow=true;
-
- scene.add(trunk);
-
-
- const crown=
-  new THREE.Mesh(
-   new THREE.IcosahedronGeometry(
-    2.1,2
-   ),
-   new THREE.MeshStandardMaterial({
-    color:0x315f39,
-    roughness:.95
-   })
-  );
-
- crown.position.set(
-   x,4,z
-  );
-
- crown.castShadow=true;
- crown.receiveShadow=true;
-
- scene.add(crown);
-}
-
-
-/* ==========================================================
-   REALISTISCHER SPIELER
-========================================================== */
-
-function buildPlayer(){
-
- playerGroup=
-  new THREE.Group();
-
- scene.add(playerGroup);
-
- playerParts={};
-
-
- /* Hals */
-
- const neck=
-  new THREE.Mesh(
-   new THREE.CylinderGeometry(
-    .17,.19,.32,24
-   ),
-   skinMaterial()
-  );
-
- neck.position.y=1.72;
-
- neck.castShadow=true;
-
- playerGroup.add(neck);
-
- playerParts.neck=neck;
-
-
- /* Torso */
-
- const torso=
-  new THREE.Mesh(
-   new THREE.CapsuleGeometry(
-    .42,.78,8,24
-   ),
-   clothMaterial(
-    state.outfit==="Sport"
-    ?0x2872d6
-    :0x26384d
-   )
-  );
-
- torso.position.y=1.2;
-
- torso.scale.set(
-  1,
-  1.08,
-  .62
- );
-
- torso.castShadow=true;
-
- playerGroup.add(torso);
-
- playerParts.torso=torso;
-
-
- /* Schultern */
-
- const shoulders=
-  new THREE.Mesh(
-   new THREE.CapsuleGeometry(
-    .48,.30,8,24
-   ),
-   clothMaterial(
-    state.outfit==="Sport"
-    ?0x2872d6
-    :0x26384d
-   )
-  );
-
- shoulders.rotation.z=Math.PI/2;
-
- shoulders.position.y=1.45;
-
- shoulders.scale.z=.72;
-
- shoulders.castShadow=true;
-
- playerGroup.add(shoulders);
-
-
- /* Arme */
-
- const armMaterial=
-  clothMaterial(
-   state.outfit==="Business"
-   ?0x1b2638
-   :0x26384d
-  );
-
- const armL=
-  new THREE.Mesh(
-   new THREE.CapsuleGeometry(
-    .13,.58,6,16
-   ),
-   armMaterial
-  );
-
- armL.position.set(
-  -.53,1.2,0
- );
-
- armL.rotation.z=-.08;
-
- armL.castShadow=true;
-
- playerGroup.add(armL);
-
- const armR=armL.clone();
-
- armR.position.x=.53;
- armR.rotation.z=.08;
-
- playerGroup.add(armR);
-
-
- /* Hände */
-
- const handL=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .145,20,20
-   ),
-   skinMaterial()
-  );
-
- handL.position.set(
-  -.54,.83,0
- );
-
- handL.castShadow=true;
-
- playerGroup.add(handL);
-
- const handR=handL.clone();
-
- handR.position.x=.54;
-
- playerGroup.add(handR);
-
-
- /* Hüfte */
-
- const hip=
-  new THREE.Mesh(
-   new THREE.CapsuleGeometry(
-    .35,.25,6,18
-   ),
-   clothMaterial(0x202631)
-  );
-
- hip.position.y=.72;
-
- hip.scale.z=.8;
-
- hip.castShadow=true;
-
- playerGroup.add(hip);
-
-
- /* Beine */
-
- const legMaterial=
-  clothMaterial(0x202631);
-
- const legL=
-  new THREE.Mesh(
-   new THREE.CapsuleGeometry(
-    .17,.65,8,18
-   ),
-   legMaterial
-  );
-
- legL.position.set(
-  -.19,.38,0
- );
-
- legL.castShadow=true;
-
- playerGroup.add(legL);
-
- const legR=legL.clone();
-
- legR.position.x=.19;
-
- playerGroup.add(legR);
-
-
- /* Schuhe */
-
- const shoeL=
-  new THREE.Mesh(
-   new THREE.CapsuleGeometry(
-    .18,.35,6,16
-   ),
-   new THREE.MeshStandardMaterial({
-    color:0x111318,
-    roughness:.38,
-    metalness:.1
-   })
-  );
-
- shoeL.position.set(
-  -.19,.08,.08
- );
-
- shoeL.scale.z=1.15;
-
- shoeL.castShadow=true;
-
- playerGroup.add(shoeL);
-
- const shoeR=shoeL.clone();
-
- shoeR.position.x=.19;
-
- playerGroup.add(shoeR);
-
-
- /* Kopf */
-
- createRealisticHead();
-
-
- playerGroup.position.set(
-  0,0,5
- );
-
- refreshCharacter();
-}
-
-
-/* ==========================================================
-   REALISTISCHER KOPF
-========================================================== */
-
-function createRealisticHead(){
-
- const group=
-  new THREE.Group();
-
- group.position.y=2.12;
-
- playerGroup.add(group);
-
- playerParts.headGroup=group;
-
-
- /* Kopf */
-
- const head=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .39,48,48
-   ),
-   skinMaterial()
-  );
-
- head.scale.set(
-  .88,
-  1.08,
-  .9
- );
-
- head.castShadow=true;
- head.receiveShadow=true;
-
- group.add(head);
-
- playerParts.head=head;
-
-
- /* Ohren */
-
- const earMat=skinMaterial();
-
- const earL=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .11,24,24
-   ),
-   earMat
-  );
-
- earL.scale.set(
-  .55,1.2,.45
- );
-
- earL.position.set(
-  -.37,.0,0
- );
-
- group.add(earL);
-
- const earR=earL.clone();
-
- earR.position.x=.37;
-
- group.add(earR);
-
-
- /* Augen */
-
- const eyeWhite=
-  new THREE.MeshStandardMaterial({
-   color:0xf4f1eb,
-   roughness:.22
-  });
-
- const eyeL=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .095,24,24
-   ),
-   eyeWhite
-  );
-
- eyeL.scale.z=.55;
-
- eyeL.position.set(
-  -.145,.07,-.345
- );
-
- group.add(eyeL);
-
- const eyeR=eyeL.clone();
-
- eyeR.position.x=.145;
-
- group.add(eyeR);
-
-
- /* Iris */
-
- const irisMat=
-  new THREE.MeshStandardMaterial({
-   color:0x3a2415,
-   roughness:.25,
-   metalness:.05
-  });
-
- const irisL=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .045,20,20
-   ),
-   irisMat
-  );
-
- irisL.position.set(
-  -.145,.07,-.402
- );
-
- group.add(irisL);
-
- const irisR=irisL.clone();
-
- irisR.position.x=.145;
-
- group.add(irisR);
-
-
- /* Pupillen */
-
- const pupilMat=
-  new THREE.MeshBasicMaterial({
-   color:0x050505
-  });
-
- const pupilL=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .021,16,16
-   ),
-   pupilMat
-  );
-
- pupilL.position.set(
-  -.145,.07,-.425
- );
-
- group.add(pupilL);
-
- const pupilR=pupilL.clone();
-
- pupilR.position.x=.145;
-
- group.add(pupilR);
-
-
- /* Augenbrauen */
-
- const browMat=
-  new THREE.MeshStandardMaterial({
-   color:state.hair,
-   roughness:.7
-  });
-
- const browL=
-  new THREE.Mesh(
-   new THREE.BoxGeometry(
-    .18,.035,.035
-   ),
-   browMat
-  );
-
- browL.position.set(
-  -.145,.21,-.365
- );
-
- browL.rotation.z=.06;
-
- group.add(browL);
-
- const browR=browL.clone();
-
- browR.position.x=.145;
- browR.rotation.z=-.06;
-
- group.add(browR);
-
-
- /* Nase */
-
- const nose=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .09,24,24
-   ),
-   skinMaterial()
-  );
-
- nose.scale.set(
-  .72,1.45,1.25
- );
-
- nose.position.set(
-  0,-.01,-.375
- );
-
- group.add(nose);
-
-
- /* Nasenspitze */
-
- const noseTip=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .055,20,20
-   ),
-   skinMaterial()
-  );
-
- noseTip.position.set(
-  0,-.075,-.42
- );
-
- group.add(noseTip);
-
-
- /* Mund */
-
- const mouthOuter=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .085,24,24
-   ),
-   new THREE.MeshStandardMaterial({
-    color:0x6f3034,
-    roughness:.55
-   })
-  );
-
- mouthOuter.scale.set(
-  1.55,.36,.35
- );
-
- mouthOuter.position.set(
-  0,-.205,-.365
- );
-
- group.add(mouthOuter);
-
-
- /* Lippen */
-
- const lip=
-  new THREE.Mesh(
-   new THREE.BoxGeometry(
-    .17,.025,.025
-   ),
-   new THREE.MeshStandardMaterial({
-    color:0x8b4548,
-    roughness:.48
-   })
-  );
-
- lip.position.set(
-  0,-.205,-.445
- );
-
- group.add(lip);
-
-
- /* Haarbasis */
-
- const hair=
-  new THREE.Mesh(
-   new THREE.SphereGeometry(
-    .405,48,32,
-    0,Math.PI*2,
-    0,Math.PI*.53
-   ),
-   hairMaterial()
-  );
-
- hair.position.y=.105;
-
- hair.scale.set(
-  1.02,.98,1.02
- );
-
- hair.castShadow=true;
-
- group.add(hair);
-
- playerParts.hair=hair;
-
-
- /* kleine Haarstruktur */
-
- for(let i=0;i<18;i++){
-
-  const a=
-   (i/18)*Math.PI*2;
-
-  const strand=
-   new THREE.Mesh(
-    new THREE.CapsuleGeometry(
-     .025,.14,4,8
-    ),
-    hairMaterial()
-   );
-
-  strand.position.set(
-   Math.sin(a)*.31,
-   .18+Math.cos(a)*.08,
-   Math.cos(a)*.31
-  );
-
-  strand.rotation.x=
-   Math.cos(a)*.5;
-
-  strand.rotation.z=
-   Math.sin(a)*.5;
-
-  group.add(strand);
- }
-
- playerParts.skinParts=[
-  head,earL,earR,neck,
-  handL,handR,nose,noseTip
- ];
-}
-
-
-/* ==========================================================
-   OPTIONAL REAL GLB PLAYER
-========================================================== */
-
-/*
- Wenn du später einen eigenen legalen GLB-Spieler
- in deinen GitHub-Ordner legst:
-
- assets/player.glb
-
- kann dieser geladen werden.
-
- Wenn die Datei fehlt, bleibt automatisch
- der realistische prozedurale Charakter.
-*/
-
-async function tryLoadRealGLB(){
-
- try{
-
-  const loader=new GLTFLoader();
-
-  const gltf=
-   await loader.loadAsync(
-    "assets/player.glb"
-   );
-
-  if(!gltf || !gltf.scene)return;
-
-  const model=gltf.scene;
-
-  model.traverse(o=>{
-
-   if(o.isMesh){
-
-    o.castShadow=true;
-    o.receiveShadow=true;
-
-    if(o.material){
-
-     if(o.material.map){
-      o.material.map.colorSpace=
-       THREE.SRGBColorSpace;
-     }
-
-    }
-   }
-
-  });
-
-  model.scale.setScalar(1);
-
-  model.position.set(
-   0,0,5
-  );
-
-  scene.add(model);
-
-  toast(
-   "✨ Realistisches 3D-Modell geladen!"
-  );
-
- }catch(e){
-
-  console.log(
-   "Kein player.glb gefunden – "
-   +"prozeduraler realistischer Charakter bleibt aktiv."
-  );
-
- }
-}
-
-
-/* =========================
-   CHARAKTER UPDATE
-========================= */
-
-function refreshCharacter(){
-
- if(!playerGroup)return;
-
- const s=
-  state.age<3?.55:
-  state.age<6?.72:
-  state.age<12?.9:
-  state.age<18?.98:
-  state.age<65?1.08:.95;
-
- playerGroup.scale.set(
-  state.height*s,
-  state.height*s,
-  state.height*s
- );
-
-
- /* Haut */
-
- playerGroup.traverse(o=>{
-
-  if(
-   o.isMesh &&
-   o.material &&
-   o!==playerParts.hair
-  ){
-
-   if(
-    o.name==="head" ||
-    o===playerParts.head
-   ){
-
-    o.material.color.set(
-     state.skin
-    );
-   }
-
-  }
-
- });
-
-
- /* Haare */
-
- if(playerParts.hair){
-
-  playerParts.hair.material.color.set(
-   state.hair
-  );
-
- }
-
- /* Kleidung */
-
- if(playerParts.torso){
-
-  playerParts.torso.material.color.set(
-   state.outfit==="Sport"
-   ?0x2872d6
-   :
-   state.outfit==="Business"
-   ?0x171d29
-   :
-   state.outfit==="Creator"
-   ?0x6b2a8c
-   :0x26384d
-  );
-
- }
-
-}
-
-
-/* =========================
-   RÄUME
-========================= */
-
-function goRoom(r){
-
- state.room=r;
-
- toast(
-  "📍 Bereich: "+r
-);
-
-
-/* Kamera bewegt sich leicht zum Haus */
-
- if(r==="Studio"){
-
-  moveTo(
-   new THREE.Vector3(
-    8,0,-4
-   )
-  );
-
- }
-
- if(r==="Wohnzimmer"){
-
-  moveTo(
-   new THREE.Vector3(
-    -10,0,-8
-   )
-  );
-
- }
-
-}
-
-
-/* =========================
-   CLICK MOVEMENT
-========================= */
-
-function moveTo(p){
-
- target=
-  new THREE.Vector3(
-   clamp(p.x,-75,75),
-   0,
-   clamp(p.z,-75,75)
-  );
-}
-
-
-/* ==========================================================
-   JOYSTICK
-========================================================== */
-
-let joyX=0;
-let joyY=0;
-let joyActive=false;
-
-const joy=$("joystick");
-const knob=$("joyKnob");
-
-function setJoy(e){
-
- const r=
-  joy.getBoundingClientRect();
-
- const cx=
-  r.left+r.width/2;
-
- const cy=
-  r.top+r.height/2;
-
- let x=
-  e.clientX-cx;
-
- let y=
-  e.clientY-cy;
-
- const max=
-  r.width*.32;
-
- const len=
-  Math.hypot(x,y);
-
- if(len>max){
-
-  x=x/len*max;
-  y=y/len*max;
-
- }
-
- knob.style.left=
-  (50+x/r.width*100)+"%";
-
- knob.style.top=
-  (50+y/r.height*100)+"%";
-
+window.loadGame=loadGame;
+
+/* JOYSTICK */
+const joy=document.getElementById("joy");
+const stick=document.getElementById("stick");
+let joyX=0,joyY=0,drag=false;
+
+joy.addEventListener("pointerdown",e=>{
+ drag=true;
+ joy.setPointerCapture(e.pointerId);
+ moveJoy(e);
+});
+
+joy.addEventListener("pointermove",e=>{
+ if(drag)moveJoy(e);
+});
+
+joy.addEventListener("pointerup",()=>{
+ drag=false;
+ joyX=0;joyY=0;
+ stick.style.left="32px";
+ stick.style.top="32px";
+});
+
+function moveJoy(e){
+ const r=joy.getBoundingClientRect();
+ let x=e.clientX-(r.left+r.width/2);
+ let y=e.clientY-(r.top+r.height/2);
+ let len=Math.hypot(x,y);
+ let max=42;
+ if(len>max){x=x/len*max;y=y/len*max}
  joyX=x/max;
  joyY=y/max;
+ stick.style.left=(32+x)+"px";
+ stick.style.top=(32+y)+"px";
 }
 
-function stopJoy(){
-
- joyActive=false;
-
- joyX=0;
- joyY=0;
-
- knob.style.left="50%";
- knob.style.top="50%";
-}
-
-joy.addEventListener(
- "pointerdown",
- e=>{
-  joyActive=true;
-  joy.setPointerCapture(e.pointerId);
-  setJoy(e);
- }
-);
-
-joy.addEventListener(
- "pointermove",
- e=>{
-  if(joyActive)setJoy(e);
- }
-);
-
-joy.addEventListener(
- "pointerup",
- stopJoy
-);
-
-joy.addEventListener(
- "pointercancel",
- stopJoy
-);
-
-
-/* ==========================================================
-   ANIMATION
-========================================================== */
-
-let last=performance.now();
-
-function animate(now){
-
- requestAnimationFrame(animate);
-
- const dt=
-  Math.min(
-   (now-last)/1000,
-   .05
-  );
-
- last=now;
-
-
- /* Joystick */
-
- if(
-  joyActive &&
-  Math.hypot(joyX,joyY)>.08
- ){
-
-  const direction=
-   new THREE.Vector3(
-    joyX,
-    0,
-    joyY
-   );
-
-  direction.normalize();
-
-  playerGroup.position.addScaledVector(
-   direction,
-   playerSpeed*
-   Math.min(1.3,
-    Math.hypot(joyX,joyY)+.15
-   )
-  );
-
-  playerGroup.position.x=
-   clamp(
-    playerGroup.position.x,
-    -75,75
-   );
-
-  playerGroup.position.z=
-   clamp(
-    playerGroup.position.z,
-    -75,75
-   );
-
-  playerGroup.rotation.y=
-   Math.atan2(
-    direction.x,
-    direction.z
-   );
-
-  target=null;
-
- }
-
-
- /* Automatisches Laufen */
-
- if(
-  !joyActive &&
-  target
- ){
-
-  const d=
-   target.clone()
-   .sub(playerGroup.position);
-
-  d.y=0;
-
-  if(d.length()<.18){
-
-   target=null;
-
-  }else{
-
-   d.normalize();
-
-   playerGroup.position.addScaledVector(
-    d,
-    playerSpeed
-   );
-
-   playerGroup.rotation.y=
-    Math.atan2(
-     d.x,
-     d.z
-    );
-
-  }
-
- }
-
-
- /* leichte Laufanimation */
-
- const moving=
-  joyActive||
-  target!==null;
-
- if(moving){
-
-  const t=
-   performance.now()*.012;
-
-  playerGroup.position.y=
-   Math.abs(Math.sin(t))*.025;
-
- }else{
-
-  playerGroup.position.y=
-   THREE.MathUtils.lerp(
-    playerGroup.position.y,
-    0,
-    .15
-   );
-
- }
-
-
- /* Third Person */
-
- if(thirdPerson){
-
-  const behind=
-   new THREE.Vector3(
-    0,
-    4.0,
-    6.8
-   ).applyAxisAngle(
-    new THREE.Vector3(0,1,0),
-    playerGroup.rotation.y
-   );
-
-  camera.position.lerp(
-   playerGroup.position
-    .clone()
-    .add(behind),
-   .08
-  );
-
-  camera.lookAt(
-   playerGroup.position
-    .clone()
-    .add(
-     new THREE.Vector3(
-      0,1.25,0
-     )
-    )
-  );
-
- }else{
-
-  /* First Person */
-
-  const eye=
-   playerGroup.position
-    .clone()
-    .add(
-     new THREE.Vector3(
-      0,1.68,0
-     )
-    );
-
-  camera.position.lerp(
-   eye,
-   .15
-  );
-
-  camera.lookAt(
-   eye.clone().add(
-    new THREE.Vector3(
-     Math.sin(playerGroup.rotation.y),
-     -.02,
-     Math.cos(playerGroup.rotation.y)
-    )
-   )
-  );
-
- }
-
-
- /* MiniMap */
-
- const px=
-  50+
-  playerGroup.position.x/150*100;
-
- const pz=
-  50+
-  playerGroup.position.z/150*100;
-
- $("mapDot").style.left=
-  clamp(px,5,95)+"%";
-
- $("mapDot").style.top=
-  clamp(pz,5,95)+"%";
-
-
- renderer.render(
-  scene,
-  camera
- );
-}
-
-
-/* =========================
-   CAMERA
-========================= */
+/* KEYBOARD */
+const keys={};
+addEventListener("keydown",e=>keys[e.key.toLowerCase()]=true);
+addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
+
+/* KAMERA */
+let firstPerson=false;
 
 function toggleCamera(){
-
- thirdPerson=!thirdPerson;
-
- toast(
-  thirdPerson
-  ?"🎥 Third-Person-Sicht"
-  :"👁️ Eigene Sicht"
- );
+ firstPerson=!firstPerson;
 }
-
 window.toggleCamera=toggleCamera;
 
+function animate(){
+ requestAnimationFrame(animate);
 
-/* =========================
-   RESIZE
-========================= */
+ let dx=joyX;
+ let dz=joyY;
 
-function resize(){
+ if(keys.w||keys.arrowup)dz=-1;
+ if(keys.s||keys.arrowdown)dz=1;
+ if(keys.a||keys.arrowleft)dx=-1;
+ if(keys.d||keys.arrowright)dx=1;
 
- camera.aspect=
-  innerWidth/innerHeight;
+ const speed=.11;
+ player.position.x+=dx*speed;
+ player.position.z+=dz*speed;
 
- camera.updateProjectionMatrix();
+ if(Math.abs(dx)+Math.abs(dz)>.05){
+  player.rotation.y=Math.atan2(dx,dz);
+ }
 
- renderer.setSize(
-  innerWidth,
-  innerHeight
- );
+ if(firstPerson){
+  const target=new THREE.Vector3(
+   player.position.x,
+   player.position.y+2.5,
+   player.position.z
+  );
+  camera.position.copy(target);
+  const dir=new THREE.Vector3(0,0,-1);
+  dir.applyQuaternion(player.quaternion);
+  camera.lookAt(target.clone().add(dir.multiplyScalar(8)));
+ }else{
+  const offset=new THREE.Vector3(0,4.5,8);
+  offset.applyQuaternion(player.quaternion);
+  camera.position.lerp(
+   player.position.clone().add(offset),
+   .12
+  );
+  camera.lookAt(
+   player.position.x,
+   player.position.y+1.4,
+   player.position.z
+  );
+ }
+
+ renderer.render(scene,camera);
 }
 
-
-/* =========================
-   START
-========================= */
-
-init3D();
+addEventListener("resize",()=>{
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+});
 
 updateHUD();
 
-tryLoadRealGLB();
+setTimeout(()=>{
+ document.getElementById("loading").style.display="none";
+},900);
 
-
-/* =========================
-   LEBENDIGE WELT
-========================= */
-
-setInterval(()=>{
-
- if(
-  state.age>=12 &&
-  !state.recording &&
-  Math.random()<.03
- ){
-
-  state.views+=
-   Math.floor(
-    Math.random()*30
-   );
-
-  state.followers+=
-   Math.floor(
-    Math.random()*3
-   );
-
-  updateHUD();
-
- }
-
-},5000);
-
+animate();
 </script>
 </body>
-</html> 
+</html>
